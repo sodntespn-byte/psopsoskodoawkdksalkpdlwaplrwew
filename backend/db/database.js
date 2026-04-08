@@ -3,35 +3,19 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 
-// Square Cloud PostgreSQL Configuration - Hardcoded to bypass .env issues
-const DATABASE_URL = 'postgresql://squarecloud:VDE1xJURx06DvYZtikq04Amr@square-cloud-db-ecd0071f6934489597ad31c462ce83f0.squareweb.app:7196';
-console.log('📝 Usando DATABASE_URL configurada manualmente');
+// Get DATABASE_URL from environment variable (configured in Square Cloud dashboard)
+const DATABASE_URL = process.env.DATABASE_URL;
 
-// SSL Certificate paths
-const certsDir = path.join(__dirname, '..', 'certs');
-let sslConfig = {
-    require: true,
-    rejectUnauthorized: false  // Always allow SSL without strict cert validation for Square Cloud
-};
-
-try {
-    const ca = fs.readFileSync(path.join(certsDir, 'ca-certificate.crt')).toString();
-    const cert = fs.readFileSync(path.join(certsDir, 'certificate.pem')).toString();
-    const key = fs.readFileSync(path.join(certsDir, 'private-key.key')).toString();
-    
-    sslConfig = {
-        require: true,
-        rejectUnauthorized: true,
-        ca,
-        cert,
-        key
-    };
-    console.log('✅ Certificados SSL carregados com sucesso');
-} catch (err) {
-    console.log('ℹ️  Usando SSL sem certificados personalizados (modo Square Cloud)');
+if (!DATABASE_URL) {
+    console.error('❌ DATABASE_URL não configurada! Configure no painel da Square Cloud.');
+    console.error('   Vá em: Dashboard → Seu App → Variables → Adicionar DATABASE_URL');
+    process.exit(1);
 }
 
-// For Square Cloud, SSL is REQUIRED - server rejects non-SSL connections
+console.log('📝 Usando DATABASE_URL das variáveis de ambiente');
+
+// For Square Cloud PostgreSQL, we need SSL but without client certificates
+// The server requires SSL but doesn't verify client certificates
 const sequelize = new Sequelize(DATABASE_URL, {
     dialect: 'postgres',
     protocol: 'postgres',
