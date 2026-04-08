@@ -1,51 +1,45 @@
-const { Client, GatewayIntentBits, Collection, REST, Routes, ShardingManager } = require('discord.js');
-const { PrismaClient } = require('@prisma/client');
+const { Client, GatewayIntentBits, Collection, REST, Routes } = require('discord.js');
+const { User } = require('../models');
 const { getEncryptionManager } = require('../lib/encryption');
+const BotNotificationService = require('./services/notificationService');
 const path = require('path');
 const fs = require('fs');
 
 /**
- * PSO Brasil Discord Bot - Main Handler with Sharding and Caching
- * Versão 3.0 - Sistema Configurável e Escalável
+ * PSO Brasil Discord Bot - Main Handler with PostgreSQL Integration
+ * Versão 4.0 - Integração com Site e Banco de Dados
  */
 
 class PSODiscordBot {
   constructor() {
     this.client = null;
-    this.prisma = null;
     this.encryptionManager = null;
     this.commands = new Collection();
     this.cooldowns = new Collection();
+    this.notificationService = null;
+    this.discordLinkCodes = new Map();
     
     // Sistema de Cache
     this.cache = new Map();
-    this.cacheTTL = 5 * 60 * 1000; // 5 minutos
+    this.cacheTTL = 5 * 60 * 1000;
     this.configCache = new Map();
-    this.configCacheTTL = 10 * 60 * 1000; // 10 minutos
+    this.configCacheTTL = 10 * 60 * 1000;
     
-    // Rate Limiting por usuário
+    // Rate Limiting
     this.userRateLimits = new Map();
-    this.rateLimitWindow = 60 * 1000; // 1 minuto
+    this.rateLimitWindow = 60 * 1000;
     this.maxCommandsPerWindow = 10;
     
     // Logging
     this.logBuffer = [];
-    this.logFlushInterval = 30 * 1000; // 30 segundos
-    
-    // WebSocket para comunicação com site
-    this.io = null;
+    this.logFlushInterval = 30 * 1000;
   }
 
   /**
    * Inicializar o bot
    */
   async initialize() {
-    console.log('[PSO-BOT] Inicializando PSO Brasil Discord Bot v3.0...');
-    
-    // Inicializar Prisma
-    this.prisma = new PrismaClient({
-      log: process.env.NODE_ENV === 'development' ? ['query', 'info', 'warn', 'error'] : ['error']
-    });
+    console.log('[PSO-BOT] Inicializando PSO Brasil Discord Bot v4.0...');
     
     // Inicializar Encryption Manager
     this.encryptionManager = getEncryptionManager();
@@ -62,7 +56,7 @@ class PSODiscordBot {
       presence: {
         status: 'online',
         activities: [{
-          name: 'PSO Brasil - Gestão de Liga',
+          name: 'PSO Brasil • Digite /perfil',
           type: 3 // Watching
         }]
       }
@@ -118,6 +112,10 @@ class PSODiscordBot {
       
       // Registrar comandos slash
       await this.registerSlashCommands();
+      
+      // Inicializar serviço de notificações
+      this.notificationService = new BotNotificationService(this);
+      await this.notificationService.initialize();
       
       // Inicializar configurações dos servidores
       await this.initializeGuildConfigs();
