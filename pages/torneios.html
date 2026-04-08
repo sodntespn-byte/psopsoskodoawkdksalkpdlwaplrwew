@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Torneios - PSO Brasil</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700&family=Audiowide&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     
     <style>
@@ -21,7 +21,7 @@
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: var(--pure-black); color: #FFFFFF; font-family: 'Exo 2', sans-serif; min-height: 100vh; }
+        body { background: var(--pure-black); color: #FFFFFF; font-family: 'Inter', sans-serif; min-height: 100vh; }
         
         .container { max-width: 1400px; margin: 0 auto; padding: 0 24px; }
         
@@ -29,23 +29,23 @@
         nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; }
         .logo { display: flex; align-items: center; gap: 12px; }
         .logo-icon { width: 40px; height: 40px; background: var(--dark-gray); border: 1px solid var(--border-gray); border-top: 2px solid var(--neon-green); display: flex; align-items: center; justify-content: center; }
-        .logo-text h1 { font-family: 'Orbitron', sans-serif; font-size: 24px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; }
-        .logo-text .version { font-family: 'Orbitron', sans-serif; font-size: 9px; letter-spacing: 0.25em; color: var(--text-gray); text-transform: uppercase; }
+        .logo-text h1 { font-family: 'Rajdhani', sans-serif; font-size: 26px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+        .logo-text .version { font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.15em; color: var(--text-gray); text-transform: uppercase; }
         .nav-links { display: flex; gap: 32px; align-items: center; }
-        .nav-links a { font-family: 'Orbitron', sans-serif; font-size: 12px; letter-spacing: 0.15em; color: var(--text-gray); text-decoration: none; text-transform: uppercase; transition: color 0.3s; }
+        .nav-links a { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.05em; color: var(--text-gray); text-decoration: none; text-transform: uppercase; transition: color 0.3s; }
         .nav-links a:hover { color: var(--neon-green); }
         .nav-links a.active { color: var(--neon-green); }
         
         main { padding-top: 100px; padding-bottom: 60px; }
         
         .page-header { padding: 60px 0 40px; text-align: center; }
-        .page-badge { display: inline-block; padding: 6px 12px; background: var(--dark-gray); border: 1px solid var(--border-gray); border-bottom: 2px solid var(--neon-yellow); font-family: 'Orbitron', sans-serif; font-size: 10px; letter-spacing: 0.2em; color: var(--text-gray); text-transform: uppercase; margin-bottom: 16px; }
-        .page-title { font-family: 'Audiowide', sans-serif; font-size: 48px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; }
+        .page-badge { display: inline-block; padding: 6px 12px; background: var(--dark-gray); border: 1px solid var(--border-gray); border-bottom: 2px solid var(--neon-yellow); font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.15em; color: var(--text-gray); text-transform: uppercase; margin-bottom: 16px; }
+        .page-title { font-family: 'Rajdhani', sans-serif; font-size: 48px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
         .page-title span { color: var(--neon-green); }
         .page-subtitle { font-size: 16px; color: var(--text-gray); margin-top: 16px; }
         
         .filters { display: flex; gap: 16px; margin-bottom: 40px; flex-wrap: wrap; justify-content: center; }
-        .filter-btn { padding: 10px 20px; background: transparent; border: 1px solid var(--border-gray); color: var(--text-gray); font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
+        .filter-btn { padding: 10px 20px; background: transparent; border: 1px solid var(--border-gray); color: var(--text-gray); font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
         .filter-btn:hover, .filter-btn.active { border-color: var(--neon-green); color: var(--neon-green); }
         
         .tournaments-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
@@ -56,27 +56,27 @@
         .tournament-card:nth-child(3) { animation-delay: 0.2s; }
         
         .tournament-header { padding: 24px; border-bottom: 1px solid var(--border-gray); }
-        .tournament-status { display: inline-block; padding: 4px 12px; font-family: 'Orbitron', sans-serif; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; }
+        .tournament-status { display: inline-block; padding: 4px 12px; font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; }
         .tournament-status.upcoming { background: var(--neon-yellow); color: var(--pure-black); }
         .tournament-status.ongoing { background: var(--neon-green); color: var(--pure-black); }
         .tournament-status.finished { background: var(--border-gray); color: var(--text-gray); }
-        .tournament-title { font-family: 'Orbitron', sans-serif; font-size: 20px; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 8px; }
+        .tournament-title { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 600; letter-spacing: 0.03em; margin-bottom: 8px; }
         .tournament-type { font-size: 13px; color: var(--text-gray); }
         
         .tournament-body { padding: 24px; }
         .tournament-info { display: flex; flex-direction: column; gap: 12px; }
         .info-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
         .info-label { color: var(--text-gray); display: flex; align-items: center; gap: 8px; }
-        .info-value { font-family: 'Orbitron', sans-serif; color: var(--neon-green); }
-        .prize-value { font-family: 'Orbitron', sans-serif; color: var(--neon-yellow); font-size: 18px; }
+        .info-value { font-family: 'Rajdhani', sans-serif; font-size: 15px; color: var(--neon-green); }
+        .prize-value { font-family: 'Rajdhani', sans-serif; color: var(--neon-yellow); font-size: 20px; }
         
         .tournament-progress { margin-top: 16px; }
         .progress-bar { height: 4px; background: var(--mid-gray); border-radius: 2px; overflow: hidden; }
         .progress-fill { height: 100%; background: linear-gradient(90deg, var(--neon-green), var(--neon-yellow)); transition: width 0.5s ease; }
-        .progress-text { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; color: var(--text-gray); }
+        .progress-text { display: flex; justify-content: space-between; margin-top: 8px; font-family: 'Inter', sans-serif; font-size: 11px; color: var(--text-gray); }
         
         .tournament-actions { display: flex; gap: 12px; padding: 24px; border-top: 1px solid var(--border-gray); }
-        .btn { flex: 1; padding: 12px; font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; text-align: center; cursor: pointer; border: none; transition: all 0.3s; }
+        .btn { flex: 1; padding: 12px; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; text-align: center; cursor: pointer; border: none; transition: all 0.3s; }
         .btn-primary { background: var(--neon-green); color: var(--pure-black); font-weight: 600; }
         .btn-primary:hover { background: var(--neon-yellow); }
         .btn-secondary { background: transparent; border: 1px solid var(--border-gray); color: var(--text-gray); }
