@@ -1600,5 +1600,584 @@
             });
         });
     </script>
+
+    <!-- Modal de Perfil do Jogador - Estilo Brasileiro Premium -->
+    <div id="playerProfileModal" class="player-profile-modal">
+        <div class="player-profile-card">
+            <div class="profile-card-inner">
+                <button class="profile-close-btn" onclick="closePlayerProfile()">&times;</button>
+                
+                <!-- Background effects -->
+                <div class="profile-bg-pattern"></div>
+                <div class="profile-glow"></div>
+                
+                <!-- Header -->
+                <div class="profile-header">
+                    <div class="profile-avatar-container">
+                        <img id="profileAvatar" src="" alt="Avatar" class="profile-avatar">
+                        <div class="profile-avatar-ring"></div>
+                        <div class="profile-avatar-shine"></div>
+                    </div>
+                    <div class="profile-title-section">
+                        <div class="profile-flag-container">
+                            <img id="profileFlag" src="" alt="Bandeira" class="profile-flag">
+                            <span id="profileCountry" class="profile-country"></span>
+                        </div>
+                        <h2 id="profileUsername" class="profile-username"></h2>
+                        <div id="profileCriaBadge" class="profile-cria-badge" style="display: none;">
+                            <span class="cria-icon">🇧🇷</span> CRIA DA LIGA
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stats Section -->
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Data de Registro</span>
+                        <span id="profileJoinDate" class="stat-value"></span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">ID Discord</span>
+                        <span id="profileDiscordId" class="stat-value"></span>
+                    </div>
+                </div>
+                
+                <!-- Títulos Section -->
+                <div class="profile-titles-section">
+                    <h3 class="titles-heading">
+                        <span class="titles-icon">🏆</span> Títulos Conquistados
+                    </h3>
+                    <div id="profileTitles" class="profile-titles-container">
+                        <!-- Títulos serão inseridos dinamicamente -->
+                    </div>
+                    <div id="profileTitlesCount" class="profile-titles-count"></div>
+                </div>
+                
+                <!-- Footer Button -->
+                <div class="profile-footer">
+                    <a id="profileDiscordLink" href="" target="_blank" class="profile-discord-btn">
+                        <span class="discord-icon">💬</span> Ver Perfil no Discord
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Modal de Perfil - Estilo Brasileiro Premium */
+        .player-profile-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .player-profile-modal.active {
+            display: flex;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .player-profile-card {
+            position: relative;
+            max-width: 450px;
+            width: 100%;
+            transform: scale(0.8);
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+        }
+
+        .player-profile-modal.active .player-profile-card {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .profile-card-inner {
+            background: linear-gradient(135deg, rgba(10, 20, 10, 0.95) 0%, rgba(5, 15, 5, 0.98) 100%);
+            border-radius: 24px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            box-shadow: 
+                0 0 0 2px rgba(0, 255, 100, 0.3),
+                0 0 30px rgba(0, 200, 80, 0.2),
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-card-inner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 24px;
+            padding: 2px;
+            background: linear-gradient(135deg, #00ff88 0%, #ffdd00 50%, #00ff88 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            animation: borderGlow 3s ease infinite;
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* Background pattern */
+        .profile-bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.03;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(0, 255, 100, 0.3) 1px, transparent 1px),
+                radial-gradient(circle at 75% 75%, rgba(255, 221, 0, 0.3) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+        }
+
+        .profile-glow {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at center, rgba(0, 255, 100, 0.1) 0%, transparent 60%);
+            pointer-events: none;
+            animation: glowPulse 4s ease infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        /* Close button */
+        .profile-close-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .profile-close-btn:hover {
+            background: rgba(255, 50, 50, 0.3);
+            transform: rotate(90deg);
+        }
+
+        /* Header */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 28px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .profile-avatar-container {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .profile-avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(0, 255, 100, 0.5);
+            box-shadow: 0 0 20px rgba(0, 200, 80, 0.3);
+        }
+
+        .profile-avatar-ring {
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: #00ff88;
+            border-right-color: #ffdd00;
+            animation: ringRotate 3s linear infinite;
+        }
+
+        @keyframes ringRotate {
+            to { transform: rotate(360deg); }
+        }
+
+        .profile-avatar-shine {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+            filter: blur(10px);
+        }
+
+        .profile-title-section {
+            flex: 1;
+        }
+
+        .profile-flag-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .profile-flag {
+            width: 28px;
+            height: 20px;
+            border-radius: 3px;
+            object-fit: cover;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .profile-country {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .profile-username {
+            font-family: 'Oswald', 'Impact', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #fff;
+            margin: 0;
+            text-shadow: 0 2px 10px rgba(0, 200, 80, 0.3);
+            background: linear-gradient(135deg, #fff 0%, #00ff88 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .profile-cria-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            padding: 6px 14px;
+            background: linear-gradient(135deg, rgba(0, 100, 50, 0.3) 0%, rgba(0, 150, 70, 0.3) 100%);
+            border: 1px solid rgba(0, 255, 100, 0.4);
+            border-radius: 20px;
+            font-size: 11px;
+            color: #00ff88;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .cria-icon {
+            font-size: 14px;
+        }
+
+        /* Stats */
+        .profile-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 13px;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        /* Títulos */
+        .profile-titles-section {
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .titles-heading {
+            font-size: 14px;
+            color: #ffdd00;
+            margin: 0 0 16px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .titles-icon {
+            font-size: 18px;
+            filter: drop-shadow(0 0 8px rgba(255, 221, 0, 0.5));
+        }
+
+        .profile-titles-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .title-trophy {
+            font-size: 28px;
+            animation: trophyFloat 2s ease infinite;
+            filter: drop-shadow(0 0 10px rgba(255, 221, 0, 0.6));
+        }
+
+        .title-trophy:nth-child(2) { animation-delay: 0.2s; }
+        .title-trophy:nth-child(3) { animation-delay: 0.4s; }
+        .title-trophy:nth-child(4) { animation-delay: 0.6s; }
+        .title-trophy:nth-child(5) { animation-delay: 0.8s; }
+
+        @keyframes trophyFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        /* Special effect for 5+ titles */
+        .profile-super-champion .profile-titles-container::after {
+            content: '🔥';
+            font-size: 24px;
+            animation: fireBurn 0.5s ease infinite;
+        }
+
+        @keyframes fireBurn {
+            0%, 100% { transform: scale(1) rotate(-5deg); filter: brightness(1); }
+            50% { transform: scale(1.2) rotate(5deg); filter: brightness(1.5); }
+        }
+
+        .profile-titles-count {
+            text-align: center;
+            font-size: 13px;
+            color: rgba(255, 221, 0, 0.8);
+            font-weight: 600;
+        }
+
+        /* Footer Button */
+        .profile-footer {
+            position: relative;
+            z-index: 2;
+        }
+
+        .profile-discord-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 14px 24px;
+            background: linear-gradient(135deg, #5865F2 0%, #4752C4 100%);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(88, 101, 242, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-discord-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(88, 101, 242, 0.5);
+            background: linear-gradient(135deg, #6875F5 0%, #5763D8 100%);
+        }
+
+        .discord-icon {
+            font-size: 18px;
+        }
+
+        /* Click outside to close */
+        .player-profile-modal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+        }
+    </style>
+
+    <script>
+        // Player Profile System
+        let currentProfileCard = null;
+        let mouseX = 0, mouseY = 0;
+
+        function openPlayerProfile(username) {
+            const modal = document.getElementById('playerProfileModal');
+            
+            // Fetch player data
+            fetch(`/api/player/${encodeURIComponent(username)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Jogador não encontrado');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Fill profile data
+                    document.getElementById('profileUsername').textContent = data.username;
+                    document.getElementById('profileAvatar').src = data.avatar_url || '/images/default-avatar.png';
+                    document.getElementById('profileCountry').textContent = data.pais;
+                    document.getElementById('profileFlag').src = `https://flagcdn.com/w40/${data.pais.toLowerCase()}.png`;
+                    document.getElementById('profileJoinDate').textContent = new Date(data.data_de_registro).toLocaleDateString('pt-BR');
+                    document.getElementById('profileDiscordId').textContent = data.discord_id;
+                    
+                    // Show Cria badge for Brazil
+                    const criaBadge = document.getElementById('profileCriaBadge');
+                    if (data.pais === 'BR') {
+                        criaBadge.style.display = 'inline-flex';
+                    } else {
+                        criaBadge.style.display = 'none';
+                    }
+                    
+                    // Fill titles
+                    const titlesContainer = document.getElementById('profileTitles');
+                    const titlesCount = data.quantidade_de_titulos || 0;
+                    titlesContainer.innerHTML = '';
+                    
+                    if (titlesCount > 0) {
+                        for (let i = 0; i < titlesCount; i++) {
+                            const trophy = document.createElement('span');
+                            trophy.className = 'title-trophy';
+                            trophy.textContent = '🏆';
+                            titlesContainer.appendChild(trophy);
+                        }
+                        document.getElementById('profileTitlesCount').textContent = `${titlesCount} Título${titlesCount > 1 ? 's' : ''} Conquistado${titlesCount > 1 ? 's' : ''}`;
+                    } else {
+                        titlesContainer.innerHTML = '<span style="color: rgba(255,255,255,0.5);">Nenhum título ainda</span>';
+                        document.getElementById('profileTitlesCount').textContent = '';
+                    }
+                    
+                    // Add special effect for 5+ titles
+                    const card = document.querySelector('.player-profile-card');
+                    if (titlesCount >= 5) {
+                        card.classList.add('profile-super-champion');
+                    } else {
+                        card.classList.remove('profile-super-champion');
+                    }
+                    
+                    // Set Discord link
+                    document.getElementById('profileDiscordLink').href = `https://discord.com/users/${data.discord_id}`;
+                    
+                    // Show modal
+                    modal.classList.add('active');
+                    currentProfileCard = document.querySelector('.profile-card-inner');
+                    
+                    // Start tilt effect
+                    document.addEventListener('mousemove', handleTilt);
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar perfil:', error);
+                    alert('Erro ao carregar perfil do jogador');
+                });
+        }
+
+        function closePlayerProfile() {
+            const modal = document.getElementById('playerProfileModal');
+            modal.classList.remove('active');
+            document.removeEventListener('mousemove', handleTilt);
+            
+            // Reset tilt
+            if (currentProfileCard) {
+                currentProfileCard.style.transform = '';
+            }
+        }
+
+        function handleTilt(e) {
+            if (!currentProfileCard) return;
+            
+            const card = currentProfileCard.getBoundingClientRect();
+            const centerX = card.left + card.width / 2;
+            const centerY = card.top + card.height / 2;
+            
+            const rotateX = (e.clientY - centerY) / 20;
+            const rotateY = (centerX - e.clientX) / 20;
+            
+            currentProfileCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        }
+
+        // Close on click outside
+        document.getElementById('playerProfileModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePlayerProfile();
+            }
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('playerProfileModal').classList.contains('active')) {
+                closePlayerProfile();
+            }
+        });
+
+        // Add click handlers to ranking names
+        function addRankingClickHandlers() {
+            const rankingRows = document.querySelectorAll('.ranking-table tbody tr, .ranking-item');
+            rankingRows.forEach(row => {
+                const nameCell = row.querySelector('td:nth-child(2), .player-name');
+                if (nameCell) {
+                    nameCell.style.cursor = 'pointer';
+                    nameCell.addEventListener('click', function() {
+                        const username = this.textContent.trim();
+                        openPlayerProfile(username);
+                    });
+                }
+            });
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            addRankingClickHandlers();
+        });
+    </script>
 </body>
 </html>
