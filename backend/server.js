@@ -19,6 +19,7 @@ const NotificationService = require('./services/notificationService');
 const notificationRoutes = require('./routes/notifications');
 const adminRoutes = require('./routes/admin');
 const authRoutes = require('./routes/auth');
+const registerRoutes = require('./routes/register');
 const passport = require('./middleware/passport');
 const session = require('express-session');
 
@@ -48,12 +49,23 @@ async function initializeDatabase() {
     }
 }
 
-// Configurar CORS para permitir requisições do frontend
+// Configurar CORS para permitir requisições do frontend - Square Cloud compatible
+const allowedOrigins = process.env.ALLOWED_ORIGINS 
+    ? process.env.ALLOWED_ORIGINS.split(',')
+    : ['http://localhost:3000', 'http://localhost:5001', 'https://pro-soccer-online.squareweb.app', 'https://psobrasil.squareweb.app'];
+
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://localhost:5001', 'https://pro-soccer-online.squareweb.app', 'https://psobrasil.squareweb.app'],
+    origin: function(origin, callback) {
+        // allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+            return callback(null, true); // Allow all origins in development
+        }
+        return callback(null, true);
+    },
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token']
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token', 'X-Requested-With']
 }));
 
 // Configure session for Passport
@@ -114,6 +126,9 @@ app.use('/admin', adminRoutes);
 // Usar rotas de autenticação
 app.use('/auth', authRoutes);
 
+// Usar rotas de registro
+app.use('/api', registerRoutes);
+
 // Servir arquivos estáticos do frontend
 const frontendPath = path.join(__dirname, '..', 'frontend');
 app.use(express.static(frontendPath));
@@ -147,6 +162,21 @@ app.get('/mercado', (req, res) => {
 
 app.get('/mvp', (req, res) => {
     res.sendFile(path.join(frontendPath, 'pages', 'mvp.html'));
+});
+
+app.get('/registrar', (req, res) => {
+    res.sendFile(path.join(frontendPath, 'pages', 'registrar.html'));
+});
+
+// Health Check endpoint for Square Cloud
+app.get('/api/health', (req, res) => {
+    res.status(200).json({
+        status: 'OK',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        environment: process.env.NODE_ENV || 'development',
+        version: '1.0.0'
+    });
 });
 
 // Fallback para SPA - serve index.html para rotas não encontradas (exceto API)

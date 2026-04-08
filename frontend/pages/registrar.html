@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar - PSO Brasil</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    
+    <style>
+        /* Page-specific styles */
+        body {
+            background: radial-gradient(ellipse 100% 80% at 50% 0%, #002200 0%, #001100 20%, #000000 60%);
+            background-attachment: fixed;
+        }
+        
+        main { padding-top: 100px; padding-bottom: 60px; }
+        
+        /* Registration Container */
+        .register-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+        
+        .register-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .register-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: var(--dark-gray);
+            border: 1px solid var(--border-gray);
+            border-left: 3px solid var(--neon-green);
+            font-family: var(--font-title);
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            transform: skewX(-5deg);
+        }
+        
+        .register-title {
+            font-family: var(--font-display);
+            font-size: 42px;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            line-height: 1.1;
+        }
+        
+        .register-title span {
+            color: var(--neon-green);
+        }
+        
+        .register-subtitle {
+            font-size: 16px;
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+        
+        /* Form Styles */
+        .register-form {
+            background: var(--dark-gray);
+            border: 1px solid var(--border-gray);
+            padding: 40px;
+            position: relative;
+        }
+        
+        .register-form::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--neon-green), var(--neon-yellow));
+        }
+        
+        .form-group {
+            margin-bottom: 28px;
+        }
+        
+        .form-label {
+            display: block;
+            font-family: var(--font-title);
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        
+        .form-label .required {
+            color: var(--neon-green);
+            margin-left: 4px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--pure-black);
+            border: 1px solid var(--border-gray);
+            color: #FFFFFF;
+            font-family: var(--font-body);
+            font-size: 15px;
+            letter-spacing: 0.02em;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--neon-green);
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.2);
+        }
+        
+        .form-input::placeholder {
+            color: #4B5563;
+        }
+        
+        .form-input.error {
+            border-color: #EF4444;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+        }
+        
+        .form-hint {
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-top: 8px;
+            line-height: 1.5;
+            display: flex;
+            align-items: flex-start;
+            gap: 6px;
+        }
+        
+        .form-hint i {
+            color: var(--neon-green);
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+        
+        .error-message {
+            font-size: 12px;
+            color: #EF4444;
+            margin-top: 8px;
+            display: none;
+        }
+        
+        .error-message.visible {
+            display: block;
+        }
+        
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 16px 32px;
+            background: var(--neon-green);
+            border: none;
+            color: var(--pure-black);
+            font-family: var(--font-title);
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 4px 0 rgba(34, 197, 94, 0.3),
+                0 8px 20px rgba(34, 197, 94, 0.3);
+        }
+        
+        .submit-btn:hover {
+            background: var(--neon-yellow);
+            transform: translateY(-3px);
+            box-shadow: 
+                0 6px 0 rgba(250, 204, 21, 0.3),
+                0 12px 30px rgba(250, 204, 21, 0.4);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .submit-btn:disabled {
+            background: #4B5563;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+        
+        /* Success Message */
+        .success-message {
+            display: none;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid var(--neon-green);
+            border-left: 3px solid var(--neon-green);
+            padding: 20px;
+            margin-bottom: 28px;
+        }
+        
+        .success-message.visible {
+            display: block;
+        }
+        
+        .success-message h3 {
+            font-family: var(--font-title);
+            font-size: 16px;
+            color: var(--neon-green);
+            margin-bottom: 8px;
+        }
+        
+        .success-message p {
+            font-size: 14px;
+            color: var(--text-gray);
+            line-height: 1.5;
+        }
+        
+        /* Discord Info Box */
+        .discord-info {
+            background: rgba(88, 101, 242, 0.1);
+            border: 1px solid #5865F2;
+            border-left: 3px solid #5865F2;
+            padding: 20px;
+            margin-bottom: 28px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+        
+        .discord-info i {
+            color: #5865F2;
+            flex-shrink: 0;
+        }
+        
+        .discord-info p {
+            font-size: 13px;
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+        
+        .discord-info strong {
+            color: #FFFFFF;
+        }
+        
+        /* How to find Discord ID */
+        .discord-help {
+            margin-top: 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-gray);
+        }
+        
+        .discord-help h4 {
+            font-family: var(--font-title);
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-bottom: 16px;
+            letter-spacing: 0.1em;
+        }
+        
+        .discord-help ol {
+            font-size: 13px;
+            color: var(--text-gray);
+            line-height: 1.8;
+            padding-left: 20px;
+        }
+        
+        .discord-help li {
+            margin-bottom: 8px;
+        }
+        
+        .discord-help code {
+            background: var(--pure-black);
+            padding: 2px 6px;
+            font-family: monospace;
+            font-size: 12px;
+            color: var(--neon-green);
+        }
+        
+        /* Loading Spinner */
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--pure-black);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+        
+        .spinner.visible {
+            display: inline-block;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .register-container {
+                padding: 20px;
+            }
+            
+            .register-form {
+                padding: 24px;
+            }
+            
+            .register-title {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <div class="logo-icon" style="padding: 0; overflow: hidden;">
+                    <img src="../logo.png" alt="PSO Brasil Logo" style="width: 38px; height: 38px; object-fit: contain;">
+                </div>
+                <div class="logo-text">
+                    <h1>PSO BRASIL</h1>
+                    <div class="version">PRO SOCCER ONLINE</div>
+                </div>
+            </div>
+            
+            <div class="nav-links">
+                <a href="../index.html">Home</a>
+                <a href="torneios.html">Torneios</a>
+                <a href="mercado.html">Mercado</a>
+                <a href="mvp.html">Votar MVP</a>
+                <a href="imprensa.html">Imprensa</a>
+                <a href="galeria.html">Galeria</a>
+                <a href="registrar.html" class="active">Registrar</a>
+                <button class="login-btn" id="login-btn">Entrar</button>
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="register-container">
+            <div class="register-header">
+                <div class="register-badge">CADASTRO RÁPIDO</div>
+                <h1 class="register-title">CRIAR <span>CONTA</span></h1>
+                <p class="register-subtitle">Entre para a maior liga de PSO do Brasil</p>
+            </div>
+            
+            <form class="register-form" id="registerForm">
+                <div class="success-message" id="successMessage">
+                    <h3>✅ Conta criada com sucesso!</h3>
+                    <p>Verifique sua DM no Discord para confirmar o registro.</p>
+                </div>
+                
+                <div class="discord-info">
+                    <i data-lucide="message-circle" style="width: 20px; height: 20px;"></i>
+                    <p><strong>Por que precisamos do seu Discord?</strong><br>
+                    Seu ID do Discord é necessário para sincronizar seus rankings, conquistas e notificações da liga diretamente no seu Discord.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        ID do Discord <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        class="form-input" 
+                        id="discordId" 
+                        placeholder="Ex: 123456789012345678"
+                        maxlength="20"
+                        required
+                    >
+                    <div class="form-hint">
+                        <i data-lucide="info" style="width: 14px; height: 14px;"></i>
+                        <span>Apenas números. Ative o modo desenvolvedor no Discord para ver seu ID.</span>
+                    </div>
+                    <div class="error-message" id="discordIdError">ID do Discord deve conter apenas números (17-20 dígitos).</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        Username do Discord <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        class="form-input" 
+                        id="discordUsername" 
+                        placeholder="Ex: usuario#0000 ou usuario"
+                        maxlength="37"
+                        required
+                    >
+                    <div class="form-hint">
+                        <i data-lucide="info" style="width: 14px; height: 14px;"></i>
+                        <span>Seu nome de usuário completo no Discord.</span>
+                    </div>
+                    <div class="error-message" id="discordUsernameError">Username inválido.</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        Username do Site <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        class="form-input" 
+                        id="siteUsername" 
+                        placeholder="Como quer ser chamado na liga?"
+                        maxlength="20"
+                        required
+                    >
+                    <div class="form-hint">
+                        <i data-lucide="info" style="width: 14px; height: 14px;"></i>
+                        <span>Este será seu nome de exibição no ranking e perfil. Apenas letras, números e underline.</span>
+                    </div>
+                    <div class="error-message" id="siteUsernameError">Username deve ter 3-20 caracteres, apenas letras, números e underline.</div>
+                </div>
+                
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span class="spinner" id="spinner"></span>
+                    <span id="btnText">CRIAR CONTA</span>
+                </button>
+            </form>
+            
+            <div class="discord-help">
+                <h4><i data-lucide="help-circle" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 6px;"></i>Como encontrar seu ID do Discord</h4>
+                <ol>
+                    <li>Abra o Discord e vá em <strong>Configurações de Usuário</strong> (engrenagem)</li>
+                    <li>Clique em <strong>Avançado</strong> no menu lateral</li>
+                    <li>Ative o <strong>Modo Desenvolvedor</strong></li>
+                    <li>Clique com botão direito no seu nome e selecione <code>Copiar ID</code></li>
+                </ol>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Form validation
+        const registerForm = document.getElementById('registerForm');
+        const discordIdInput = document.getElementById('discordId');
+        const discordUsernameInput = document.getElementById('discordUsername');
+        const siteUsernameInput = document.getElementById('siteUsername');
+        const submitBtn = document.getElementById('submitBtn');
+        const spinner = document.getElementById('spinner');
+        const btnText = document.getElementById('btnText');
+        const successMessage = document.getElementById('successMessage');
+        
+        // Validation patterns
+        const discordIdPattern = /^\d{17,20}$/;
+        const discordUsernamePattern = /^[\w\s.#-]{2,37}$/;
+        const siteUsernamePattern = /^[a-zA-Z0-9_]{3,20}$/;
+        
+        function showError(inputId, show) {
+            const errorEl = document.getElementById(inputId + 'Error');
+            const inputEl = document.getElementById(inputId);
+            if (show) {
+                errorEl.classList.add('visible');
+                inputEl.classList.add('error');
+            } else {
+                errorEl.classList.remove('visible');
+                inputEl.classList.remove('error');
+            }
+        }
+        
+        function validateDiscordId() {
+            const value = discordIdInput.value.trim();
+            const isValid = discordIdPattern.test(value);
+            showError('discordId', !isValid && value.length > 0);
+            return isValid;
+        }
+        
+        function validateDiscordUsername() {
+            const value = discordUsernameInput.value.trim();
+            const isValid = discordUsernamePattern.test(value);
+            showError('discordUsername', !isValid && value.length > 0);
+            return isValid;
+        }
+        
+        function validateSiteUsername() {
+            const value = siteUsernameInput.value.trim();
+            const isValid = siteUsernamePattern.test(value);
+            showError('siteUsername', !isValid && value.length > 0);
+            return isValid;
+        }
+        
+        // Real-time validation
+        discordIdInput.addEventListener('input', () => {
+            // Only allow numbers
+            discordIdInput.value = discordIdInput.value.replace(/\D/g, '');
+            validateDiscordId();
+        });
+        
+        discordUsernameInput.addEventListener('input', validateDiscordUsername);
+        siteUsernameInput.addEventListener('input', validateSiteUsername);
+        
+        // Form submission
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Validate all fields
+            const isDiscordIdValid = validateDiscordId();
+            const isDiscordUsernameValid = validateDiscordUsername();
+            const isSiteUsernameValid = validateSiteUsername();
+            
+            if (!isDiscordIdValid || !isDiscordUsernameValid || !isSiteUsernameValid) {
+                return;
+            }
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            spinner.classList.add('visible');
+            btnText.textContent = 'CRIANDO...';
+            
+            const formData = {
+                discordId: discordIdInput.value.trim(),
+                discordUsername: discordUsernameInput.value.trim(),
+                siteUsername: siteUsernameInput.value.trim()
+            };
+            
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Show success
+                    successMessage.classList.add('visible');
+                    registerForm.reset();
+                    
+                    // Hide form elements except success message
+                    document.querySelectorAll('.form-group, .discord-info, .submit-btn').forEach(el => {
+                        el.style.display = 'none';
+                    });
+                } else {
+                    // Show error
+                    alert(data.error || 'Erro ao criar conta. Tente novamente.');
+                    submitBtn.disabled = false;
+                    spinner.classList.remove('visible');
+                    btnText.textContent = 'CRIAR CONTA';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Erro de conexão. Verifique sua internet e tente novamente.');
+                submitBtn.disabled = false;
+                spinner.classList.remove('visible');
+                btnText.textContent = 'CRIAR CONTA';
+            }
+        });
+    </script>
+</body>
+</html>

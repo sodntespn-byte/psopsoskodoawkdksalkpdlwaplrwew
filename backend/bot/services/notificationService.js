@@ -179,6 +179,47 @@ class BotNotificationService {
   }
 
   /**
+   * Enviar DM de boas-vindas para novo usuário registrado
+   */
+  async sendWelcomeDM(discordId, siteUsername, discordUsername) {
+    try {
+      const user = await this.client.users.fetch(discordId).catch(() => null);
+      if (!user) {
+        console.log(`[BOT-NOTIFY] Usuário Discord ${discordId} não encontrado para DM`);
+        return false;
+      }
+
+      const { EmbedBuilder } = require('discord.js');
+      
+      const welcomeEmbed = new EmbedBuilder()
+        .setTitle('🔷 Bem-vindo à PSO Brasil!')
+        .setDescription(
+          `E aí, **${siteUsername}**! 🎉\n\n` +
+          `Sua conta foi criada com sucesso e já está vinculada ao Discord!\n\n` +
+          `**O que você pode fazer agora:**\n` +
+          `• Use **/perfil** no servidor para ver seus stats\n` +
+          `• Use **/ranking** para ver os melhores players\n` +
+          `• Participe dos drafts e suba no ranking!\n\n` +
+          `Bora jogar! ⚽🔥`
+        )
+        .setColor('#22C55E')
+        .setTimestamp()
+        .setFooter({ 
+          text: 'PSO Brasil • Liga Oficial', 
+          iconURL: 'https://psobrasil.squareweb.app/logo.png' 
+        });
+
+      await user.send({ embeds: [welcomeEmbed] });
+      console.log(`[BOT-NOTIFY] DM de boas-vindas enviada para ${discordUsername} (${discordId})`);
+      return true;
+      
+    } catch (error) {
+      console.error('[BOT-NOTIFY] Erro ao enviar DM de boas-vindas:', error);
+      return false;
+    }
+  }
+
+  /**
    * Atualizar cargos do Discord baseado no ranking
    */
   async updateDiscordRoles(guild, user) {
