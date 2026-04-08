@@ -31,7 +31,7 @@ try {
     console.log('ℹ️  Usando SSL sem certificados personalizados (modo Square Cloud)');
 }
 
-// For Square Cloud, try without SSL first (server may not require it)
+// For Square Cloud, SSL is REQUIRED - server rejects non-SSL connections
 const sequelize = new Sequelize(DATABASE_URL, {
     dialect: 'postgres',
     protocol: 'postgres',
@@ -43,8 +43,10 @@ const sequelize = new Sequelize(DATABASE_URL, {
         idle: 10000
     },
     dialectOptions: {
-        // SSL disabled - Square Cloud database may not require it
-        ssl: false
+        ssl: {
+            require: true,
+            rejectUnauthorized: false
+        }
     },
     define: {
         timestamps: true,
