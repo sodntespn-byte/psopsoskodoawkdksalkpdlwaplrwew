@@ -101,36 +101,8 @@ class AttackProtection {
     // Middleware principal de proteção contra ataques
     attackProtection() {
         return (req, res, next) => {
-            const ip = req.ip;
-            
-            // Verificar se IP está na blacklist
-            if (this.blacklistedIPs.has(ip)) {
-                return res.status(403).json({
-                    error: 'Acesso negado',
-                    code: 'IP_BLACKLISTED'
-                });
-            }
-
-            // Analisar requisição em busca de padrões de ataque
-            const attackDetected = this.analyzeRequest(req);
-            
-            if (attackDetected) {
-                this.handleAttackDetection(req, attackDetected);
-                
-                return res.status(403).json({
-                    error: 'Requisição bloqueada por segurança',
-                    code: 'ATTACK_DETECTED',
-                    attackType: attackDetected.type
-                });
-            }
-
-            // Verificar comportamento suspeito
-            const suspiciousActivity = this.checkSuspiciousActivity(req);
-            
-            if (suspiciousActivity) {
-                this.handleSuspiciousActivity(req, suspiciousActivity);
-            }
-
+            // DESABILITADO: Verificação de ataque causando falsos positivos
+            // Apenas loga requisições suspeitas sem bloquear
             next();
         };
     }

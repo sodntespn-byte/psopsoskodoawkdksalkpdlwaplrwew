@@ -1,4 +1,5 @@
 const { Notification, NotificationPreference, NotificationTemplate } = require('../models');
+const { sequelize } = require('../server');
 const nodemailer = require('nodemailer');
 const DiscordWebhookHandler = require('../webhook/discordWebhook');
 
