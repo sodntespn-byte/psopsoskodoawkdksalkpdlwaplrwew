@@ -1,0 +1,60 @@
+{
+  "name": "pso-brasil",
+  "version": "1.0.0",
+  "description": "PSO Brasil - Liga de Pro Soccer Online com backend Node.js e frontend HTML",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "cd backend && node server.js",
+    "dev": "cd backend && nodemon server.js",
+    "test": "jest",
+    "bot": "cd backend && node bot/index.js",
+    "install-backend": "cd backend && npm install"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "@prisma/client": "^4.16.2",
+    "bcryptjs": "^2.4.3",
+    "compression": "^1.8.1",
+    "connect-flash": "^0.1.1",
+    "cors": "^2.8.6",
+    "csurf": "^1.11.0",
+    "discord.js": "^14.26.2",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.1",
+    "express-rate-limit": "^6.7.0",
+    "express-session": "^1.17.3",
+    "express-slow-down": "^1.6.0",
+    "express-validator": "^6.15.0",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.1",
+    "multer": "^1.4.5-lts.1",
+    "passport": "^0.6.0",
+    "passport-google-oauth20": "^2.0.0",
+    "pg": "^8.11.3",
+    "prisma": "^4.16.2",
+    "sequelize": "^6.32.1",
+    "socket.io": "^4.8.3",
+    "validator": "^13.11.0"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0",
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "keywords": [
+    "pro-soccer",
+    "futebol",
+    "esports",
+    "nodejs",
+    "express",
+    "postgresql",
+    "discord-bot"
+  ],
+  "homepage": "https://psobrasil.squareweb.app",
+  "author": "PSO Brasil Team",
+  "license": "MIT"
+}
