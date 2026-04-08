@@ -1,4 +1,4 @@
-const { sequelize } = require('../db/database');
+const { sequelize } = require('../server');
 const User = require('./User');
 const Tournament = require('./Tournament');
 const Match = require('./Match');

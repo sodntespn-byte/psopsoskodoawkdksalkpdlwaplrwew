@@ -8,9 +8,60 @@ const rateLimit = require('express-rate-limit');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { body, validationResult } = require('express-validator');
+const { Sequelize } = require('sequelize');
+const fs = require('fs');
 require('dotenv').config();
 
-const { sequelize } = require('./db/database');
+// DATABASE_URL configurada diretamente para Square Cloud
+const DATABASE_URL = 'postgresql://squarecloud:t6eNrMqqk2z5Nx4pklIRA07T@square-cloud-db-ecd0071f6934489597ad31c462ce83f0.squareweb.app:7196/squarecloud';
+
+// SSL Certificate paths for Square Cloud PostgreSQL
+const certsDir = path.join(__dirname, 'certs');
+let sslConfig = {};
+
+try {
+    const ca = fs.readFileSync(path.join(certsDir, 'ca-certificate.crt')).toString();
+    const cert = fs.readFileSync(path.join(certsDir, 'certificate.pem')).toString();
+    const key = fs.readFileSync(path.join(certsDir, 'private-key.key')).toString();
+    
+    sslConfig = {
+        require: true,
+        rejectUnauthorized: true,
+        ca,
+        cert,
+        key
+    };
+    console.log('✅ Certificados SSL carregados com sucesso');
+} catch (err) {
+    console.log('⚠️  Certificados não encontrados, usando SSL sem verificação');
+    sslConfig = {
+        require: true,
+        rejectUnauthorized: false
+    };
+}
+
+// Create Sequelize instance directly in server.js
+const sequelize = new Sequelize(DATABASE_URL, {
+    dialect: 'postgres',
+    protocol: 'postgres',
+    logging: process.env.NODE_ENV === 'development' ? console.log : false,
+    pool: {
+        max: 20,
+        min: 5,
+        acquire: 30000,
+        idle: 10000
+    },
+    dialectOptions: {
+        ssl: sslConfig
+    },
+    define: {
+        timestamps: true,
+        underscored: true,
+        freezeTableName: true
+    }
+});
+
+console.log('📝 Usando DATABASE_URL configurada no server.js');
 const { User, Tournament, Match, TournamentParticipant, DiscordEvent, Notification, NotificationPreference, NotificationTemplate } = require('./models');
 const DiscordWebhookHandler = require('./webhook/discordWebhook');
 const SecurityConfig = require('./middleware/security');
@@ -1052,3 +1103,4 @@ async function startServer() {
 startServer();
 
 module.exports = app;
+module.exports.sequelize = sequelize;
