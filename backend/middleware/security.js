@@ -304,6 +304,24 @@ class SecurityConfig {
         }
     }
 
+    // Middleware de autenticação
+    requireAuth(req, res, next) {
+        const token = req.headers.authorization?.split(' ')[1];
+        
+        if (!token) {
+            return res.status(401).json({ error: 'Token de autenticação não fornecido' });
+        }
+
+        const decoded = this.verifyJWTToken(token);
+        
+        if (!decoded) {
+            return res.status(401).json({ error: 'Token inválido ou expirado' });
+        }
+
+        req.user = decoded;
+        next();
+    }
+
     // Hash de senha seguro
     async hashPassword(password) {
         const bcrypt = require('bcryptjs');
@@ -510,9 +528,21 @@ class SecurityConfig {
 }
 
 module.exports = SecurityConfig;
-module.exports.requireAuth = requireAuth;
-module.exports.validateDiscordWebhook = validateDiscordWebhook;
-module.exports.createRateLimit = createRateLimit;
+
+// Wrapper functions para middleware que precisam ser exportados individualmente
+const securityInstance = new SecurityConfig();
+
+module.exports.requireAuth = (req, res, next) => {
+    return securityInstance.requireAuth(req, res, next);
+};
+
+module.exports.validateDiscordWebhook = (req, res, next) => {
+    return securityInstance.validateDiscordWebhook(req, res, next);
+};
+
+module.exports.createRateLimit = (options) => {
+    return securityInstance.createRateLimit(options);
+};
 
 // Exportar funções de admin
 module.exports.requireAdmin = requireAdmin;
