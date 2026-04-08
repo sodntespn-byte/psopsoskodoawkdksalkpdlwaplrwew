@@ -33,7 +33,9 @@ try {
 
 // Parse database URL manually to ensure correct dialect
 const dbUrl = new URL(DATABASE_URL);
-const sequelize = new Sequelize({
+
+// For Square Cloud, use native SSL support
+const sequelizeOptions = {
     dialect: 'postgres',
     host: dbUrl.hostname,
     port: parseInt(dbUrl.port) || 7196,
@@ -48,8 +50,11 @@ const sequelize = new Sequelize({
         idle: 10000
     },
     dialectOptions: {
-        ssl: sslConfig,
-        connectTimeout: 60000
+        connectTimeout: 60000,
+        ssl: {
+            require: true,
+            rejectUnauthorized: false
+        }
     },
     define: {
         timestamps: true,
@@ -58,7 +63,9 @@ const sequelize = new Sequelize({
         charset: 'utf8',
         collate: 'utf8_general_ci'
     }
-});
+};
+
+const sequelize = new Sequelize(sequelizeOptions);
 
 // Testar conexão
 async function testConnection() {
