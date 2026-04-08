@@ -31,17 +31,10 @@ try {
     console.log('ℹ️  Usando SSL sem certificados personalizados (modo Square Cloud)');
 }
 
-// Parse database URL manually to ensure correct dialect
-const dbUrl = new URL(DATABASE_URL);
-
-// For Square Cloud, use native SSL support
-const sequelizeOptions = {
+// For Square Cloud, use connection string directly with proper SSL
+const sequelize = new Sequelize(DATABASE_URL, {
     dialect: 'postgres',
-    host: dbUrl.hostname,
-    port: parseInt(dbUrl.port) || 7196,
-    database: dbUrl.pathname.replace('/', ''),
-    username: dbUrl.username,
-    password: dbUrl.password,
+    protocol: 'postgres',
     logging: process.env.NODE_ENV === 'development' ? console.log : false,
     pool: {
         max: 20,
@@ -50,7 +43,6 @@ const sequelizeOptions = {
         idle: 10000
     },
     dialectOptions: {
-        connectTimeout: 60000,
         ssl: {
             require: true,
             rejectUnauthorized: false
@@ -59,13 +51,9 @@ const sequelizeOptions = {
     define: {
         timestamps: true,
         underscored: true,
-        freezeTableName: true,
-        charset: 'utf8',
-        collate: 'utf8_general_ci'
+        freezeTableName: true
     }
-};
-
-const sequelize = new Sequelize(sequelizeOptions);
+});
 
 // Testar conexão
 async function testConnection() {
