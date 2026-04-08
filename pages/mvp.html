@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Votação MVP - PSO Brasil</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    
+    <style>
+        :root {
+            --neon-green: #22C55E;
+            --neon-yellow: #FACC15;
+            --pure-black: #000000;
+            --dark-gray: #121212;
+            --mid-gray: #171717;
+            --border-gray: #1f2937;
+            --text-gray: #9CA3AF;
+            --text-light: #E5E7EB;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--pure-black); color: #FFFFFF; font-family: 'Inter', sans-serif; min-height: 100vh; }
+        
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 24px; }
+        
+        header { background: var(--pure-black); border-bottom: 1px solid var(--border-gray); position: fixed; top: 0; left: 0; right: 0; z-index: 100; }
+        nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { width: 40px; height: 40px; background: var(--dark-gray); border: 1px solid var(--border-gray); border-top: 2px solid var(--neon-yellow); display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 0; }
+        .logo-icon img { width: 38px; height: 38px; object-fit: contain; }
+        .logo-text h1 { font-family: 'Rajdhani', sans-serif; font-size: 26px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+        .logo-text .version { font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.15em; color: var(--text-gray); text-transform: uppercase; }
+        .nav-links { display: flex; gap: 32px; align-items: center; }
+        .nav-links a { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.05em; color: var(--text-gray); text-decoration: none; text-transform: uppercase; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--neon-green); }
+        .nav-links a.active { color: var(--neon-yellow); }
+        
+        main { padding-top: 100px; padding-bottom: 60px; }
+        
+        .page-header { padding: 60px 0 40px; text-align: center; }
+        .page-badge { display: inline-block; padding: 6px 12px; background: var(--dark-gray); border: 1px solid var(--border-gray); border-bottom: 2px solid var(--neon-yellow); font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.15em; color: var(--text-gray); text-transform: uppercase; margin-bottom: 16px; }
+        .page-title { font-family: 'Rajdhani', sans-serif; font-size: 48px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+        .page-title span { color: var(--neon-yellow); }
+        .page-subtitle { font-size: 16px; color: var(--text-gray); margin-top: 16px; }
+        
+        /* Auth Required Banner */
+        .auth-banner { background: var(--dark-gray); border: 1px solid var(--border-gray); border-left: 3px solid var(--neon-yellow); padding: 20px 24px; margin-bottom: 40px; display: flex; align-items: center; justify-content: space-between; }
+        .auth-banner.logged { border-left-color: var(--neon-green); }
+        .auth-info { display: flex; align-items: center; gap: 16px; }
+        .auth-icon { color: var(--neon-yellow); }
+        .auth-banner.logged .auth-icon { color: var(--neon-green); }
+        .auth-text h3 { font-family: 'Rajdhani', sans-serif; font-size: 18px; margin-bottom: 4px; }
+        .auth-text p { font-size: 13px; color: var(--text-gray); }
+        .auth-btn { padding: 10px 24px; background: var(--neon-yellow); color: var(--pure-black); border: none; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
+        .auth-btn:hover { background: #EAB308; transform: translateY(-2px); }
+        
+        /* MVP Stats */
+        .mvp-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px; }
+        .mvp-stat { background: var(--dark-gray); border: 1px solid var(--border-gray); padding: 32px; text-align: center; }
+        .mvp-stat-value { font-family: 'Rajdhani', sans-serif; font-size: 48px; font-weight: 700; color: var(--neon-yellow); }
+        .mvp-stat-label { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.15em; color: var(--text-gray); text-transform: uppercase; margin-top: 8px; }
+        
+        /* Players Grid */
+        .section-title { font-family: 'Rajdhani', sans-serif; font-size: 24px; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
+        .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border-gray); }
+        
+        .players-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .player-card { background: var(--dark-gray); border: 1px solid var(--border-gray); padding: 24px; text-align: center; transition: all 0.3s; animation: fadeInUp 0.5s ease-out both; position: relative; }
+        .player-card:hover { border-color: var(--neon-yellow); transform: translateY(-4px); box-shadow: 0 8px 30px rgba(250, 204, 21, 0.1); }
+        .player-card.voted { border-color: var(--neon-green); box-shadow: 0 0 20px rgba(34, 197, 94, 0.2); }
+        .player-rank { position: absolute; top: 12px; left: 12px; width: 28px; height: 28px; background: var(--neon-yellow); color: var(--pure-black); font-family: 'Rajdhani', sans-serif; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; border-radius: 4px; }
+        .player-rank.top3 { background: var(--neon-green); }
+        .player-avatar { width: 80px; height: 80px; background: var(--mid-gray); border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--border-gray); overflow: hidden; }
+        .player-card:hover .player-avatar { border-color: var(--neon-yellow); }
+        .player-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .player-avatar i { color: var(--text-gray); }
+        .player-name { font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+        .player-team { font-size: 13px; color: var(--text-gray); margin-bottom: 12px; }
+        .player-stats { display: flex; justify-content: center; gap: 24px; margin-bottom: 16px; }
+        .player-stat { text-align: center; }
+        .player-stat-value { font-family: 'Rajdhani', sans-serif; font-size: 20px; font-weight: 700; color: var(--neon-green); }
+        .player-stat-label { font-size: 10px; color: var(--text-gray); text-transform: uppercase; }
+        .vote-count { font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 700; color: var(--neon-yellow); margin-bottom: 16px; }
+        .vote-count span { font-size: 12px; color: var(--text-gray); font-weight: 400; }
+        .vote-btn { width: 100%; padding: 14px; background: transparent; border: 2px solid var(--neon-yellow); color: var(--neon-yellow); font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .vote-btn:hover:not(:disabled) { background: var(--neon-yellow); color: var(--pure-black); transform: translateY(-2px); }
+        .vote-btn:disabled { border-color: var(--border-gray); color: var(--text-gray); cursor: not-allowed; opacity: 0.6; }
+        .vote-btn.voted { background: var(--neon-green); border-color: var(--neon-green); color: var(--pure-black); }
+        .vote-btn i { width: 18px; height: 18px; }
+        
+        /* Login Modal */
+        .login-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); z-index: 1000; align-items: center; justify-content: center; }
+        .login-modal.active { display: flex; }
+        .login-content { background: var(--dark-gray); border: 1px solid var(--border-gray); border-top: 2px solid var(--neon-yellow); padding: 48px; max-width: 420px; width: 90%; position: relative; animation: slideInUp 0.4s ease; }
+        .login-close { position: absolute; top: 16px; right: 16px; width: 40px; height: 40px; background: transparent; border: 1px solid var(--border-gray); color: var(--text-gray); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+        .login-close:hover { border-color: var(--neon-yellow); color: var(--neon-yellow); }
+        .login-header { text-align: center; margin-bottom: 32px; }
+        .login-icon { width: 64px; height: 64px; background: var(--mid-gray); border: 1px solid var(--border-gray); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: var(--neon-yellow); }
+        .login-title { font-family: 'Rajdhani', sans-serif; font-size: 28px; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 8px; }
+        .login-subtitle { font-size: 14px; color: var(--text-gray); }
+        .login-form { display: flex; flex-direction: column; gap: 20px; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-label { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: var(--text-gray); text-transform: uppercase; }
+        .form-input { background: var(--mid-gray); border: 1px solid var(--border-gray); padding: 14px 16px; color: #FFFFFF; font-family: 'Inter', sans-serif; font-size: 14px; outline: none; transition: all 0.3s; }
+        .form-input:focus { border-color: var(--neon-yellow); box-shadow: 0 0 15px rgba(250, 204, 21, 0.2); }
+        .form-error { font-size: 12px; color: #EF4444; text-align: center; opacity: 0; transition: opacity 0.3s; }
+        .form-error.visible { opacity: 1; }
+        .login-submit { display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--neon-yellow); color: var(--pure-black); border: none; padding: 16px 32px; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; margin-top: 8px; }
+        .login-submit:hover { background: #EAB308; transform: translateY(-2px); }
+        .login-hint { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-gray); font-size: 12px; color: var(--text-gray); }
+        
+        /* Toast Notification */
+        .toast { position: fixed; bottom: 30px; right: 30px; background: var(--dark-gray); border: 1px solid var(--border-gray); border-left: 3px solid var(--neon-green); padding: 16px 24px; display: flex; align-items: center; gap: 12px; transform: translateX(150%); transition: transform 0.3s ease; z-index: 1001; }
+        .toast.show { transform: translateX(0); }
+        .toast.error { border-left-color: #EF4444; }
+        .toast-icon { color: var(--neon-green); }
+        .toast.error .toast-icon { color: #EF4444; }
+        .toast-message { font-size: 14px; }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 1024px) { .players-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 768px) { 
+            .players-grid { grid-template-columns: 1fr; } 
+            .mvp-stats { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+            .page-title { font-size: 32px; }
+            .auth-banner { flex-direction: column; gap: 16px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <div class="logo-icon"><img src="../logo.png" alt="PSO Brasil Logo"></div>
+                <div class="logo-text">
+                    <h1>VOTACAO MVP</h1>
+                    <div class="version">ESCOLHA O MELHOR</div>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="../index.html">Inicio</a>
+                <a href="../index.html#rankings">Rankings</a>
+                <a href="torneios.html">Torneios</a>
+                <a href="mercado.html">Mercado</a>
+                <a href="mvp.html" class="active">Votar MVP</a>
+                <a href="imprensa.html">Imprensa</a>
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="container">
+            <div class="page-header">
+                <div class="page-badge">PREMIO MELHOR DO CAMPEONATO</div>
+                <h1 class="page-title">VOTE NO <span>MVP</span></h1>
+                <p class="page-subtitle">Escolha o jogador mais valioso do Brasileirao PSO 2024</p>
+            </div>
+            
+            <!-- Auth Banner -->
+            <div class="auth-banner" id="authBanner">
+                <div class="auth-info">
+                    <div class="auth-icon"><i data-lucide="lock" style="width: 24px; height: 24px;"></i></div>
+                    <div class="auth-text">
+                        <h3>Login Necessario</h3>
+                        <p>Faca login para votar no MVP do campeonato</p>
+                    </div>
+                </div>
+                <button class="auth-btn" id="loginBtn">Entrar</button>
+            </div>
+            
+            <!-- MVP Stats -->
+            <div class="mvp-stats">
+                <div class="mvp-stat">
+                    <div class="mvp-stat-value" id="totalVotes">0</div>
+                    <div class="mvp-stat-label">Votos Totais</div>
+                </div>
+                <div class="mvp-stat">
+                    <div class="mvp-stat-value" id="totalVoters">0</div>
+                    <div class="mvp-stat-label">Votantes</div>
+                </div>
+                <div class="mvp-stat">
+                    <div class="mvp-stat-value" id="daysLeft">0</div>
+                    <div class="mvp-stat-label">Dias Restantes</div>
+                </div>
+            </div>
+            
+            <!-- Players Grid -->
+            <h2 class="section-title"><i data-lucide="trophy" style="width: 24px; height: 24px; color: var(--neon-yellow);"></i> Candidatos ao MVP</h2>
+            <div class="players-grid" id="playersGrid">
+                <div class="loading" style="grid-column: 1/-1; text-align: center; padding: 60px; color: var(--text-gray);">
+                    <i data-lucide="loader-2" style="width: 48px; height: 48px;" class="animate-spin"></i>
+                    <p>Carregando candidatos...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Login Modal -->
+    <div class="login-modal" id="loginModal">
+        <div class="login-content">
+            <button class="login-close" id="loginClose"><i data-lucide="x" style="width: 20px; height: 20px;"></i></button>
+            <div class="login-header">
+                <div class="login-icon"><i data-lucide="shield" style="width: 32px; height: 32px;"></i></div>
+                <h2 class="login-title">ACESSO RESTRITO</h2>
+                <p class="login-subtitle">Faca login para votar no MVP</p>
+            </div>
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">Usuario</label>
+                    <input type="text" class="form-input" id="username" placeholder="admin" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Senha</label>
+                    <input type="password" class="form-input" id="password" placeholder="••••••" required>
+                </div>
+                <div class="form-error" id="loginError">Credenciais invalidas</div>
+                <button type="submit" class="login-submit"><i data-lucide="lock" style="width: 16px; height: 16px;"></i> Entrar para Votar</button>
+            </form>
+            <div class="login-hint"><i data-lucide="info" style="width: 12px; height: 12px;"></i><span>Use: admin / admin123</span></div>
+        </div>
+    </div>
+    
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <div class="toast-icon"><i data-lucide="check-circle" style="width: 20px; height: 20px;"></i></div>
+        <div class="toast-message" id="toastMessage">Voto registrado com sucesso!</div>
+    </div>
+    
+    <script>
+        const API_URL = window.location.origin.includes('localhost') ? 'http://localhost:3000' : window.location.origin;
+        const ADMIN_USER = 'admin';
+        const ADMIN_PASS = 'admin123';
+        
+        let isLoggedIn = false;
+        let currentUser = null;
+        let userVote = null;
+        
+        // Check auth status
+        function checkAuth() {
+            const loggedIn = localStorage.getItem('psoAdminLoggedIn') === 'true';
+            const user = localStorage.getItem('psoAdminUser');
+            const vote = localStorage.getItem('mvpVote');
+            
+            isLoggedIn = loggedIn;
+            currentUser = user;
+            userVote = vote ? parseInt(vote) : null;
+            
+            updateAuthUI();
+            return loggedIn;
+        }
+        
+        function updateAuthUI() {
+            const banner = document.getElementById('authBanner');
+            const loginBtn = document.getElementById('loginBtn');
+            
+            if (isLoggedIn) {
+                banner.classList.add('logged');
+                banner.innerHTML = `
+                    <div class="auth-info">
+                        <div class="auth-icon"><i data-lucide="check-circle" style="width: 24px; height: 24px;"></i></div>
+                        <div class="auth-text">
+                            <h3>Bem-vindo, ${currentUser}!</h3>
+                            <p>${userVote ? 'Voce ja votou no MVP deste ano' : 'Voce pode votar no MVP agora'}</p>
+                        </div>
+                    </div>
+                    <button class="auth-btn" onclick="logout()">Sair</button>
+                `;
+            } else {
+                banner.classList.remove('logged');
+                banner.innerHTML = `
+                    <div class="auth-info">
+                        <div class="auth-icon"><i data-lucide="lock" style="width: 24px; height: 24px;"></i></div>
+                        <div class="auth-text">
+                            <h3>Login Necessario</h3>
+                            <p>Faca login para votar no MVP do campeonato</p>
+                        </div>
+                    </div>
+                    <button class="auth-btn" id="loginBtn">Entrar</button>
+                `;
+                document.getElementById('loginBtn').addEventListener('click', openLoginModal);
+            }
+            lucide.createIcons();
+        }
+        
+        function logout() {
+            localStorage.removeItem('psoAdminLoggedIn');
+            localStorage.removeItem('psoAdminUser');
+            isLoggedIn = false;
+            currentUser = null;
+            updateAuthUI();
+            loadPlayers();
+        }
+        
+        // Login Modal
+        const loginModal = document.getElementById('loginModal');
+        const loginForm = document.getElementById('loginForm');
+        const loginError = document.getElementById('loginError');
+        
+        function openLoginModal() {
+            loginModal.classList.add('active');
+            document.getElementById('username').focus();
+        }
+        
+        document.getElementById('loginClose').addEventListener('click', () => {
+            loginModal.classList.remove('active');
+            loginError.classList.remove('visible');
+            loginForm.reset();
+        });
+        
+        loginModal.addEventListener('click', (e) => {
+            if (e.target === loginModal) {
+                loginModal.classList.remove('active');
+                loginError.classList.remove('visible');
+                loginForm.reset();
+            }
+        });
+        
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            
+            if (username === ADMIN_USER && password === ADMIN_PASS) {
+                localStorage.setItem('psoAdminLoggedIn', 'true');
+                localStorage.setItem('psoAdminUser', username);
+                isLoggedIn = true;
+                currentUser = username;
+                loginModal.classList.remove('active');
+                loginForm.reset();
+                updateAuthUI();
+                loadPlayers();
+                showToast('Login realizado! Voce pode votar agora.', 'success');
+            } else {
+                loginError.classList.add('visible');
+                document.getElementById('password').value = '';
+            }
+        });
+        
+        // Toast
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            toastMessage.textContent = message;
+            toast.className = 'toast show' + (type === 'error' ? ' error' : '');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+        
+        // Load players
+        async function loadPlayers() {
+            try {
+                const response = await fetch(`${API_URL}/api/rankings?limit=8`);
+                const players = await response.json();
+                renderPlayers(players);
+            } catch (error) {
+                console.error('Erro:', error);
+                const mockPlayers = [
+                    { id: 1, name: "BrasilKing", team: "Flamengo eSports", rating: 2847, matches: 156, wins: 98, votes: 2453 },
+                    { id: 2, name: "GingaMaster", team: "Palmeiras Pro", rating: 2798, matches: 142, wins: 87, votes: 1821 },
+                    { id: 3, name: "NeymarJr", team: "Gremio eSports", rating: 2756, matches: 138, wins: 82, votes: 1654 },
+                    { id: 4, name: "RonaldinhoBR", team: "Vasco Gaming", rating: 2698, matches: 145, wins: 79, votes: 1432 },
+                    { id: 5, name: "RonaldoPro", team: "Corinthians Gaming", rating: 2689, matches: 134, wins: 76, votes: 1234 },
+                    { id: 6, name: "ZicoDigital", team: "Santos FC", rating: 2643, matches: 128, wins: 72, votes: 987 },
+                    { id: 7, name: "CafuGamer", team: "SPFC eSports", rating: 2598, matches: 132, wins: 68, votes: 876 },
+                    { id: 8, name: "RomarioPro", team: "Botafogo Pro", rating: 2543, matches: 125, wins: 65, votes: 654 }
+                ];
+                renderPlayers(mockPlayers);
+            }
+        }
+        
+        function renderPlayers(players) {
+            const grid = document.getElementById('playersGrid');
+            
+            // Sort by votes
+            const sorted = [...players].sort((a, b) => (b.votes || 0) - (a.votes || 0));
+            
+            grid.innerHTML = sorted.map((p, index) => {
+                const rank = index + 1;
+                const isVoted = userVote === p.id;
+                const canVote = isLoggedIn && !userVote;
+                
+                return `
+                    <div class="player-card ${isVoted ? 'voted' : ''}" style="animation-delay: ${index * 0.1}s">
+                        <div class="player-rank ${rank <= 3 ? 'top3' : ''}">${rank}º</div>
+                        <div class="player-avatar">
+                            <i data-lucide="user" style="width: 40px; height: 40px;"></i>
+                        </div>
+                        <h3 class="player-name">${p.name}</h3>
+                        <p class="player-team">${p.team}</p>
+                        <div class="player-stats">
+                            <div class="player-stat">
+                                <div class="player-stat-value">${p.rating}</div>
+                                <div class="player-stat-label">Rating</div>
+                            </div>
+                            <div class="player-stat">
+                                <div class="player-stat-value">${p.wins}</div>
+                                <div class="player-stat-label">Vitorias</div>
+                            </div>
+                        </div>
+                        <div class="vote-count">${p.votes?.toLocaleString() || 0} <span>votos</span></div>
+                        <button class="vote-btn ${isVoted ? 'voted' : ''}" onclick="voteMVP(${p.id})" ${!canVote ? 'disabled' : ''}>
+                            <i data-lucide="${isVoted ? 'check' : 'star'}"></i>
+                            ${isVoted ? 'Voce Votou' : (userVote ? 'Ja Votou' : 'Votar MVP')}
+                        </button>
+                    </div>
+                `;
+            }).join('');
+            
+            // Update stats
+            const totalVotes = sorted.reduce((sum, p) => sum + (p.votes || 0), 0);
+            document.getElementById('totalVotes').textContent = totalVotes.toLocaleString();
+            document.getElementById('totalVoters').textContent = Math.floor(totalVotes / 1.5).toLocaleString();
+            document.getElementById('daysLeft').textContent = '15';
+            
+            lucide.createIcons();
+        }
+        
+        // Vote function
+        async function voteMVP(playerId) {
+            if (!isLoggedIn) {
+                openLoginModal();
+                return;
+            }
+            
+            if (userVote) {
+                showToast('Voce ja votou nesta edicao!', 'error');
+                return;
+            }
+            
+            try {
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // Store vote
+                localStorage.setItem('mvpVote', playerId);
+                userVote = playerId;
+                
+                updateAuthUI();
+                loadPlayers();
+                showToast('Voto registrado com sucesso!', 'success');
+            } catch (error) {
+                showToast('Erro ao registrar voto. Tente novamente.', 'error');
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+            checkAuth();
+            loadPlayers();
+            
+            document.getElementById('loginBtn')?.addEventListener('click', openLoginModal);
+        });
+    </script>
+</body>
+</html>

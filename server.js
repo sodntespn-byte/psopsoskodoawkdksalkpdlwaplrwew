@@ -114,6 +114,10 @@ app.get('/mercado', (req, res) => {
     res.sendFile(path.join(__dirname, 'pages', 'mercado.html'));
 });
 
+app.get('/mvp', (req, res) => {
+    res.sendFile(path.join(__dirname, 'pages', 'mvp.html'));
+});
+
 // Página administrativa
 app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'admin.html'));
