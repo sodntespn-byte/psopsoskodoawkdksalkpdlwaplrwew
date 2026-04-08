@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
@@ -115,7 +116,7 @@ const registerLimiter = rateLimit({
 });
 
 // Usar rotas do webhook com validação de segurança
-app.use('/webhook', security.validateDiscordWebhook, discordWebhook.getApp());
+// app.use('/webhook', security.validateDiscordWebhook, discordWebhook.getApp());
 
 // Usar rotas de notificações
 app.use('/notifications', notificationRoutes);
