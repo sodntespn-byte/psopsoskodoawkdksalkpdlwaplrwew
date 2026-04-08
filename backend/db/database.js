@@ -4,7 +4,7 @@ const path = require('path');
 require('dotenv').config();
 
 // Get DATABASE_URL from environment variable (configured in Square Cloud dashboard)
-const DATABASE_URL = process.env.DATABASE_URL;
+let DATABASE_URL = process.env.DATABASE_URL;
 
 if (!DATABASE_URL) {
     console.error('❌ DATABASE_URL não configurada! Configure no painel da Square Cloud.');
@@ -12,10 +12,13 @@ if (!DATABASE_URL) {
     process.exit(1);
 }
 
+// Remove sslmode from URL if present to avoid conflicts with dialectOptions
+DATABASE_URL = DATABASE_URL.replace(/\?sslmode=[^&]+/, '').replace(/&sslmode=[^&]+/, '');
+
 console.log('📝 Usando DATABASE_URL das variáveis de ambiente');
 
-// For Square Cloud PostgreSQL, we need SSL but without client certificates
-// The server requires SSL but doesn't verify client certificates
+// For Square Cloud PostgreSQL with self-signed certificates
+// We need to disable certificate verification completely
 const sequelize = new Sequelize(DATABASE_URL, {
     dialect: 'postgres',
     protocol: 'postgres',
@@ -29,7 +32,10 @@ const sequelize = new Sequelize(DATABASE_URL, {
     dialectOptions: {
         ssl: {
             require: true,
-            rejectUnauthorized: false
+            rejectUnauthorized: false,
+            ca: null,
+            key: null,
+            cert: null
         }
     },
     define: {
