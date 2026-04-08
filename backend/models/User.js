@@ -135,6 +135,15 @@ const User = sequelize.define('User', {
     discordAvatar: {
         type: DataTypes.STRING(255),
         allowNull: true
+    },
+    googleId: {
+        type: DataTypes.STRING(100),
+        unique: true,
+        allowNull: true
+    },
+    avatarUrl: {
+        type: DataTypes.STRING(500),
+        allowNull: true
     }
 }, {
     tableName: 'users',
@@ -150,6 +159,7 @@ const User = sequelize.define('User', {
         { fields: ['region'] },
         { fields: ['isOnline'] },
         { fields: ['discordId'] },
+        { fields: ['googleId'] },
         { fields: ['createdAt'] }
     ]
 });

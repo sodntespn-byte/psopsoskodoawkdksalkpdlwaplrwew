@@ -18,6 +18,9 @@ const SecurityAuditor = require('./middleware/auditor');
 const NotificationService = require('./services/notificationService');
 const notificationRoutes = require('./routes/notifications');
 const adminRoutes = require('./routes/admin');
+const authRoutes = require('./routes/auth');
+const passport = require('./middleware/passport');
+const session = require('express-session');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -44,6 +47,30 @@ async function initializeDatabase() {
         process.exit(1);
     }
 }
+
+// Configurar CORS para permitir requisições do frontend
+app.use(cors({
+    origin: ['http://localhost:3000', 'http://localhost:5001', 'https://pro-soccer-online.squareweb.app', 'https://psobrasil.squareweb.app'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token']
+}));
+
+// Configure session for Passport
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'prosoccer_session_secret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
+}));
+
+// Initialize Passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Aplicar middleware de segurança avançada
 app.use(security.securityMiddleware());
@@ -83,6 +110,9 @@ app.use('/notifications', notificationRoutes);
 
 // Usar rotas administrativas
 app.use('/admin', adminRoutes);
+
+// Usar rotas de autenticação
+app.use('/auth', authRoutes);
 
 // Servir arquivos estáticos do frontend
 const frontendPath = path.join(__dirname, '..', 'frontend');
@@ -467,9 +497,7 @@ app.post('/api/login', loginLimiter, loginValidation, async (req, res) => {
             });
             
             return res.status(401).json({ 
-                error: 'Usuário ou senha incorretos',
-                code: 'INVALID_CREDENTIALS',
-                remainingAttempts: maxAttempts - loginAttempts
+                error: 'Usuário ou senha incorretos'
             });
         }
         
