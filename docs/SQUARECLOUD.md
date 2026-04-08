@@ -1,106 +1,237 @@
-# Deploy Liberty na Square Cloud
+# Pro Soccer Online 2 - Configuração Square Cloud
 
-## Arquivo de entrada (evitar MISSING_MAIN)
+## Informações do Projeto
 
-- O ponto de entrada da aplicação é **`backend/server.js`** (pasta `backend/`).
-- O ficheiro **`squarecloud.app`** na raiz tem `START=npm install ... && node backend/server.js`.
-- O **`package.json`** na raiz tem `"main": "backend/server.js"` e `"start": "node backend/server.js"`.
-- A Square Cloud usa a **raiz do repositório**; o comando de arranque sobe o backend, que serve a API e o frontend (pasta `frontend/`).
+Este projeto está configurado para ser hospedado no Square Cloud com as seguintes características:
 
-## 1. Variáveis de ambiente (obrigatório)
+- **Backend**: Node.js com Express
+- **Banco de Dados**: PostgreSQL (Square Cloud Database)
+- **Integração**: Discord Webhook
+- **Frontend**: HTML/CSS/JavaScript com animações
 
-A aplicação está preparada para a **Square Cloud**: aceita muitos nomes de variável para a base de dados e carrega `.env` de várias pastas. Mesmo assim, **tens de definir as variáveis no painel**.
+## Configuração do Ambiente
 
-**Onde definir:** na Square Cloud → tua aplicação → **Configurações** (ou Settings) → **Environment** / **Variáveis de ambiente** → **Adicionar variável**.
+### 1. Banco de Dados PostgreSQL
 
-| Variável       | Obrigatório | O que colocar |
-| -------------- | ----------- | ------------- |
-| `JWT_SECRET`   | **Sim**     | Nome: `JWT_SECRET`. Valor: uma string com **pelo menos 32 caracteres** (ex.: saída de `openssl rand -base64 32`). |
-| `DATABASE_URL` | **Sim**     | Nome: `DATABASE_URL`. Valor: a connection string completa do Neon (ex.: `postgresql://user:pass@ep-xxx-pooler.region.aws.neon.tech/neondb?sslmode=require`). |
+O projeto usa o banco de dados PostgreSQL do Square Cloud com as seguintes credenciais:
 
-**Nomes aceites para a URL do banco** (se não usares `DATABASE_URL`): `BANCO_DADOS`, `DB_URL`, `Database`, `DATABASE`, `POSTGRES_URL`, `POSTGRESQL_URL`, e outros. O valor tem de começar por `postgres` ou `postgresql://`.
-
-| `NODE_ENV` | Não | A Square Cloud costuma definir `production` automaticamente. |
-
-**Como gerar um JWT_SECRET seguro (32+ caracteres):**
-```bash
-openssl rand -base64 32
 ```
-Copia o resultado e cola no valor de `JWT_SECRET` no painel.
+Host: square-cloud-db-ecd0071f6934489597ad31c462ce83f0.squareweb.app
+Port: 7196
+Database: pro_soccer_online
+User: squarecloud
+Password: D6tnwcFHKXodmuD9O9bxmQYq
+```
 
-**Passo a passo na Square Cloud:**
-1. Abre a tua **app** no dashboard.
-2. Entra em **Configurações** (ou **Settings** / ícone de engrenagem).
-3. Procura **Environment**, **Variáveis de ambiente** ou **Env Variables**.
-4. Clica em **Adicionar** / **Add**.
-5. **Nome (key):** `DATABASE_URL` (exatamente assim, maiúsculas).
-6. **Valor (value):** cola a connection string do Neon (postgresql://...).
-7. Repete para `JWT_SECRET` (nome: `JWT_SECRET`, valor: string longa).
-8. Guarda e faz **Redeploy** da aplicação.
+### 2. Webhook do Discord
 
-**Importante:** depois de adicionar ou alterar variáveis, é obrigatório **Redeploy** (ou Reiniciar) — as variáveis são lidas apenas ao iniciar o processo.
+URL do webhook configurado:
+```
+https://discord.com/api/webhooks/1491233699860058225/qakR6RFDYeqocQMjkwhGRo3FygOdOKkMC4Rdaqt-ruu1K1Pt3cE3IVO0Yq-8vfy5JGQh
+```
+
+### 3. Variáveis de Ambiente
+
+As seguintes variáveis de ambiente estão configuradas:
+
+- `NODE_ENV=production`
+- `PORT=5001`
+- `DATABASE_URL` - String de conexão PostgreSQL
+- `JWT_SECRET` - Chave secreta para tokens
+- `CORS_ORIGIN` - URL do frontend no Square Cloud
+
+## Estrutura do Projeto
+
+```
+pro-soccer-online-2/
+|-- server.js                    # Servidor principal
+|-- package.json                 # Dependências
+|-- squarecloud.json             # Configuração Square Cloud
+|-- .env.production              # Variáveis de ambiente
+|-- db/
+|   |-- database.js              # Configuração PostgreSQL
+|-- models/                      # Modelos Sequelize
+|   |-- User.js
+|   |-- Tournament.js
+|   |-- Match.js
+|   |-- MatchTeam.js
+|   |-- TournamentParticipant.js
+|   |-- DiscordEvent.js
+|-- webhook/
+|   |-- discordWebhook.js         # Handler webhook Discord
+|-- scripts/
+|   |-- seed-postgres.js          # População do banco
+|-- frontend/
+|   |-- index.html
+|   |-- style.css
+|   |-- script.js
+|   |-- api.js
+```
+
+## Funcionalidades do Sistema
+
+### Backend
+- Autenticação JWT
+- API RESTful
+- Integração com PostgreSQL
+- Webhook do Discord
+- Rate limiting
+- Segurança com Helmet.js
+
+### Frontend
+- Design responsivo com animações
+- Integração com API
+- Sistema de login
+- Rankings em tempo real
+- Torneios e partidas
+
+### Integração Discord
+- Webhook para eventos
+- Notificações automáticas
+- Vinculação de usuários
+- Canais de torneios
+
+## Comandos de Deploy
+
+### 1. Instalar dependências
+```bash
+npm install
+```
+
+### 2. Popular banco de dados
+```bash
+npm run seed
+```
+
+### 3. Iniciar servidor
+```bash
+npm start
+```
+
+## Endpoints da API
+
+### Autenticação
+- `POST /api/register` - Registrar usuário
+- `POST /api/login` - Fazer login
+- `GET /api/user/profile` - Obter perfil
+- `PUT /api/user/profile` - Atualizar perfil
+
+### Dados do Jogo
+- `GET /api/rankings` - Obter rankings
+- `GET /api/tournaments` - Listar torneios
+- `GET /api/matches` - Listar partidas
+- `POST /api/tournaments` - Criar torneio
+
+### Discord
+- `POST /api/discord/link` - Vincular Discord
+- `POST /api/discord/notify/tournament/:id` - Notificar torneio
+- `POST /api/discord/notify/match/:id` - Notificar partida
+
+### Webhook
+- `POST /webhook/discord` - Receber eventos Discord
+- `GET /webhook/discord/status` - Verificar status
+
+## Configuração do Square Cloud
+
+### 1. Arquivo squarecloud.json
+```json
+{
+  "name": "pro-soccer-online-2",
+  "description": "Pro Soccer Online 2 - Sistema completo",
+  "version": "1.0.0",
+  "main": "server.js",
+  "author": "Pro Soccer Online Team",
+  "license": "MIT"
+}
+```
+
+### 2. Configuração de Domínio
+- URL: `https://pro-soccer-online.squareweb.app`
+- Porta: 5001
+- Protocolo: HTTP/HTTPS
+
+### 3. Configuração de Banco de Dados
+- Tipo: PostgreSQL
+- Host: Configurado no Square Cloud
+- Porta: 7196
+- Database: pro_soccer_online
+
+## Monitoramento e Logs
+
+### Logs do Sistema
+- Logs de acesso: Morgan
+- Logs de erro: Console
+- Logs do Discord: Eventos registrados
+
+### Métricas
+- Uso de memória
+- Requisições por segundo
+- Conexões de banco de dados
+- Eventos do Discord
+
+## Segurança
+
+### Proteções Implementadas
+- Helmet.js para headers de segurança
+- CORS configurado
+- Rate limiting
+- Validação de entrada
+- Hash de senhas
+- Tokens JWT
+
+### Certificados SSL
+- Certificado fornecido pelo Square Cloud
+- Configuração em `.env.production`
+
+## Backup e Manutenção
+
+### Backup do Banco de Dados
+- Backup automático do Square Cloud
+- Retenção de 30 dias
+- Restore via painel
+
+### Manutenção
+- Logs rotativos
+- Limpeza de eventos antigos
+- Monitoramento de performance
+
+## Suporte
+
+### Problemas Comuns
+1. **Conexão com banco**: Verificar string de conexão
+2. **Webhook Discord**: Verificar URL e token
+3. **CORS**: Configurar origem correta
+4. **Rate Limit**: Ajustar limites se necessário
+
+### Contato
+- GitHub: Issues no repositório
+- Discord: Canal de suporte
+- Email: support@pro-soccer-online.com
+
+## Deploy Automatizado
+
+### GitHub Actions (Opcional)
+```yaml
+name: Deploy to Square Cloud
+on:
+  push:
+    branches: [ main ]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Deploy to Square Cloud
+      run: |
+        # Comandos de deploy
+```
+
+### CI/CD Pipeline
+1. Testes automatizados
+2. Build do projeto
+3. Deploy para Square Cloud
+4. Verificação de saúde
 
 ---
 
-### Se as variáveis do painel não funcionarem: ficheiro `.env.squarecloud`
-
-A app também lê um ficheiro **`.env.squarecloud`** na **raiz do projeto**. Se na Square Cloud as variáveis do painel não forem injetadas, podes usar este ficheiro e fazê-lo commit para o deploy.
-
-1. Na raiz do projeto, copia o exemplo:
-   ```bash
-   cp .env.squarecloud.example .env.squarecloud
-   ```
-2. Edita `.env.squarecloud` e coloca a tua `DATABASE_URL` e `JWT_SECRET` (um por linha, formato `NOME=valor`).
-3. Faz commit e push (incluindo `.env.squarecloud`). **Só faz isto se o repositório for privado** — o ficheiro contém credenciais.
-4. Na Square Cloud, faz **Redeploy**. O servidor vai carregar `.env.squarecloud` automaticamente.
-
-O `.env.squarecloud` não está no `.gitignore`, por isso será enviado no deploy. Para maior segurança, prefere sempre usar as variáveis do painel quando conseguires.
-
-- Nome exato: `DATABASE_URL` (tudo junto, maiúsculas). Podes colar a URL do Neon com `channel_binding=require`; o servidor remove esse parâmetro automaticamente.
-- O backend usa **PostgreSQL** (Neon). Na primeira subida, o schema é aplicado automaticamente. Se as tabelas já existirem, os `CREATE` são ignorados.
-
-## 2. Repositório e push
-
-Repositório remoto correto:
-
-```bash
-git remote -v
-# origin  https://github.com/sodntespn-byte/asdontellhimuinhim.git (fetch)
-# origin  https://github.com/sodntespn-byte/asdontellhimuinhim.git (push)
-```
-
-Para enviar o código e a Square Cloud usar o main:
-
-```bash
-git add .
-git commit -m "Deploy: backend + frontend, schema PostgreSQL"
-git push origin main
-```
-
-Se o branch principal for `master`:
-
-```bash
-git push origin master
-```
-
-Depois do push, no dashboard Square Cloud: **Deploy** / **Commit** / **Update** para a plataforma puxar o código e reiniciar a app.
-
-## 3. Schema manual (opcional)
-
-Se quiseres aplicar o schema no Neon sem subir o servidor (por exemplo a partir da tua máquina):
-
-```bash
-npm run db:push
-```
-
-Requer `DATABASE_URL` no `.env` (na raiz) ou no ambiente.
-
-## 4. Resumo de ficheiros importantes na raiz
-
-| Ficheiro / Pasta   | Função |
-|--------------------|--------|
-| `backend/server.js` | Entrada da app (Express, API, WebSocket, servir frontend). |
-| `squarecloud.app`   | Configuração Square Cloud (START, MEMORY, HOST). |
-| `package.json`      | Scripts `start`, `db:push`; dependências. |
-| `frontend/`         | Ficheiros estáticos servidos pelo backend. |
-| `backend/db/`       | Schema e helpers PostgreSQL. |
+**Nota**: Este projeto está otimizado para o ambiente Square Cloud com PostgreSQL e integração completa com Discord.
