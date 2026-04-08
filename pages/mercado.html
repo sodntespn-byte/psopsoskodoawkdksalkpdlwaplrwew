@@ -313,7 +313,50 @@
         }
         
         function makeOffer(playerId) {
-            alert(`Proposta enviada para o jogador ${playerId}! Aguardando resposta...`);
+            const playerName = document.querySelector(`.player-card:nth-child(${playerId}) h4`)?.textContent || `Jogador #${playerId}`;
+            
+            // Check if user is logged in
+            const isLoggedIn = localStorage.getItem('psoAdminLoggedIn') === 'true';
+            if (!isLoggedIn) {
+                if (confirm('Voce precisa estar logado para fazer uma proposta. Deseja fazer login agora?')) {
+                    window.location.href = '../index.html?auth=required';
+                }
+                return;
+            }
+            
+            // Simulate making an offer
+            const offer = prompt(`Digite o valor da proposta para ${playerName}:`, 'R$ 1.000.000');
+            if (offer) {
+                showToast(`Proposta de ${offer} enviada para ${playerName}! Aguardando resposta...`, 'success');
+            }
+        }
+        
+        // Toast notification function
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                background: ${type === 'success' ? 'var(--neon-green)' : '#EF4444'};
+                color: ${type === 'success' ? 'var(--pure-black)' : '#FFFFFF'};
+                padding: 16px 24px;
+                font-family: 'Inter', sans-serif;
+                font-size: 14px;
+                font-weight: 500;
+                border-radius: 4px;
+                z-index: 1001;
+                transform: translateX(150%);
+                transition: transform 0.3s ease;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.style.transform = 'translateX(0)', 100);
+            setTimeout(() => {
+                toast.style.transform = 'translateX(150%)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
         }
         
         document.addEventListener('DOMContentLoaded', function() {

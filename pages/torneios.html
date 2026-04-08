@@ -284,12 +284,69 @@
         
         // View tournament
         function viewTournament(id) {
-            alert(`Visualizando torneio ${id}. Funcionalidade em desenvolvimento.`);
+            const tournament = tournaments.find(t => t.id === id);
+            const name = tournament ? tournament.name : `Torneio #${id}`;
+            
+            // Show tournament details in a modal-like alert with more info
+            alert(`🏆 ${name}\n\n` +
+                  `Status: ${tournament?.status === 'upcoming' ? 'Em Breve' : tournament?.status === 'ongoing' ? 'Em Andamento' : 'Concluido'}\n` +
+                  `Tipo: ${tournament?.type || 'Liga'}\n` +
+                  `Premiacao: ${tournament?.prize || 'A definir'}\n\n` +
+                  `Mais detalhes em breve!`);
         }
         
         // Join tournament
         function joinTournament(id) {
-            alert(`Solicitacao de participacao no torneio ${id} enviada!`);
+            const tournament = tournaments.find(t => t.id === id);
+            
+            if (!tournament || tournament.status !== 'upcoming') {
+                alert('Este torneio nao esta aberto para inscricoes.');
+                return;
+            }
+            
+            // Check if user is logged in
+            const isLoggedIn = localStorage.getItem('psoAdminLoggedIn') === 'true';
+            if (!isLoggedIn) {
+                if (confirm('Voce precisa estar logado para participar. Deseja fazer login agora?')) {
+                    window.location.href = '../index.html?auth=required';
+                }
+                return;
+            }
+            
+            if (confirm(`Deseja se inscrever no ${tournament.name}?\n\nPremiacao: ${tournament.prize}\nVagas: ${tournament.maxParticipants - tournament.participants} disponiveis`)) {
+                // Simulate API call to join
+                showToast(`Inscricao no ${tournament.name} realizada com sucesso!`);
+                tournament.participants++;
+                renderTournaments(document.querySelector('.filter-btn.active')?.dataset.filter || 'all');
+            }
+        }
+        
+        // Toast notification
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                background: var(--neon-green);
+                color: var(--pure-black);
+                padding: 16px 24px;
+                font-family: 'Inter', sans-serif;
+                font-size: 14px;
+                font-weight: 600;
+                border-radius: 4px;
+                z-index: 1001;
+                transform: translateX(150%);
+                transition: transform 0.3s ease;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.style.transform = 'translateX(0)', 100);
+            setTimeout(() => {
+                toast.style.transform = 'translateX(150%)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
         }
         
         // Filter buttons
