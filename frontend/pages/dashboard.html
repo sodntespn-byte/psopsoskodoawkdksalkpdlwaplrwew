@@ -361,12 +361,20 @@
     </main>
     
     <script>
-        // Authentication check - must be first
+        // Admin Authentication check - must be first
         (function() {
             const isLoggedIn = localStorage.getItem('psoAdminLoggedIn') === 'true';
-            if (!isLoggedIn) {
-                // Redirect to home page with login parameter
-                window.location.href = '../index.html?auth=required';
+            const userRole = localStorage.getItem('psoUserRole');
+            
+            // Check if logged in AND is admin
+            if (!isLoggedIn || userRole !== 'admin') {
+                // Clear any partial login data
+                localStorage.removeItem('psoAdminLoggedIn');
+                localStorage.removeItem('psoAdminUser');
+                localStorage.removeItem('psoUserRole');
+                
+                // Redirect to home page with admin required parameter
+                window.location.href = '../index.html?admin=required';
                 return;
             }
         })();
@@ -375,18 +383,20 @@
         function logout() {
             localStorage.removeItem('psoAdminLoggedIn');
             localStorage.removeItem('psoAdminUser');
+            localStorage.removeItem('psoUserRole');
+            localStorage.removeItem('psoToken');
             window.location.href = '../index.html';
         }
 
         document.addEventListener('DOMContentLoaded', function() {
             lucide.createIcons();
             
-            // Show logged in user info
+            // Show logged in admin info
             const loggedInUser = localStorage.getItem('psoAdminUser');
             if (loggedInUser) {
                 const welcomeText = document.querySelector('.welcome-text');
                 if (welcomeText) {
-                    welcomeText.textContent = `Bem-vindo, ${loggedInUser}`;
+                    welcomeText.textContent = `Bem-vindo, Administrador ${loggedInUser}`;
                 }
             }
         });

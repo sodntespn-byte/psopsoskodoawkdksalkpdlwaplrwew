@@ -1374,15 +1374,45 @@
                 updateNavForLoggedInUser(loggedInUser);
             }
 
-            // Check for auth required parameter (redirected from dashboard)
+            // Check for OAuth success callback
             const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('auth') === 'required' && !isLoggedIn) {
+            if (urlParams.get('auth') === 'success') {
+                // Store OAuth login data
+                const token = urlParams.get('token');
+                const user = urlParams.get('user');
+                
+                if (token && user) {
+                    localStorage.setItem('psoAdminLoggedIn', 'true');
+                    localStorage.setItem('psoAdminUser', user);
+                    localStorage.setItem('psoUserRole', 'user'); // OAuth users are regular users, not admins
+                    localStorage.setItem('psoToken', token);
+                    
+                    // Clear URL parameters
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    
+                    // Update UI
+                    updateNavForLoggedInUser(user);
+                    
+                    // Show success message
+                    alert('Login realizado com sucesso!');
+                }
+            }
+            
+            // Check for auth/admin required parameter (redirected from dashboard)
+            const authRequired = urlParams.get('auth') === 'required' || urlParams.get('admin') === 'required';
+            
+            if (authRequired && !isLoggedIn) {
                 // Clear the parameter and show login modal
                 window.history.replaceState({}, document.title, window.location.pathname);
                 setTimeout(() => {
                     loginModal.classList.add('active');
                     document.getElementById('username').focus();
-                }, 300);
+                    // Show error if admin access was denied
+                    if (urlParams.get('admin') === 'required') {
+                        loginError.textContent = 'Acesso restrito a administradores';
+                        loginError.classList.add('visible');
+                    }
+                }, 100);
             }
 
             // Open login modal
@@ -1391,6 +1421,8 @@
                     // Logout
                     localStorage.removeItem('psoAdminLoggedIn');
                     localStorage.removeItem('psoAdminUser');
+                    localStorage.removeItem('psoUserRole');
+                    localStorage.removeItem('psoToken');
                     window.location.reload();
                 } else {
                     loginModal.classList.add('active');
@@ -1432,9 +1464,10 @@
                 const password = document.getElementById('password').value;
 
                 if (username === ADMIN_USER && password === ADMIN_PASS) {
-                    // Login successful
+                    // Login successful - Admin user
                     localStorage.setItem('psoAdminLoggedIn', 'true');
                     localStorage.setItem('psoAdminUser', username);
+                    localStorage.setItem('psoUserRole', 'admin');
                     
                     // Redirect to dashboard
                     window.location.href = 'pages/dashboard.html';
