@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Torneios - PSO Brasil</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700&family=Audiowide&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    
+    <style>
+        :root {
+            --neon-green: #22C55E;
+            --neon-yellow: #FACC15;
+            --pure-black: #000000;
+            --dark-gray: #121212;
+            --mid-gray: #171717;
+            --border-gray: #1f2937;
+            --text-gray: #9CA3AF;
+            --text-light: #E5E7EB;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--pure-black); color: #FFFFFF; font-family: 'Exo 2', sans-serif; min-height: 100vh; }
+        
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 24px; }
+        
+        header { background: var(--pure-black); border-bottom: 1px solid var(--border-gray); position: fixed; top: 0; left: 0; right: 0; z-index: 100; }
+        nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { width: 40px; height: 40px; background: var(--dark-gray); border: 1px solid var(--border-gray); border-top: 2px solid var(--neon-green); display: flex; align-items: center; justify-content: center; }
+        .logo-text h1 { font-family: 'Orbitron', sans-serif; font-size: 24px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; }
+        .logo-text .version { font-family: 'Orbitron', sans-serif; font-size: 9px; letter-spacing: 0.25em; color: var(--text-gray); text-transform: uppercase; }
+        .nav-links { display: flex; gap: 32px; align-items: center; }
+        .nav-links a { font-family: 'Orbitron', sans-serif; font-size: 12px; letter-spacing: 0.15em; color: var(--text-gray); text-decoration: none; text-transform: uppercase; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--neon-green); }
+        .nav-links a.active { color: var(--neon-green); }
+        
+        main { padding-top: 100px; padding-bottom: 60px; }
+        
+        .page-header { padding: 60px 0 40px; text-align: center; }
+        .page-badge { display: inline-block; padding: 6px 12px; background: var(--dark-gray); border: 1px solid var(--border-gray); border-bottom: 2px solid var(--neon-yellow); font-family: 'Orbitron', sans-serif; font-size: 10px; letter-spacing: 0.2em; color: var(--text-gray); text-transform: uppercase; margin-bottom: 16px; }
+        .page-title { font-family: 'Audiowide', sans-serif; font-size: 48px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; }
+        .page-title span { color: var(--neon-green); }
+        .page-subtitle { font-size: 16px; color: var(--text-gray); margin-top: 16px; }
+        
+        .filters { display: flex; gap: 16px; margin-bottom: 40px; flex-wrap: wrap; justify-content: center; }
+        .filter-btn { padding: 10px 20px; background: transparent; border: 1px solid var(--border-gray); color: var(--text-gray); font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
+        .filter-btn:hover, .filter-btn.active { border-color: var(--neon-green); color: var(--neon-green); }
+        
+        .tournaments-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .tournament-card { background: var(--dark-gray); border: 1px solid var(--border-gray); overflow: hidden; transition: all 0.3s; animation: fadeInUp 0.5s ease-out both; }
+        .tournament-card:hover { border-color: var(--neon-green); transform: translateY(-4px); box-shadow: 0 8px 30px rgba(34, 197, 94, 0.1); }
+        .tournament-card:nth-child(1) { animation-delay: 0.1s; }
+        .tournament-card:nth-child(2) { animation-delay: 0.15s; }
+        .tournament-card:nth-child(3) { animation-delay: 0.2s; }
+        
+        .tournament-header { padding: 24px; border-bottom: 1px solid var(--border-gray); }
+        .tournament-status { display: inline-block; padding: 4px 12px; font-family: 'Orbitron', sans-serif; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; }
+        .tournament-status.upcoming { background: var(--neon-yellow); color: var(--pure-black); }
+        .tournament-status.ongoing { background: var(--neon-green); color: var(--pure-black); }
+        .tournament-status.finished { background: var(--border-gray); color: var(--text-gray); }
+        .tournament-title { font-family: 'Orbitron', sans-serif; font-size: 20px; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 8px; }
+        .tournament-type { font-size: 13px; color: var(--text-gray); }
+        
+        .tournament-body { padding: 24px; }
+        .tournament-info { display: flex; flex-direction: column; gap: 12px; }
+        .info-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+        .info-label { color: var(--text-gray); display: flex; align-items: center; gap: 8px; }
+        .info-value { font-family: 'Orbitron', sans-serif; color: var(--neon-green); }
+        .prize-value { font-family: 'Orbitron', sans-serif; color: var(--neon-yellow); font-size: 18px; }
+        
+        .tournament-progress { margin-top: 16px; }
+        .progress-bar { height: 4px; background: var(--mid-gray); border-radius: 2px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--neon-green), var(--neon-yellow)); transition: width 0.5s ease; }
+        .progress-text { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11px; color: var(--text-gray); }
+        
+        .tournament-actions { display: flex; gap: 12px; padding: 24px; border-top: 1px solid var(--border-gray); }
+        .btn { flex: 1; padding: 12px; font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; text-align: center; cursor: pointer; border: none; transition: all 0.3s; }
+        .btn-primary { background: var(--neon-green); color: var(--pure-black); font-weight: 600; }
+        .btn-primary:hover { background: var(--neon-yellow); }
+        .btn-secondary { background: transparent; border: 1px solid var(--border-gray); color: var(--text-gray); }
+        .btn-secondary:hover { border-color: var(--neon-green); color: var(--neon-green); }
+        
+        .loading { text-align: center; padding: 60px; color: var(--text-gray); }
+        .error { text-align: center; padding: 40px; color: #EF4444; }
+        .empty { text-align: center; padding: 60px; color: var(--text-gray); }
+        .empty-icon { margin-bottom: 16px; color: var(--border-gray); }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 1024px) { .tournaments-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 768px) { 
+            .tournaments-grid { grid-template-columns: 1fr; } 
+            .nav-links { display: none; }
+            .page-title { font-size: 32px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <div class="logo-icon"><i data-lucide="trophy" style="width: 20px; height: 20px;"></i></div>
+                <div class="logo-text">
+                    <h1>TORNEIOS</h1>
+                    <div class="version">CAMPEONATOS PSO BRASIL</div>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="../index.html">Inicio</a>
+                <a href="../index.html#rankings">Rankings</a>
+                <a href="torneios.html" class="active">Torneios</a>
+                <a href="mercado.html">Mercado</a>
+                <a href="imprensa.html">Imprensa</a>
+                <a href="galeria.html">Galeria</a>
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="container">
+            <div class="page-header">
+                <div class="page-badge">COMPETICOES OFICIAIS</div>
+                <h1 class="page-title">TORNEIOS <span>PSO</span></h1>
+                <p class="page-subtitle">Participe dos maiores campeonatos de Pro Soccer Online do Brasil</p>
+            </div>
+            
+            <div class="filters">
+                <button class="filter-btn active" data-filter="all">Todos</button>
+                <button class="filter-btn" data-filter="upcoming">Proximos</button>
+                <button class="filter-btn" data-filter="ongoing">Em Andamento</button>
+                <button class="filter-btn" data-filter="finished">Concluidos</button>
+            </div>
+            
+            <div class="tournaments-grid" id="tournamentsGrid">
+                <div class="loading">
+                    <i data-lucide="loader-2" style="width: 48px; height: 48px;" class="animate-spin"></i>
+                    <p>Carregando torneios...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        // API Base URL
+        const API_URL = window.location.origin.includes('localhost') ? 'http://localhost:3000' : window.location.origin;
+        
+        let tournaments = [];
+        
+        // Load tournaments from API
+        async function loadTournaments() {
+            const grid = document.getElementById('tournamentsGrid');
+            try {
+                const response = await fetch(`${API_URL}/api/tournaments`);
+                if (!response.ok) throw new Error('Erro ao carregar torneios');
+                
+                tournaments = await response.json();
+                renderTournaments('all');
+            } catch (error) {
+                console.error('Erro:', error);
+                // Fallback data for demo
+                tournaments = [
+                    {
+                        id: 1,
+                        name: "Brasileirao PSO 2024",
+                        type: "Liga",
+                        status: "ongoing",
+                        prize: "R$ 50.000",
+                        participants: 20,
+                        maxParticipants: 20,
+                        startDate: "2024-01-15",
+                        endDate: "2024-12-15"
+                    },
+                    {
+                        id: 2,
+                        name: "Copa do Brasil PSO",
+                        type: "Copa",
+                        status: "upcoming",
+                        prize: "R$ 25.000",
+                        participants: 0,
+                        maxParticipants: 32,
+                        startDate: "2024-03-01",
+                        endDate: "2024-06-30"
+                    },
+                    {
+                        id: 3,
+                        name: "Libertadores PSO",
+                        type: "Internacional",
+                        status: "upcoming",
+                        prize: "R$ 100.000",
+                        participants: 4,
+                        maxParticipants: 16,
+                        startDate: "2024-02-15",
+                        endDate: "2024-07-15"
+                    }
+                ];
+                renderTournaments('all');
+            }
+        }
+        
+        // Render tournaments
+        function renderTournaments(filter) {
+            const grid = document.getElementById('tournamentsGrid');
+            
+            const filtered = filter === 'all' ? tournaments : tournaments.filter(t => t.status === filter);
+            
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty" style="grid-column: 1/-1;">
+                        <div class="empty-icon"><i data-lucide="inbox" style="width: 64px; height: 64px;"></i></div>
+                        <p>Nenhum torneio encontrado</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+            
+            grid.innerHTML = filtered.map((t, index) => {
+                const progress = (t.participants / t.maxParticipants) * 100;
+                const statusClass = t.status;
+                const statusText = t.status === 'upcoming' ? 'Em Breve' : t.status === 'ongoing' ? 'Em Andamento' : 'Concluido';
+                
+                return `
+                    <div class="tournament-card" style="animation-delay: ${index * 0.1}s">
+                        <div class="tournament-header">
+                            <span class="tournament-status ${statusClass}">${statusText}</span>
+                            <h3 class="tournament-title">${t.name}</h3>
+                            <p class="tournament-type">${t.type}</p>
+                        </div>
+                        <div class="tournament-body">
+                            <div class="tournament-info">
+                                <div class="info-row">
+                                    <span class="info-label"><i data-lucide="calendar" style="width: 14px; height: 14px;"></i> Inicio</span>
+                                    <span class="info-value">${formatDate(t.startDate)}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label"><i data-lucide="flag" style="width: 14px; height: 14px;"></i> Termino</span>
+                                    <span class="info-value">${formatDate(t.endDate)}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label"><i data-lucide="users" style="width: 14px; height: 14px;"></i> Vagas</span>
+                                    <span class="info-value">${t.participants}/${t.maxParticipants}</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label"><i data-lucide="award" style="width: 14px; height: 14px;"></i> Premiacao</span>
+                                    <span class="prize-value">${t.prize}</span>
+                                </div>
+                            </div>
+                            <div class="tournament-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${progress}%"></div>
+                                </div>
+                                <div class="progress-text">
+                                    <span>${Math.round(progress)}% preenchido</span>
+                                    <span>${t.maxParticipants - t.participants} vagas restantes</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tournament-actions">
+                            <button class="btn btn-primary" onclick="viewTournament(${t.id})">
+                                <i data-lucide="eye" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> Detalhes
+                            </button>
+                            <button class="btn btn-secondary" onclick="joinTournament(${t.id})" ${t.status !== 'upcoming' ? 'disabled' : ''}>
+                                <i data-lucide="user-plus" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i> Participar
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            lucide.createIcons();
+        }
+        
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+        
+        // View tournament
+        function viewTournament(id) {
+            alert(`Visualizando torneio ${id}. Funcionalidade em desenvolvimento.`);
+        }
+        
+        // Join tournament
+        function joinTournament(id) {
+            alert(`Solicitacao de participacao no torneio ${id} enviada!`);
+        }
+        
+        // Filter buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                renderTournaments(this.dataset.filter);
+            });
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+            loadTournaments();
+        });
+    </script>
+</body>
+</html>

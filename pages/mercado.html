@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercado de Transferências - PSO Brasil</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700&family=Audiowide&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    
+    <style>
+        :root {
+            --neon-green: #22C55E;
+            --neon-yellow: #FACC15;
+            --pure-black: #000000;
+            --dark-gray: #121212;
+            --mid-gray: #171717;
+            --border-gray: #1f2937;
+            --text-gray: #9CA3AF;
+            --text-light: #E5E7EB;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--pure-black); color: #FFFFFF; font-family: 'Exo 2', sans-serif; min-height: 100vh; }
+        
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 24px; }
+        
+        header { background: var(--pure-black); border-bottom: 1px solid var(--border-gray); position: fixed; top: 0; left: 0; right: 0; z-index: 100; }
+        nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { width: 40px; height: 40px; background: var(--dark-gray); border: 1px solid var(--border-gray); border-top: 2px solid var(--neon-green); display: flex; align-items: center; justify-content: center; }
+        .logo-text h1 { font-family: 'Orbitron', sans-serif; font-size: 24px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; }
+        .logo-text .version { font-family: 'Orbitron', sans-serif; font-size: 9px; letter-spacing: 0.25em; color: var(--text-gray); text-transform: uppercase; }
+        .nav-links { display: flex; gap: 32px; align-items: center; }
+        .nav-links a { font-family: 'Orbitron', sans-serif; font-size: 12px; letter-spacing: 0.15em; color: var(--text-gray); text-decoration: none; text-transform: uppercase; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--neon-green); }
+        .nav-links a.active { color: var(--neon-green); }
+        
+        main { padding-top: 100px; padding-bottom: 60px; }
+        
+        .page-header { padding: 60px 0 40px; text-align: center; }
+        .page-badge { display: inline-block; padding: 6px 12px; background: var(--dark-gray); border: 1px solid var(--border-gray); border-bottom: 2px solid var(--neon-yellow); font-family: 'Orbitron', sans-serif; font-size: 10px; letter-spacing: 0.2em; color: var(--text-gray); text-transform: uppercase; margin-bottom: 16px; }
+        .page-title { font-family: 'Audiowide', sans-serif; font-size: 48px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; }
+        .page-title span { color: var(--neon-green); }
+        .page-subtitle { font-size: 16px; color: var(--text-gray); margin-top: 16px; }
+        
+        .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border-gray); margin-bottom: 40px; }
+        .stat-item { background: var(--dark-gray); padding: 24px; text-align: center; }
+        .stat-value { font-family: 'Orbitron', sans-serif; font-size: 32px; font-weight: 700; color: var(--neon-green); }
+        .stat-label { font-family: 'Orbitron', sans-serif; font-size: 10px; letter-spacing: 0.2em; color: var(--text-gray); text-transform: uppercase; margin-top: 8px; }
+        
+        .section-title { font-family: 'Orbitron', sans-serif; font-size: 24px; letter-spacing: 0.1em; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
+        .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border-gray); }
+        
+        .transfers-list { display: flex; flex-direction: column; gap: 16px; margin-bottom: 48px; }
+        .transfer-card { background: var(--dark-gray); border: 1px solid var(--border-gray); display: flex; align-items: center; padding: 20px 24px; transition: all 0.3s; animation: fadeInUp 0.5s ease-out both; }
+        .transfer-card:hover { border-color: var(--neon-green); transform: translateX(8px); }
+        
+        .player-info { display: flex; align-items: center; gap: 16px; flex: 1; }
+        .player-avatar { width: 48px; height: 48px; background: var(--mid-gray); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--neon-green); }
+        .player-details h4 { font-family: 'Orbitron', sans-serif; font-size: 16px; margin-bottom: 4px; }
+        .player-details p { font-size: 13px; color: var(--text-gray); }
+        .player-rating { font-family: 'Orbitron', sans-serif; font-size: 14px; color: var(--neon-yellow); margin-top: 4px; }
+        
+        .transfer-arrow { padding: 0 32px; color: var(--neon-green); }
+        .transfer-arrow i { animation: pulse 2s infinite; }
+        
+        .team-info { display: flex; align-items: center; gap: 16px; flex: 1; }
+        .team-logo { width: 40px; height: 40px; background: var(--mid-gray); display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-gray); }
+        .team-details h4 { font-family: 'Orbitron', sans-serif; font-size: 14px; }
+        .team-details p { font-size: 12px; color: var(--text-gray); }
+        
+        .transfer-value { text-align: right; padding-left: 32px; border-left: 1px solid var(--border-gray); }
+        .value-amount { font-family: 'Orbitron', sans-serif; font-size: 20px; color: var(--neon-yellow); }
+        .value-type { font-size: 11px; color: var(--text-gray); text-transform: uppercase; margin-top: 4px; }
+        .transfer-date { font-size: 12px; color: var(--text-gray); margin-top: 8px; }
+        
+        .players-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        .player-card { background: var(--dark-gray); border: 1px solid var(--border-gray); padding: 20px; text-align: center; transition: all 0.3s; }
+        .player-card:hover { border-color: var(--neon-green); transform: translateY(-4px); }
+        .player-card .avatar { width: 64px; height: 64px; background: var(--mid-gray); border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--border-gray); }
+        .player-card:hover .avatar { border-color: var(--neon-green); }
+        .player-card h4 { font-family: 'Orbitron', sans-serif; font-size: 14px; margin-bottom: 8px; }
+        .player-card .position { font-size: 12px; color: var(--text-gray); margin-bottom: 8px; }
+        .player-card .rating { font-family: 'Orbitron', sans-serif; font-size: 18px; color: var(--neon-green); margin-bottom: 12px; }
+        .player-card .btn { width: 100%; padding: 10px; background: transparent; border: 1px solid var(--border-gray); color: var(--text-gray); font-family: 'Orbitron', sans-serif; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
+        .player-card .btn:hover { border-color: var(--neon-green); color: var(--neon-green); }
+        
+        .loading { text-align: center; padding: 60px; color: var(--text-gray); }
+        .error { text-align: center; padding: 40px; color: #EF4444; }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        @media (max-width: 1024px) {
+            .players-grid { grid-template-columns: repeat(2, 1fr); }
+            .stats-bar { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .players-grid { grid-template-columns: 1fr; }
+            .transfer-card { flex-direction: column; gap: 16px; text-align: center; }
+            .transfer-arrow { transform: rotate(90deg); }
+            .transfer-value { border-left: none; border-top: 1px solid var(--border-gray); padding-left: 0; padding-top: 16px; }
+            .nav-links { display: none; }
+            .page-title { font-size: 32px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <div class="logo-icon"><i data-lucide="arrow-left-right" style="width: 20px; height: 20px;"></i></div>
+                <div class="logo-text">
+                    <h1>MERCADO</h1>
+                    <div class="version">TRANSFERENCIAS PSO BRASIL</div>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="../index.html">Inicio</a>
+                <a href="../index.html#rankings">Rankings</a>
+                <a href="torneios.html">Torneios</a>
+                <a href="mercado.html" class="active">Mercado</a>
+                <a href="imprensa.html">Imprensa</a>
+                <a href="galeria.html">Galeria</a>
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="container">
+            <div class="page-header">
+                <div class="page-badge">NEGOCIACOES OFICIAIS</div>
+                <h1 class="page-title">MERCADO <span>PSO</span></h1>
+                <p class="page-subtitle">Transferências, contratações e movimentações do futebol virtual brasileiro</p>
+            </div>
+            
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalTransfers">0</div>
+                    <div class="stat-label">Transferencias Hoje</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalValue">0</div>
+                    <div class="stat-label">Valor Movimentado</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="availablePlayers">0</div>
+                    <div class="stat-label">Jogadores Disponiveis</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="activeTeams">0</div>
+                    <div class="stat-label">Times Ativos</div>
+                </div>
+            </div>
+            
+            <h2 class="section-title"><i data-lucide="trending-up" style="width: 24px; height: 24px; color: var(--neon-green);"></i> Ultimas Transferencias</h2>
+            <div class="transfers-list" id="transfersList">
+                <div class="loading">
+                    <i data-lucide="loader-2" style="width: 48px; height: 48px;" class="animate-spin"></i>
+                    <p>Carregando transferencias...</p>
+                </div>
+            </div>
+            
+            <h2 class="section-title"><i data-lucide="users" style="width: 24px; height: 24px; color: var(--neon-green);"></i> Jogadores em Destaque</h2>
+            <div class="players-grid" id="playersGrid">
+                <div class="loading" style="grid-column: 1/-1;">
+                    <i data-lucide="loader-2" style="width: 48px; height: 48px;" class="animate-spin"></i>
+                    <p>Carregando jogadores...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        const API_URL = window.location.origin.includes('localhost') ? 'http://localhost:3000' : window.location.origin;
+        
+        async function loadTransfers() {
+            try {
+                const response = await fetch(`${API_URL}/api/transfers`);
+                const transfers = await response.json();
+                renderTransfers(transfers);
+            } catch (error) {
+                console.error('Erro ao carregar transferencias:', error);
+                // Dados de exemplo
+                const mockTransfers = [
+                    {
+                        id: 1,
+                        player: { name: "BrasilKing", position: "ATA", rating: 2847, avatar: null },
+                        fromTeam: { name: "Vasco Gaming", logo: null },
+                        toTeam: { name: "Flamengo eSports", logo: null },
+                        value: "R$ 2.5M",
+                        type: "Compra",
+                        date: "2024-04-08"
+                    },
+                    {
+                        id: 2,
+                        player: { name: "GingaMaster", position: "MEI", rating: 2798, avatar: null },
+                        fromTeam: { name: "Santos FC", logo: null },
+                        toTeam: { name: "Palmeiras Pro", logo: null },
+                        value: "R$ 1.8M",
+                        type: "Troca",
+                        date: "2024-04-07"
+                    },
+                    {
+                        id: 3,
+                        player: { name: "NeymarJr", position: "ATA", rating: 2756, avatar: null },
+                        fromTeam: { name: "Corinthians Gaming", logo: null },
+                        toTeam: { name: "Gremio eSports", logo: null },
+                        value: "R$ 3.2M",
+                        type: "Compra",
+                        date: "2024-04-06"
+                    }
+                ];
+                renderTransfers(mockTransfers);
+            }
+        }
+        
+        function renderTransfers(transfers) {
+            const container = document.getElementById('transfersList');
+            container.innerHTML = transfers.map((t, index) => `
+                <div class="transfer-card" style="animation-delay: ${index * 0.1}s">
+                    <div class="player-info">
+                        <div class="player-avatar">
+                            <i data-lucide="user" style="width: 24px; height: 24px; color: var(--neon-green);"></i>
+                        </div>
+                        <div class="player-details">
+                            <h4>${t.player.name}</h4>
+                            <p>${t.player.position} | Rating: ${t.player.rating}</p>
+                            <div class="player-rating"><i data-lucide="star" style="width: 12px; height: 12px; display: inline;"></i> ${t.player.rating}</div>
+                        </div>
+                    </div>
+                    <div class="team-info" style="justify-content: flex-end;">
+                        <div class="team-details" style="text-align: right;">
+                            <h4>${t.fromTeam.name}</h4>
+                            <p>Time de Origem</p>
+                        </div>
+                        <div class="team-logo">
+                            <i data-lucide="shield" style="width: 20px; height: 20px; color: var(--text-gray);"></i>
+                        </div>
+                    </div>
+                    <div class="transfer-arrow">
+                        <i data-lucide="arrow-right" style="width: 24px; height: 24px;"></i>
+                    </div>
+                    <div class="team-info">
+                        <div class="team-logo">
+                            <i data-lucide="shield" style="width: 20px; height: 20px; color: var(--neon-green);"></i>
+                        </div>
+                        <div class="team-details">
+                            <h4>${t.toTeam.name}</h4>
+                            <p>Novo Time</p>
+                        </div>
+                    </div>
+                    <div class="transfer-value">
+                        <div class="value-amount">${t.value}</div>
+                        <div class="value-type">${t.type}</div>
+                        <div class="transfer-date"><i data-lucide="calendar" style="width: 12px; height: 12px; display: inline;"></i> ${formatDate(t.date)}</div>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('totalTransfers').textContent = transfers.length;
+            lucide.createIcons();
+        }
+        
+        async function loadFeaturedPlayers() {
+            try {
+                const response = await fetch(`${API_URL}/api/rankings?limit=8`);
+                const players = await response.json();
+                renderPlayers(players);
+            } catch (error) {
+                console.error('Erro ao carregar jogadores:', error);
+                const mockPlayers = [
+                    { id: 1, name: "BrasilKing", position: "ATA", rating: 2847 },
+                    { id: 2, name: "GingaMaster", position: "MEI", rating: 2798 },
+                    { id: 3, name: "NeymarJr", position: "ATA", rating: 2756 },
+                    { id: 4, name: "RonaldinhoBR", position: "MEI", rating: 2698 }
+                ];
+                renderPlayers(mockPlayers);
+            }
+        }
+        
+        function renderPlayers(players) {
+            const container = document.getElementById('playersGrid');
+            container.innerHTML = players.map((p, index) => `
+                <div class="player-card" style="animation-delay: ${index * 0.1}s">
+                    <div class="avatar">
+                        <i data-lucide="user" style="width: 32px; height: 32px; color: var(--text-gray);"></i>
+                    </div>
+                    <h4>${p.name}</h4>
+                    <p class="position">${p.position || 'Jogador'}</p>
+                    <div class="rating"><i data-lucide="star" style="width: 14px; height: 14px; display: inline; color: var(--neon-yellow);"></i> ${p.rating}</div>
+                    <button class="btn" onclick="makeOffer(${p.id})">Fazer Proposta</button>
+                </div>
+            `).join('');
+            
+            document.getElementById('availablePlayers').textContent = players.length * 12;
+            document.getElementById('activeTeams').textContent = 24;
+            document.getElementById('totalValue').textContent = "R$ 45M";
+            lucide.createIcons();
+        }
+        
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('pt-BR');
+        }
+        
+        function makeOffer(playerId) {
+            alert(`Proposta enviada para o jogador ${playerId}! Aguardando resposta...`);
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+            loadTransfers();
+            loadFeaturedPlayers();
+        });
+    </script>
+</body>
+</html>

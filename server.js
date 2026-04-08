@@ -106,6 +106,14 @@ app.get('/galeria', (req, res) => {
     res.sendFile(path.join(__dirname, 'pages', 'galeria.html'));
 });
 
+app.get('/torneios', (req, res) => {
+    res.sendFile(path.join(__dirname, 'pages', 'torneios.html'));
+});
+
+app.get('/mercado', (req, res) => {
+    res.sendFile(path.join(__dirname, 'pages', 'mercado.html'));
+});
+
 // Página administrativa
 app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'admin.html'));
