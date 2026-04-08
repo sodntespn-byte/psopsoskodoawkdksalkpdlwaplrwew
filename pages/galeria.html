@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galeria - PSO Brasil</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700&family=Audiowide&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    
+    <style>
+        :root {
+            --neon-green: #22C55E;
+            --neon-yellow: #FACC15;
+            --pure-black: #000000;
+            --dark-gray: #121212;
+            --mid-gray: #171717;
+            --border-gray: #1f2937;
+            --text-gray: #9CA3AF;
+            --text-light: #E5E7EB;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--pure-black); color: #FFFFFF; font-family: 'Exo 2', sans-serif; min-height: 100vh; }
+        
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 24px; }
+        
+        header { background: var(--pure-black); border-bottom: 1px solid var(--border-gray); position: fixed; top: 0; left: 0; right: 0; z-index: 100; }
+        nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { width: 40px; height: 40px; background: var(--dark-gray); border: 1px solid var(--border-gray); border-top: 2px solid var(--neon-yellow); display: flex; align-items: center; justify-content: center; }
+        .logo-text h1 { font-family: 'Orbitron', sans-serif; font-size: 24px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; }
+        .logo-text .version { font-family: 'Orbitron', sans-serif; font-size: 9px; letter-spacing: 0.25em; color: var(--text-gray); text-transform: uppercase; }
+        .nav-links { display: flex; gap: 32px; align-items: center; }
+        .nav-links a { font-family: 'Orbitron', sans-serif; font-size: 12px; letter-spacing: 0.15em; color: var(--text-gray); text-decoration: none; text-transform: uppercase; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--neon-yellow); }
+        
+        main { padding-top: 100px; padding-bottom: 60px; }
+        
+        .page-header { padding: 60px 0 40px; text-align: center; }
+        .page-badge { display: inline-block; padding: 6px 12px; background: var(--dark-gray); border: 1px solid var(--border-gray); border-bottom: 2px solid var(--neon-yellow); font-family: 'Orbitron', sans-serif; font-size: 10px; letter-spacing: 0.2em; color: var(--text-gray); text-transform: uppercase; margin-bottom: 16px; }
+        .page-title { font-family: 'Orbitron', sans-serif; font-size: 48px; font-weight: 700; letter-spacing: 0.1em; }
+        .page-title span { color: var(--neon-yellow); }
+        
+        .filters { display: flex; gap: 16px; margin-bottom: 40px; flex-wrap: wrap; }
+        .filter-btn { padding: 10px 20px; background: transparent; border: 1px solid var(--border-gray); color: var(--text-gray); font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
+        .filter-btn:hover, .filter-btn.active { border-color: var(--neon-yellow); color: var(--neon-yellow); }
+        
+        .gallery-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border-gray); }
+        .gallery-item { background: var(--dark-gray); position: relative; overflow: hidden; cursor: pointer; aspect-ratio: 1; transition: all 0.3s; animation: fadeInUp 0.5s ease-out both; }
+        .gallery-item:hover { z-index: 1; box-shadow: 0 0 30px rgba(250, 204, 21, 0.2); }
+        .gallery-item:nth-child(1) { animation-delay: 0.1s; }
+        .gallery-item:nth-child(2) { animation-delay: 0.12s; }
+        .gallery-item:nth-child(3) { animation-delay: 0.14s; }
+        .gallery-item:nth-child(4) { animation-delay: 0.16s; }
+        .gallery-item:nth-child(5) { animation-delay: 0.18s; }
+        .gallery-item:nth-child(6) { animation-delay: 0.2s; }
+        .gallery-item:nth-child(7) { animation-delay: 0.22s; }
+        .gallery-item:nth-child(8) { animation-delay: 0.24s; }
+        
+        .gallery-item.featured { grid-column: span 2; grid-row: span 2; }
+        
+        .gallery-image { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+        .gallery-item:hover .gallery-image { transform: scale(1.05); }
+        
+        .gallery-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%); opacity: 0; transition: opacity 0.3s; display: flex; flex-direction: column; justify-content: flex-end; padding: 24px; }
+        .gallery-item:hover .gallery-overlay { opacity: 1; }
+        
+        .gallery-meta { display: flex; gap: 12px; margin-bottom: 8px; font-size: 11px; }
+        .gallery-category { color: var(--neon-yellow); font-family: 'Orbitron', sans-serif; letter-spacing: 0.1em; text-transform: uppercase; }
+        .gallery-title { font-family: 'Orbitron', sans-serif; font-size: 16px; font-weight: 600; letter-spacing: 0.05em; }
+        .gallery-photographer { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-gray); margin-top: 8px; }
+        
+        .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 200; }
+        .lightbox.active { display: flex; align-items: center; justify-content: center; }
+        .lightbox-close { position: absolute; top: 30px; right: 30px; width: 50px; height: 50px; background: var(--dark-gray); border: 1px solid var(--border-gray); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-gray); transition: all 0.3s; z-index: 10; }
+        .lightbox-close:hover { border-color: var(--neon-yellow); color: var(--neon-yellow); }
+        .lightbox-image { max-width: 90%; max-height: 80vh; object-fit: contain; border: 1px solid var(--border-gray); }
+        .lightbox-info { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); text-align: center; background: var(--dark-gray); border: 1px solid var(--border-gray); padding: 20px 40px; }
+        .lightbox-title { font-family: 'Orbitron', sans-serif; font-size: 20px; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 8px; }
+        .lightbox-meta { display: flex; gap: 20px; font-size: 12px; color: var(--text-gray); }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 1024px) { 
+            .gallery-grid { grid-template-columns: repeat(3, 1fr); } 
+            .gallery-item.featured { grid-column: span 2; grid-row: span 1; }
+        }
+        @media (max-width: 768px) { 
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); } 
+            .nav-links { display: none; }
+            .page-title { font-size: 32px; }
+        }
+        @media (max-width: 480px) { 
+            .gallery-grid { grid-template-columns: 1fr; }
+            .gallery-item.featured { grid-column: span 1; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <div class="logo-icon"><i data-lucide="camera" style="width: 20px; height: 20px;"></i></div>
+                <div class="logo-text">
+                    <h1>GALERIA OFICIAL</h1>
+                    <div class="version">FOTOGRAFIA PSO BRASIL</div>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="../index.html">Inicio</a>
+                <a href="imprensa.html">Imprensa</a>
+                <a href="dashboard.html">Dashboard</a>
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="container">
+            <div class="page-header">
+                <div class="page-badge">REGISTROS VISUAIS</div>
+                <h1 class="page-title">GALERIA <span>PSO</span></h1>
+            </div>
+            
+            <div class="filters">
+                <button class="filter-btn active" data-filter="all">Todas</button>
+                <button class="filter-btn" data-filter="jogo">Acao de Jogo</button>
+                <button class="filter-btn" data-filter="celebracao">Celebracao</button>
+                <button class="filter-btn" data-filter="estadio">Estadio</button>
+                <button class="filter-btn" data-filter="retrato">Retrato</button>
+            </div>
+            
+            <div class="gallery-grid" id="galleryGrid">
+                <!-- Gallery items will be inserted here -->
+            </div>
+        </div>
+    </main>
+    
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" onclick="closeLightbox()"><i data-lucide="x" style="width: 24px; height: 24px;"></i></button>
+        <img class="lightbox-image" id="lightboxImage" src="" alt="">
+        <div class="lightbox-info">
+            <h3 class="lightbox-title" id="lightboxTitle"></h3>
+            <div class="lightbox-meta">
+                <span id="lightboxCategory"></span>
+                <span>|</span>
+                <span id="lightboxPhotographer"></span>
+                <span>|</span>
+                <span id="lightboxLocation"></span>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const photos = [
+            {
+                id: 1,
+                title: "GOL HISTORICO NA LIBERTADORES",
+                category: "Jogo",
+                photographer: "Fotografo Oficial",
+                location: "Maracana",
+                image: "https://images.unsplash.com/photo-1574629810380-605e02525e32?w=800",
+                featured: true
+            },
+            {
+                id: 2,
+                title: "CELEBRACAO DA VITORIA",
+                category: "Celebracao",
+                photographer: "Fotografo Oficial",
+                location: "Maracana",
+                image: "https://images.unsplash.com/photo-1560272564-c83b66b6ad52?w=800"
+            },
+            {
+                id: 3,
+                title: "RETARDO DO CAPITAO",
+                category: "Retrato",
+                photographer: "Estudio PSO",
+                location: "Estudio",
+                image: "https://images.unsplash.com/photo-1517466483083-6711d0d23fd3?w=800"
+            },
+            {
+                id: 4,
+                title: "VISAO AEREA DO ESTADIO",
+                category: "Estadio",
+                photographer: "Drone PSO",
+                location: "Arena",
+                image: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f13af?w=800",
+                featured: true
+            },
+            {
+                id: 5,
+                title: "TREINAMENTO INTENSO",
+                category: "Jogo",
+                photographer: "Fotografo Oficial",
+                location: "CT",
+                image: "https://images.unsplash.com/photo-1431324158139-fc09cb397b2a?w=800"
+            },
+            {
+                id: 6,
+                title: "COLETIVA DE IMPRENSA",
+                category: "Retrato",
+                photographer: "Jornal PSO",
+                location: "Sala de Imprensa",
+                image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800"
+            },
+            {
+                id: 7,
+                title: "ENTRADA DOS TIMES",
+                category: "Estadio",
+                photographer: "Fotografo Oficial",
+                location: "Arena",
+                image: "https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=800"
+            },
+            {
+                id: 8,
+                title: "TORCIDA NA ARQUIBANCADA",
+                category: "Estadio",
+                photographer: "Fotografo Oficial",
+                location: "Maracana",
+                image: "https://images.unsplash.com/photo-1522778119026-d647f0565c6a?w=800"
+            }
+        ];
+        
+        function renderGallery(filter = 'all') {
+            const grid = document.getElementById('galleryGrid');
+            const filtered = filter === 'all' ? photos : photos.filter(p => p.category.toLowerCase() === filter);
+            
+            grid.innerHTML = filtered.map((item, index) => `
+                <div class="gallery-item ${item.featured ? 'featured' : ''}" onclick="openLightbox(${item.id})" style="animation-delay: ${index * 0.03}s">
+                    <img src="${item.image}" alt="${item.title}" class="gallery-image">
+                    <div class="gallery-overlay">
+                        <div class="gallery-meta">
+                            <span class="gallery-category">${item.category}</span>
+                        </div>
+                        <h3 class="gallery-title">${item.title}</h3>
+                        <div class="gallery-photographer">
+                            <i data-lucide="camera" style="width: 12px; height: 12px;"></i>
+                            <span>${item.photographer}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            lucide.createIcons();
+        }
+        
+        function openLightbox(id) {
+            const item = photos.find(p => p.id === id);
+            if (!item) return;
+            
+            document.getElementById('lightboxImage').src = item.image;
+            document.getElementById('lightboxTitle').textContent = item.title;
+            document.getElementById('lightboxCategory').textContent = item.category;
+            document.getElementById('lightboxPhotographer').textContent = item.photographer;
+            document.getElementById('lightboxLocation').textContent = item.location;
+            document.getElementById('lightbox').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            lucide.createIcons();
+        }
+        
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        document.getElementById('lightbox').addEventListener('click', function(e) {
+            if (e.target === this) closeLightbox();
+        });
+        
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                renderGallery(this.dataset.filter);
+            });
+        });
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+            renderGallery();
+        });
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeLightbox();
+        });
+    </script>
+</body>
+</html>

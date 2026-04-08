@@ -1,0 +1,53 @@
+# PSO Brasil - SquareCloud Configuration
+
+startCommand: npm start
+buildCommand: npm run build
+installCommand: npm install
+restartOnFail: true
+maxRestarts: 3
+
+# Health Check
+healthCheckPath: /api/health
+healthCheckGracePeriod: 10000
+
+# Environment
+env:
+  - NODE_ENV=production
+  - PORT=3000
+
+# Ports
+port: 3000
+
+# Resources
+memory: 512
+cpu: 0.5
+
+# SSL (Obrigatório)
+ssl: true
+sslMode: require
+
+# Database
+database:
+  type: postgresql
+  sslMode: require
+
+# Build
+build:
+  nodeVersion: 18
+  npmVersion: 9
+
+# Monitoring
+monitoring:
+  enabled: true
+  metricsPort: 9090
+
+# Logging
+logging:
+  level: info
+  format: json
+
+# Backup
+backup:
+  enabled: true
+  schedule: "0 2 * * *"
+  retention: 30

@@ -1,0 +1,339 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Tabela de Transferências (Mercado da Bola)
+model Transfer {
+  id            String   @id @default(cuid())
+  playerName    String
+  oldClubId     String?
+  newClubId     String
+  duration      Int      // Duração em meses
+  startSeason   String   // Temporada de início
+  endSeason     String   // Temporada de término
+  salary        Float    // Salário em milhões
+  releaseClause Float?   // Cláusula de rescisão em milhões
+  feePaid       Float    // Valor pago em milhões
+  timestamp     DateTime @default(now())
+  isActive      Boolean  @default(true)
+  
+  // Relacionamentos
+  oldClub       Team?    @relation("OldClub", fields: [oldClubId], references: [id])
+  newClub       Team     @relation("NewClub", fields: [newClubId], references: [id])
+  
+  @@map("transfers")
+}
+
+// Tabela de Ligas (Campeonatos)
+model League {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  country     String
+  season      String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relacionamentos
+  teams Team[]
+  matches Match[]
+
+  @@map("leagues")
+}
+
+// Tabela de Times
+model Team {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  abbreviation String?  @unique
+  city        String
+  state       String
+  founded     Int?
+  stadium     String?
+  logoUrl     String?
+  leagueId    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relacionamentos
+  league  League  @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  players Player[]
+  homeMatches Match[] @relation("HomeTeam")
+  awayMatches Match[] @relation("AwayTeam")
+  transfersOutgoing Transfer[] @relation("OldClub")
+  transfersIncoming Transfer[] @relation("NewClub")
+
+  @@map("teams")
+}
+
+// Tabela de Jogadores
+model Player {
+  id          String   @id @default(cuid())
+  name        String
+  nickname    String?
+  age         Int
+  position    String   // GK, DF, MF, FW
+  number      Int
+  height      Float?   // em metros
+  weight      Float?   // em kg
+  nationality String
+  teamId      String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relacionamentos
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@map("players")
+}
+
+// Tabela de Partidas
+model Match {
+  id          String    @id @default(cuid())
+  homeTeamId  String
+  awayTeamId  String
+  leagueId    String
+  matchDate   DateTime
+  venue       String?
+  status      MatchStatus @default(SCHEDULED)
+  homeScore   Int?      @default(0)
+  awayScore   Int?      @default(0)
+  round       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relacionamentos
+  homeTeam Team @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  awayTeam Team @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  league   League @relation(fields: [leagueId], references: [id])
+
+  @@map("matches")
+}
+
+// Enum para status das partidas
+enum MatchStatus {
+  SCHEDULED
+  IN_PROGRESS
+  FINISHED
+  POSTPONED
+  CANCELLED
+}
+
+// Tabela de Estatísticas dos Jogadores (opcional, para dados detalhados)
+model PlayerStats {
+  id          String   @id @default(cuid())
+  playerId    String   @unique
+  goals       Int      @default(0)
+  assists     Int      @default(0)
+  yellowCards Int      @default(0)
+  redCards    Int      @default(0)
+  matchesPlayed Int   @default(0)
+  minutesPlayed Int   @default(0)
+  season      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("player_stats")
+}
+
+// Tabela de Estatísticas dos Times (opcional)
+model TeamStats {
+  id          String   @id @default(cuid())
+  teamId      String   @unique
+  wins        Int      @default(0)
+  draws       Int      @default(0)
+  losses      Int      @default(0)
+  goalsFor    Int      @default(0)
+  goalsAgainst Int     @default(0)
+  points      Int      @default(0)
+  matchesPlayed Int    @default(0)
+  season      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("team_stats")
+}
+
+// Tabela de Temporadas (para controle histórico)
+model Season {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  startDate   DateTime
+  endDate     DateTime
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("seasons")
+}
+
+// Tabela de Configuração do Servidor Discord (Bot Configuration)
+model ServerConfig {
+  id                    String   @id @default(cuid())
+  guildId               String   @unique
+  guildName             String
+  
+  // Canais configurados
+  resultsChannelId      String?  // Canal para resultados de partidas
+  marketChannelId       String?  // Canal para anúncios de mercado
+  adminChannelId        String?  // Canal para logs administrativos
+  technicalLogsChannelId String? // Canal para logs técnicos e diagnósticos
+  pressChannelId        String?  // Canal para anúncios de imprensa
+  generalChannelId      String?  // Canal geral do bot
+  
+  // Cargos de administradores
+  adminRoleIds          String[] // Array de IDs de cargos admin
+  modRoleIds            String[] // Array de IDs de cargos moderadores
+  pressRoleIds          String[] // Array de IDs de cargos de imprensa
+  
+  // Status da liga
+  leagueStatus          LeagueStatus @default(CLOSED)
+  currentSeason         String   @default("2024")
+  
+  // Configurações do bot
+  autoAnnounceResults Boolean  @default(true)
+  autoAnnounceMarket  Boolean  @default(true)
+  requireAdminConfirm Boolean  @default(false)
+  
+  // Configurações de monitoramento
+  enableHealthChecks  Boolean  @default(true)
+  enableErrorAlerts   Boolean  @default(true)
+  
+  // Timestamps
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  configuredBy          String?  // ID do usuário que configurou
+
+  @@map("server_configs")
+}
+
+// Enum para status da liga
+enum LeagueStatus {
+  OPEN
+  CLOSED
+  REGISTRATION
+  TRANSFER_WINDOW
+  PLAYOFFS
+  OFFSEASON
+}
+
+// Tabela de Logs do Bot
+model BotLog {
+  id              String   @id @default(cuid())
+  guildId         String
+  action          String   // Tipo de ação (TRANSFER_REGISTERED, MATCH_REGISTERED, etc)
+  command         String   // Comando usado (/mercado anunciar, /partida registrar)
+  userId          String   // ID do usuário que executou
+  username        String   // Nome do usuário
+  
+  // Dados da operação (criptografados se sensíveis)
+  data            Json?    // Dados da operação
+  encryptedData   String?  // Dados criptografados (salários, valores)
+  
+  // Referências
+  transferId      String?  // ID da transferência (se aplicável)
+  matchId         String?  // ID da partida (se aplicável)
+  
+  // Status
+  status          LogStatus @default(SUCCESS)
+  errorMessage    String?
+  
+  // Timestamps
+  createdAt       DateTime @default(now())
+  processedAt     DateTime?
+  
+  // Índices
+  @@index([guildId, createdAt])
+  @@index([action, createdAt])
+  @@index([userId, createdAt])
+  @@map("bot_logs")
+}
+
+// Enum para status do log
+enum LogStatus {
+  SUCCESS
+  FAILED
+  PENDING
+  CANCELLED
+}
+
+// Tabela de Notícias (Módulo de Imprensa)
+model News {
+  id            String   @id @default(cuid())
+  title         String
+  subtitle      String?
+  content       String   // Conteúdo em Markdown
+  coverImageUrl String?  // URL da imagem de capa
+  category      NewsCategory @default(GENERAL)
+  authorId      String   // ID do autor (jornalista)
+  authorName    String   // Nome do autor
+  published     Boolean  @default(false)
+  featured      Boolean  @default(false) // Notícia em destaque
+  tags          String[]  // Tags para busca
+  readTime      Int      @default(5) // Tempo de leitura em minutos
+  viewCount     Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  publishedAt   DateTime?
+
+  @@map("news")
+}
+
+// Enum para categorias de notícias
+enum NewsCategory {
+  GENERAL
+  CHRONICLE
+  INTERVIEW
+  URGENT
+  ANALYSIS
+  HIGHLIGHTS
+  TRANSFER
+  MATCH_REPORT
+}
+
+// Tabela de Fotos (Galeria de Imprensa)
+model Photo {
+  id            String   @id @default(cuid())
+  title         String
+  description   String?  // Legenda técnica
+  imageUrl      String   // URL da imagem (otimizada)
+  thumbnailUrl  String?  // URL do thumbnail
+  photographerId String   // ID do fotógrafo
+  photographerName String // Nome do fotógrafo
+  category      PhotoCategory @default(GENERAL)
+  tags          String[]  // Tags para busca
+  featured      Boolean  @default(false) // Foto em destaque
+  resolution    String?  // Resolução (ex: "1920x1080")
+  fileSize      Int?     // Tamanho do arquivo em bytes
+  camera        String?  // Equipamento usado
+  settings      String?  // Configurações da câmera
+  location      String?  // Local da foto
+  eventDate     DateTime? // Data do evento
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("photos")
+}
+
+// Enum para categorias de fotos
+enum PhotoCategory {
+  GENERAL
+  MATCH_ACTION
+  CELEBRATION
+  STADIUM
+  PORTRAIT
+  TRAINING
+  PRESS_CONFERENCE
+  AWARD
+  BEHIND_SCENES
+}

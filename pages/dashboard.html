@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - PSO Brasil</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700&family=Audiowide&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    
+    <style>
+        :root {
+            --neon-green: #22C55E;
+            --neon-yellow: #FACC15;
+            --pure-black: #000000;
+            --dark-gray: #121212;
+            --mid-gray: #171717;
+            --border-gray: #1f2937;
+            --text-gray: #9CA3AF;
+            --text-light: #E5E7EB;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--pure-black); color: #FFFFFF; font-family: 'Exo 2', sans-serif; min-height: 100vh; }
+        
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 24px; }
+        
+        header { background: var(--pure-black); border-bottom: 1px solid var(--border-gray); position: fixed; top: 0; left: 0; right: 0; z-index: 100; }
+        nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { width: 40px; height: 40px; background: var(--dark-gray); border: 1px solid var(--border-gray); border-top: 2px solid var(--neon-green); display: flex; align-items: center; justify-content: center; }
+        .logo-text h1 { font-family: 'Orbitron', sans-serif; font-size: 24px; font-weight: 700; letter-spacing: 0.15em; }
+        .logo-text .version { font-family: 'Orbitron', sans-serif; font-size: 10px; letter-spacing: 0.2em; color: var(--text-gray); text-transform: uppercase; }
+        .nav-links { display: flex; gap: 32px; align-items: center; }
+        .nav-links a { font-family: 'Orbitron', sans-serif; font-size: 12px; letter-spacing: 0.15em; color: var(--text-gray); text-decoration: none; text-transform: uppercase; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--neon-green); }
+        .logout-btn { background: transparent; border: 1px solid #EF4444; color: #EF4444; padding: 8px 16px; font-family: 'Orbitron', sans-serif; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
+        .logout-btn:hover { background: #EF4444; color: #FFFFFF; }
+        .user-menu { display: flex; align-items: center; gap: 16px; }
+        .notification-btn { position: relative; width: 40px; height: 40px; background: var(--dark-gray); border: 1px solid var(--border-gray); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-gray); transition: all 0.3s; }
+        .notification-btn:hover { border-color: var(--neon-green); color: var(--neon-green); }
+        .notification-badge { position: absolute; top: -4px; right: -4px; width: 16px; height: 16px; background: var(--neon-yellow); border-radius: 50%; font-size: 9px; font-weight: 700; color: var(--pure-black); display: flex; align-items: center; justify-content: center; }
+        
+        main { padding-top: 100px; padding-bottom: 60px; }
+        
+        .page-header { padding: 40px 0; }
+        .welcome-text { font-size: 14px; color: var(--text-gray); margin-bottom: 8px; }
+        .page-title { font-family: 'Orbitron', sans-serif; font-size: 36px; font-weight: 700; letter-spacing: 0.1em; }
+        .page-title span { color: var(--neon-green); }
+        
+        .dashboard-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border-gray); margin-bottom: 1px; }
+        .dashboard-card { background: var(--dark-gray); padding: 32px; transition: all 0.3s; animation: fadeInUp 0.5s ease-out both; }
+        .dashboard-card:hover { background: var(--mid-gray); }
+        .dashboard-card.large { grid-column: span 2; grid-row: span 2; }
+        .dashboard-card:nth-child(1) { animation-delay: 0.1s; }
+        .dashboard-card:nth-child(2) { animation-delay: 0.15s; }
+        .dashboard-card:nth-child(3) { animation-delay: 0.2s; }
+        .dashboard-card:nth-child(4) { animation-delay: 0.25s; }
+        
+        .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .card-title { font-family: 'Orbitron', sans-serif; font-size: 12px; letter-spacing: 0.2em; color: var(--text-gray); text-transform: uppercase; }
+        .card-icon { width: 40px; height: 40px; background: var(--mid-gray); border: 1px solid var(--border-gray); display: flex; align-items: center; justify-content: center; color: var(--neon-green); }
+        .card-icon.yellow { color: var(--neon-yellow); }
+        
+        .stat-value { font-family: 'Orbitron', sans-serif; font-size: 42px; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 8px; }
+        .stat-change { font-size: 12px; color: var(--neon-green); }
+        .stat-change.negative { color: #EF4444; }
+        
+        .live-match { display: flex; flex-direction: column; height: 100%; }
+        .live-badge { display: inline-flex; align-items: center; gap: 8px; font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 0.15em; color: #EF4444; text-transform: uppercase; margin-bottom: 24px; }
+        .live-badge::before { content: ''; width: 8px; height: 8px; background: #EF4444; border-radius: 50%; animation: pulse 1.5s infinite; }
+        .match-teams { display: flex; align-items: center; justify-content: center; gap: 40px; flex: 1; }
+        .team { text-align: center; }
+        .team-logo { width: 80px; height: 80px; background: var(--mid-gray); border: 1px solid var(--border-gray); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+        .team-logo.green { border-color: var(--neon-green); color: var(--neon-green); }
+        .team-logo.yellow { border-color: var(--neon-yellow); color: var(--neon-yellow); }
+        .team-name { font-family: 'Orbitron', sans-serif; font-size: 16px; letter-spacing: 0.1em; }
+        .match-score { text-align: center; }
+        .score { font-family: 'Orbitron', sans-serif; font-size: 56px; font-weight: 700; letter-spacing: 0.05em; }
+        .match-time { font-size: 12px; color: var(--neon-yellow); margin-top: 8px; }
+        .match-actions { display: flex; gap: 16px; margin-top: 32px; }
+        .btn { flex: 1; padding: 14px; font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; text-align: center; cursor: pointer; border: none; transition: all 0.3s; }
+        .btn-primary { background: var(--neon-yellow); color: var(--pure-black); font-weight: 600; }
+        .btn-primary:hover { background: #EAB308; }
+        .btn-secondary { background: transparent; border: 1px solid var(--border-gray); color: var(--text-light); }
+        .btn-secondary:hover { border-color: var(--neon-green); color: var(--neon-green); }
+        
+        .ranking-list { list-style: none; }
+        .ranking-item { display: flex; align-items: center; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--border-gray); }
+        .ranking-item:last-child { border-bottom: none; }
+        .rank-number { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', sans-serif; font-weight: 700; border-radius: 4px; }
+        .rank-number.gold { background: var(--neon-yellow); color: var(--pure-black); }
+        .rank-number.silver { background: #6B7280; color: #FFFFFF; }
+        .rank-number.bronze { background: #92400E; color: #FFFFFF; }
+        .rank-number.default { background: var(--mid-gray); color: var(--text-gray); }
+        .rank-info { flex: 1; }
+        .rank-name { font-family: 'Orbitron', sans-serif; font-size: 14px; letter-spacing: 0.05em; }
+        .rank-rating { font-size: 11px; color: var(--text-gray); }
+        .rank-winrate { text-align: right; }
+        .winrate-value { font-family: 'Orbitron', sans-serif; font-size: 14px; color: var(--neon-green); }
+        .winrate-label { font-size: 10px; color: var(--text-gray); text-transform: uppercase; }
+        
+        .activity-list { list-style: none; }
+        .activity-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border-gray); }
+        .activity-item:last-child { border-bottom: none; }
+        .activity-dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 8px; }
+        .activity-dot.red { background: #EF4444; }
+        .activity-dot.green { background: var(--neon-green); }
+        .activity-dot.yellow { background: var(--neon-yellow); }
+        .activity-content { flex: 1; }
+        .activity-text { font-size: 13px; line-height: 1.5; }
+        .activity-time { font-size: 11px; color: var(--text-gray); margin-top: 4px; }
+        
+        .quick-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .action-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 24px; background: var(--mid-gray); border: 1px solid var(--border-gray); cursor: pointer; transition: all 0.3s; }
+        .action-btn:hover { border-color: var(--neon-green); transform: translateY(-2px); }
+        .action-btn.yellow:hover { border-color: var(--neon-yellow); }
+        .action-icon { color: var(--neon-green); }
+        .action-btn.yellow .action-icon { color: var(--neon-yellow); }
+        .action-label { font-family: 'Orbitron', sans-serif; font-size: 10px; letter-spacing: 0.15em; color: var(--text-gray); text-transform: uppercase; }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        @media (max-width: 1024px) {
+            .dashboard-grid { grid-template-columns: repeat(2, 1fr); }
+            .dashboard-card.large { grid-column: span 2; }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .dashboard-card.large { grid-column: span 1; grid-row: span 1; }
+            .nav-links { display: none; }
+            .match-teams { flex-direction: column; gap: 24px; }
+            .match-score { order: -1; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <div class="logo-icon"><i data-lucide="layout-dashboard" style="width: 20px; height: 20px;"></i></div>
+                <div class="logo-text">
+                    <h1>DASHBOARD</h1>
+                    <div class="version">PAINEL DE CONTROLE</div>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="../index.html">Inicio</a>
+                <a href="../index.html#rankings">Rankings</a>
+                <a href="imprensa.html">Imprensa</a>
+                <a href="galeria.html">Galeria</a>
+                <button class="logout-btn" onclick="logout()">Sair</button>
+            </div>
+            <div class="user-menu">
+                <button class="notification-btn">
+                    <i data-lucide="bell" style="width: 18px; height: 18px;"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="container">
+            <div class="page-header">
+                <p class="welcome-text">Bem-vindo de volta, Administrador</p>
+                <h1 class="page-title">PAINEL DE <span>CONTROLE</span></h1>
+            </div>
+            
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <span class="card-title">Jogadores Ativos</span>
+                        <div class="card-icon"><i data-lucide="users" style="width: 20px; height: 20px;"></i></div>
+                    </div>
+                    <div class="stat-value">2,847</div>
+                    <div class="stat-change">↑ 12% este mês</div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <span class="card-title">Torneios Ativos</span>
+                        <div class="card-icon yellow"><i data-lucide="trophy" style="width: 20px; height: 20px;"></i></div>
+                    </div>
+                    <div class="stat-value">156</div>
+                    <div class="stat-change">↑ 8% este mês</div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <span class="card-title">Partidas Hoje</span>
+                        <div class="card-icon"><i data-lucide="activity" style="width: 20px; height: 20px;"></i></div>
+                    </div>
+                    <div class="stat-value">89</div>
+                    <div class="stat-change negative">↓ 3% vs ontem</div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <span class="card-title">Gols Esta Temporada</span>
+                        <div class="card-icon yellow"><i data-lucide="target" style="width: 20px; height: 20px;"></i></div>
+                    </div>
+                    <div class="stat-value">45.8K</div>
+                    <div class="stat-change">↑ 15% este mês</div>
+                </div>
+                
+                <div class="dashboard-card large">
+                    <div class="live-match">
+                        <div class="live-badge">Ao Vivo</div>
+                        <div class="match-teams">
+                            <div class="team">
+                                <div class="team-logo green"><i data-lucide="shield" style="width: 40px; height: 40px;"></i></div>
+                                <div class="team-name">FLAMENGO</div>
+                            </div>
+                            <div class="match-score">
+                                <div class="score">2 - 1</div>
+                                <div class="match-time">67'</div>
+                            </div>
+                            <div class="team">
+                                <div class="team-logo yellow"><i data-lucide="shield" style="width: 40px; height: 40px;"></i></div>
+                                <div class="team-name">PALMEIRAS</div>
+                            </div>
+                        </div>
+                        <div class="match-actions">
+                            <button class="btn btn-primary">Assistir</button>
+                            <button class="btn btn-secondary">Estatisticas</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card large">
+                    <div class="card-header">
+                        <span class="card-title">Top Ranking</span>
+                        <div class="card-icon"><i data-lucide="award" style="width: 20px; height: 20px;"></i></div>
+                    </div>
+                    <ul class="ranking-list">
+                        <li class="ranking-item">
+                            <div class="rank-number gold">1</div>
+                            <div class="rank-info">
+                                <div class="rank-name">BrasilKing</div>
+                                <div class="rank-rating">Rating 2847</div>
+                            </div>
+                            <div class="rank-winrate">
+                                <div class="winrate-value">73%</div>
+                                <div class="winrate-label">Win Rate</div>
+                            </div>
+                        </li>
+                        <li class="ranking-item">
+                            <div class="rank-number silver">2</div>
+                            <div class="rank-info">
+                                <div class="rank-name">GingaMaster</div>
+                                <div class="rank-rating">Rating 2798</div>
+                            </div>
+                            <div class="rank-winrate">
+                                <div class="winrate-value">70%</div>
+                                <div class="winrate-label">Win Rate</div>
+                            </div>
+                        </li>
+                        <li class="ranking-item">
+                            <div class="rank-number bronze">3</div>
+                            <div class="rank-info">
+                                <div class="rank-name">NeymarJr</div>
+                                <div class="rank-rating">Rating 2756</div>
+                            </div>
+                            <div class="rank-winrate">
+                                <div class="winrate-value">71%</div>
+                                <div class="winrate-label">Win Rate</div>
+                            </div>
+                        </li>
+                        <li class="ranking-item">
+                            <div class="rank-number default">4</div>
+                            <div class="rank-info">
+                                <div class="rank-name">RonaldinhoBR</div>
+                                <div class="rank-rating">Rating 2698</div>
+                            </div>
+                            <div class="rank-winrate">
+                                <div class="winrate-value">69%</div>
+                                <div class="winrate-label">Win Rate</div>
+                            </div>
+                        </li>
+                        <li class="ranking-item">
+                            <div class="rank-number default">5</div>
+                            <div class="rank-info">
+                                <div class="rank-name">PeleLegend</div>
+                                <div class="rank-rating">Rating 2643</div>
+                            </div>
+                            <div class="rank-winrate">
+                                <div class="winrate-value">67%</div>
+                                <div class="winrate-label">Win Rate</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <span class="card-title">Atividade Recente</span>
+                        <div class="card-icon yellow"><i data-lucide="activity" style="width: 20px; height: 20px;"></i></div>
+                    </div>
+                    <ul class="activity-list">
+                        <li class="activity-item">
+                            <div class="activity-dot red"></div>
+                            <div class="activity-content">
+                                <div class="activity-text">Flamengo vs Palmeiras iniciou</div>
+                                <div class="activity-time">Agora</div>
+                            </div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-dot yellow"></div>
+                            <div class="activity-content">
+                                <div class="activity-text">Vasco contratou novo jogador</div>
+                                <div class="activity-time">5 min</div>
+                            </div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-dot green"></div>
+                            <div class="activity-content">
+                                <div class="activity-text">Copa do Brasil quartas definidas</div>
+                                <div class="activity-time">12 min</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <span class="card-title">Acoes Rapidas</span>
+                        <div class="card-icon"><i data-lucide="zap" style="width: 20px; height: 20px;"></i></div>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="action-btn">
+                            <div class="action-icon"><i data-lucide="target" style="width: 24px; height: 24px;"></i></div>
+                            <span class="action-label">Novo Torneio</span>
+                        </button>
+                        <button class="action-btn yellow">
+                            <div class="action-icon"><i data-lucide="flame" style="width: 24px; height: 24px;"></i></div>
+                            <span class="action-label">Mercado</span>
+                        </button>
+                        <button class="action-btn yellow">
+                            <div class="action-icon"><i data-lucide="newspaper" style="width: 24px; height: 24px;"></i></div>
+                            <span class="action-label">Imprensa</span>
+                        </button>
+                        <button class="action-btn">
+                            <div class="action-icon"><i data-lucide="trophy" style="width: 24px; height: 24px;"></i></div>
+                            <span class="action-label">Rankings</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        // Authentication check - must be first
+        (function() {
+            const isLoggedIn = localStorage.getItem('psoAdminLoggedIn') === 'true';
+            if (!isLoggedIn) {
+                // Redirect to home page with login parameter
+                window.location.href = '../index.html?auth=required';
+                return;
+            }
+        })();
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('psoAdminLoggedIn');
+            localStorage.removeItem('psoAdminUser');
+            window.location.href = '../index.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+            
+            // Show logged in user info
+            const loggedInUser = localStorage.getItem('psoAdminUser');
+            if (loggedInUser) {
+                const welcomeText = document.querySelector('.welcome-text');
+                if (welcomeText) {
+                    welcomeText.textContent = `Bem-vindo, ${loggedInUser}`;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

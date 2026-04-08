@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imprensa - PSO Brasil</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700&family=Audiowide&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    
+    <style>
+        :root {
+            --neon-green: #22C55E;
+            --neon-yellow: #FACC15;
+            --pure-black: #000000;
+            --dark-gray: #121212;
+            --mid-gray: #171717;
+            --border-gray: #1f2937;
+            --text-gray: #9CA3AF;
+            --text-light: #E5E7EB;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--pure-black); color: #FFFFFF; font-family: 'Exo 2', sans-serif; min-height: 100vh; }
+        
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 24px; }
+        
+        header { background: var(--pure-black); border-bottom: 1px solid var(--border-gray); position: fixed; top: 0; left: 0; right: 0; z-index: 100; }
+        nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon { width: 40px; height: 40px; background: var(--dark-gray); border: 1px solid var(--border-gray); border-top: 2px solid var(--neon-green); display: flex; align-items: center; justify-content: center; }
+        .logo-text h1 { font-family: 'Orbitron', sans-serif; font-size: 24px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; }
+        .logo-text .version { font-family: 'Orbitron', sans-serif; font-size: 9px; letter-spacing: 0.25em; color: var(--text-gray); text-transform: uppercase; }
+        .nav-links { display: flex; gap: 32px; align-items: center; }
+        .nav-links a { font-family: 'Orbitron', sans-serif; font-size: 12px; letter-spacing: 0.15em; color: var(--text-gray); text-decoration: none; text-transform: uppercase; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--neon-green); }
+        
+        main { padding-top: 100px; padding-bottom: 60px; }
+        
+        .page-header { padding: 60px 0 40px; text-align: center; }
+        .page-badge { display: inline-block; padding: 6px 12px; background: var(--dark-gray); border: 1px solid var(--border-gray); border-bottom: 2px solid var(--neon-yellow); font-family: 'Orbitron', sans-serif; font-size: 10px; letter-spacing: 0.2em; color: var(--text-gray); text-transform: uppercase; margin-bottom: 16px; }
+        .page-title { font-family: 'Orbitron', sans-serif; font-size: 48px; font-weight: 700; letter-spacing: 0.1em; }
+        .page-title span { color: var(--neon-green); }
+        
+        .filters { display: flex; gap: 16px; margin-bottom: 40px; flex-wrap: wrap; }
+        .filter-btn { padding: 10px 20px; background: transparent; border: 1px solid var(--border-gray); color: var(--text-gray); font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
+        .filter-btn:hover, .filter-btn.active { border-color: var(--neon-green); color: var(--neon-green); }
+        
+        .news-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .news-card { background: var(--dark-gray); border: 1px solid var(--border-gray); overflow: hidden; transition: all 0.3s; animation: fadeInUp 0.5s ease-out both; cursor: pointer; }
+        .news-card:hover { border-color: var(--neon-green); transform: translateY(-4px); box-shadow: 0 8px 30px rgba(34, 197, 94, 0.1); }
+        .news-card:nth-child(1) { animation-delay: 0.1s; }
+        .news-card:nth-child(2) { animation-delay: 0.15s; }
+        .news-card:nth-child(3) { animation-delay: 0.2s; }
+        .news-card:nth-child(4) { animation-delay: 0.25s; }
+        .news-card:nth-child(5) { animation-delay: 0.3s; }
+        .news-card:nth-child(6) { animation-delay: 0.35s; }
+        
+        .news-image { width: 100%; height: 200px; object-fit: cover; background: var(--mid-gray); }
+        .news-content { padding: 24px; }
+        .news-meta { display: flex; gap: 12px; margin-bottom: 12px; font-size: 11px; }
+        .news-category { color: var(--neon-green); font-family: 'Orbitron', sans-serif; letter-spacing: 0.1em; text-transform: uppercase; }
+        .news-date { color: var(--text-gray); }
+        .news-title { font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 12px; line-height: 1.3; }
+        .news-excerpt { font-size: 13px; color: var(--text-gray); line-height: 1.6; }
+        .news-footer { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-top: 1px solid var(--border-gray); }
+        .news-author { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-gray); }
+        .read-more { font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 0.15em; color: var(--neon-green); text-transform: uppercase; }
+        
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 200; overflow-y: auto; }
+        .modal.active { display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+        .modal-content { background: var(--dark-gray); border: 1px solid var(--border-gray); max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; }
+        .modal-close { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; background: var(--mid-gray); border: 1px solid var(--border-gray); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-gray); transition: all 0.3s; z-index: 10; }
+        .modal-close:hover { border-color: var(--neon-green); color: var(--neon-green); }
+        .modal-image { width: 100%; height: 300px; object-fit: cover; }
+        .modal-body { padding: 40px; }
+        .modal-meta { display: flex; gap: 20px; margin-bottom: 20px; font-size: 12px; color: var(--text-gray); }
+        .modal-title { font-family: 'Orbitron', sans-serif; font-size: 32px; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 20px; }
+        .modal-text { font-size: 15px; line-height: 1.8; color: var(--text-light); }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 1024px) { .news-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 768px) { 
+            .news-grid { grid-template-columns: 1fr; } 
+            .nav-links { display: none; }
+            .page-title { font-size: 32px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <div class="logo-icon"><i data-lucide="newspaper" style="width: 20px; height: 20px;"></i></div>
+                <div class="logo-text">
+                    <h1>JORNAL OFICIAL</h1>
+                    <div class="version">PSO BRASIL</div>
+                </div>
+            </div>
+            <div class="nav-links">
+                <a href="../index.html">Inicio</a>
+                <a href="../index.html#rankings">Rankings</a>
+                <a href="galeria.html">Galeria</a>
+                <a href="dashboard.html">Dashboard</a>
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="container">
+            <div class="page-header">
+                <div class="page-badge">COBERTURA COMPLETA</div>
+                <h1 class="page-title">JORNAL <span>PSO</span></h1>
+            </div>
+            
+            <div class="filters">
+                <button class="filter-btn active" data-filter="all">Todas</button>
+                <button class="filter-btn" data-filter="urgente">Urgente</button>
+                <button class="filter-btn" data-filter="analise">Analise</button>
+                <button class="filter-btn" data-filter="entrevista">Entrevista</button>
+                <button class="filter-btn" data-filter="transferencia">Transferencia</button>
+            </div>
+            
+            <div class="news-grid" id="newsGrid">
+                <!-- News cards will be inserted here -->
+            </div>
+        </div>
+    </main>
+    
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()"><i data-lucide="x" style="width: 20px; height: 20px;"></i></button>
+            <img class="modal-image" id="modalImage" src="" alt="">
+            <div class="modal-body">
+                <div class="modal-meta">
+                    <span id="modalCategory"></span>
+                    <span>|</span>
+                    <span id="modalDate"></span>
+                    <span>|</span>
+                    <span id="modalReadTime"></span>
+                </div>
+                <h2 class="modal-title" id="modalTitle"></h2>
+                <div class="modal-text" id="modalContent"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const news = [
+            {
+                id: 1,
+                title: "FLAMENGO CONQUISTA TITULO HISTORICO NA LIBERTADORES",
+                excerpt: "Time carioca derrota Palmeiras na final e conquista primeiro titulo continental na historia do PSO Brasil.",
+                category: "URGENTE",
+                date: "07 ABR 2024",
+                readTime: "5 MIN",
+                author: "Redacao PSO",
+                image: "https://images.unsplash.com/photo-1574629810380-605e02525e32?w=800",
+                content: "Em uma partida eletrizante que ficara marcada na historia do PSO Brasil, o Flamengo conquistou seu primeiro titulo da Libertadores..."
+            },
+            {
+                id: 2,
+                title: "MERCADO DE TRANSFERENCIAS: AS MAIOR MOVIMENTACAO DA TEMPORADA",
+                excerpt: "Confira as principais contratacoes e vendas que movimentaram o mercado nesta janela de transferencias.",
+                category: "ANALISE",
+                date: "06 ABR 2024",
+                readTime: "8 MIN",
+                author: "Analista PSO",
+                image: "https://images.unsplash.com/photo-1560272564-c83b66b6ad52?w=800",
+                content: "A janela de transferencias desta temporada trouxe movimentacoes inesperadas e negocios milionarios..."
+            },
+            {
+                id: 3,
+                title: "ENTREVISTA EXCLUSIVA: BRASILKING REVELA SEGREDOS DO SUCESSO",
+                excerpt: "Campeao do ranking mundial concede entrevista exclusiva e fala sobre treinos, mindset e futuro.",
+                category: "ENTREVISTA",
+                date: "05 ABR 2024",
+                readTime: "12 MIN",
+                author: "Jornalista PSO",
+                image: "https://images.unsplash.com/photo-1517466483083-6711d0d23fd3?w=800",
+                content: "Em uma conversa franca e inspiradora, BrasilKing abriu o jogo sobre sua trajetoria..."
+            },
+            {
+                id: 4,
+                title: "VASCO ANUNCIA CONTRATACAO DE JOVEM PROMESSA",
+                excerpt: "Cruz-maltino fecha com promessa de 17 anos que se destacou nas categorias de base.",
+                category: "TRANSFERENCIA",
+                date: "04 ABR 2024",
+                readTime: "4 MIN",
+                author: "Redacao PSO",
+                image: null,
+                content: "O Vasco da Gama anunciou nesta quinta-feira a contratacao de uma das maiores promessas..."
+            },
+            {
+                id: 5,
+                title: "COPA DO BRASIL: QUARTAS DE FINAL DEFINIDAS",
+                excerpt: "Confira os confrontos das quartas de final da competicao mais tradicional do PSO Brasil.",
+                category: "URGENTE",
+                date: "03 ABR 2024",
+                readTime: "6 MIN",
+                author: "Redacao PSO",
+                image: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f13af?w=800",
+                content: "As oitavas de final da Copa do Brasil chegaram ao fim e os confrontos das quartas estao definidos..."
+            },
+            {
+                id: 6,
+                title: "ANALISE TATICA: A REVOLUCAO DO 4-3-3 NO PSO",
+                excerpt: "Especialistas analisam como a formacao tornou-se dominante no cenario competitivo brasileiro.",
+                category: "ANALISE",
+                date: "02 ABR 2024",
+                readTime: "10 MIN",
+                author: "Tatico PSO",
+                image: null,
+                content: "O sistema tatico 4-3-3 tem revolucionado a forma de jogar no PSO Brasil..."
+            }
+        ];
+        
+        function renderNews(filter = 'all') {
+            const grid = document.getElementById('newsGrid');
+            const filtered = filter === 'all' ? news : news.filter(n => n.category.toLowerCase() === filter);
+            
+            grid.innerHTML = filtered.map((item, index) => `
+                <article class="news-card" onclick="openModal(${item.id})" style="animation-delay: ${index * 0.05}s">
+                    ${item.image ? `<img src="${item.image}" alt="${item.title}" class="news-image">` : 
+                      `<div class="news-image" style="display: flex; align-items: center; justify-content: center; background: var(--mid-gray);"><i data-lucide="newspaper" style="width: 40px; height: 40px; color: var(--border-gray);"></i></div>`}
+                    <div class="news-content">
+                        <div class="news-meta">
+                            <span class="news-category">${item.category}</span>
+                            <span class="news-date">${item.date}</span>
+                        </div>
+                        <h3 class="news-title">${item.title}</h3>
+                        <p class="news-excerpt">${item.excerpt}</p>
+                    </div>
+                    <div class="news-footer">
+                        <div class="news-author">
+                            <i data-lucide="user" style="width: 14px; height: 14px;"></i>
+                            <span>${item.author}</span>
+                        </div>
+                        <span class="read-more">Ler mais →</span>
+                    </div>
+                </article>
+            `).join('');
+            
+            lucide.createIcons();
+        }
+        
+        function openModal(id) {
+            const item = news.find(n => n.id === id);
+            if (!item) return;
+            
+            document.getElementById('modalImage').src = item.image || '';
+            document.getElementById('modalImage').style.display = item.image ? 'block' : 'none';
+            document.getElementById('modalCategory').textContent = item.category;
+            document.getElementById('modalDate').textContent = item.date;
+            document.getElementById('modalReadTime').textContent = item.readTime + ' DE LEITURA';
+            document.getElementById('modalTitle').textContent = item.title;
+            document.getElementById('modalContent').textContent = item.content;
+            document.getElementById('modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            lucide.createIcons();
+        }
+        
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+        
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                renderNews(this.dataset.filter);
+            });
+        });
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+            renderNews();
+        });
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+    </script>
+</body>
+</html>

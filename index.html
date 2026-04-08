@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSO Brasil - Pro Soccer Online</title>
+    
+    <!-- Google Fonts - Gaming/Futuristic -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700&family=Audiowide&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    
+    <style>
+        /* CSS Variables */
+        :root {
+            --neon-green: #22C55E;
+            --neon-yellow: #FACC15;
+            --pure-black: #000000;
+            --dark-gray: #121212;
+            --mid-gray: #171717;
+            --border-gray: #1f2937;
+            --text-gray: #9CA3AF;
+            --text-light: #E5E7EB;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: var(--pure-black);
+            color: #FFFFFF;
+            font-family: 'Exo 2', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        /* Header */
+        header {
+            background: var(--pure-black);
+            border-bottom: 1px solid var(--border-gray);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+        
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--dark-gray);
+            border: 1px solid var(--border-gray);
+            border-top: 2px solid var(--neon-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            color: #FFFFFF;
+            text-transform: uppercase;
+        }
+        
+        .logo-text .version {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 9px;
+            letter-spacing: 0.25em;
+            color: var(--text-gray);
+            text-transform: uppercase;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            letter-spacing: 0.2em;
+            color: var(--text-gray);
+            text-decoration: none;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--neon-green);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .nav-links a:hover {
+            color: var(--neon-green);
+        }
+        
+        .login-btn {
+            background: transparent;
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+            padding: 10px 24px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .login-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--neon-green);
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+        
+        .login-btn:hover::before {
+            left: 0;
+        }
+        
+        .login-btn:hover {
+            color: var(--pure-black);
+        }
+        
+        /* Main Content */
+        main {
+            padding-top: 80px;
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 100px 0 80px;
+            text-align: center;
+        }
+        
+        .hero-badge {
+            display: inline-block;
+            padding: 10px 20px;
+            background: var(--dark-gray);
+            border: 1px solid var(--border-gray);
+            border-bottom: 2px solid var(--neon-yellow);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            letter-spacing: 0.25em;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            margin-bottom: 32px;
+            animation: fadeInUp 0.6s ease-out, glowPulse 3s ease-in-out infinite;
+        }
+        
+        .hero-title {
+            font-family: 'Audiowide', sans-serif;
+            font-size: 72px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            margin-bottom: 24px;
+            animation: fadeInUp 0.6s ease-out 0.1s both, textGlow 4s ease-in-out infinite;
+            text-transform: uppercase;
+        }
+        
+        .hero-title span {
+            color: var(--neon-green);
+        }
+        
+        .hero-subtitle {
+            font-family: 'Exo 2', sans-serif;
+            font-size: 17px;
+            color: var(--text-gray);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.7;
+            animation: fadeInUp 0.6s ease-out 0.2s both, fadeInBlur 1s ease-out 0.3s both;
+        }
+        
+        .hero-actions {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            animation: fadeInUp 0.6s ease-out 0.3s both, slideInFromBottom 0.8s ease-out 0.4s both;
+        }
+        
+        .btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 32px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .btn-primary {
+            background: var(--neon-green);
+            color: var(--pure-black);
+            font-weight: 700;
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background: var(--neon-yellow);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 30px rgba(250, 204, 21, 0.5);
+            animation: btnGlow 1.5s ease-in-out infinite;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border-gray);
+            color: #FFFFFF;
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
+        }
+        
+        /* Stats Section */
+        .stats-section {
+            padding: 60px 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background: var(--border-gray);
+        }
+        
+        .stat-card {
+            background: var(--dark-gray);
+            padding: 40px 32px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-green), var(--neon-yellow), transparent);
+            transition: width 0.4s ease, left 0.4s ease;
+            transform: translateX(-50%);
+        }
+        
+        .stat-card:hover::before {
+            width: 100%;
+        }
+        
+        .stat-card:hover {
+            background: var(--mid-gray);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(34, 197, 94, 0.15);
+        }
+        
+        .stat-card:hover .stat-icon {
+            animation: iconBounce 0.6s ease;
+        }
+        
+        .stat-card:hover .stat-value {
+            animation: numberPulse 0.6s ease;
+        }
+        
+        .stat-icon {
+            margin-bottom: 16px;
+            color: var(--neon-green);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+            color: #FFFFFF;
+        }
+        
+        .stat-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            letter-spacing: 0.25em;
+            color: var(--text-gray);
+            text-transform: uppercase;
+        }
+        
+        /* Rankings Section */
+        .rankings-section {
+            padding: 80px 0;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        
+        .section-title {
+            font-family: 'Audiowide', sans-serif;
+            font-size: 42px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
+        
+        .section-title span {
+            color: var(--neon-yellow);
+        }
+        
+        .section-subtitle {
+            font-size: 16px;
+            color: var(--text-gray);
+        }
+        
+        .table-container {
+            background: var(--dark-gray);
+            border: 1px solid var(--border-gray);
+            overflow: hidden;
+        }
+        
+        .ranking-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .ranking-table th {
+            background: var(--pure-black);
+            border-bottom: 1px solid var(--border-gray);
+            padding: 20px 16px;
+            text-align: left;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+        
+        .ranking-table th:last-child {
+            text-align: center;
+        }
+        
+        .ranking-table td {
+            padding: 20px 16px;
+            border-bottom: 1px solid var(--border-gray);
+            font-size: 14px;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+        
+        .ranking-table tr {
+            animation: fadeInUp 0.5s ease-out both;
+        }
+        
+        .ranking-table tr:nth-child(1) { animation-delay: 0.1s; }
+        .ranking-table tr:nth-child(2) { animation-delay: 0.15s; }
+        .ranking-table tr:nth-child(3) { animation-delay: 0.2s; }
+        .ranking-table tr:nth-child(4) { animation-delay: 0.25s; }
+        .ranking-table tr:nth-child(5) { animation-delay: 0.3s; }
+        .ranking-table tr:nth-child(6) { animation-delay: 0.35s; }
+        .ranking-table tr:nth-child(7) { animation-delay: 0.4s; }
+        .ranking-table tr:nth-child(8) { animation-delay: 0.45s; }
+        
+        .ranking-table tr:hover {
+            background: rgba(34, 197, 94, 0.05);
+            border-left: 2px solid var(--neon-green);
+        }
+        
+        .ranking-table tr:hover td {
+            color: #FFFFFF;
+        }
+        
+        .rank-badge {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .ranking-table tr:hover .rank-badge {
+            transform: scale(1.1);
+        }
+        
+        .rank-badge.gold {
+            background: var(--neon-yellow);
+            color: var(--pure-black);
+        }
+        
+        .rank-badge.silver {
+            background: #6B7280;
+            color: #FFFFFF;
+        }
+        
+        .rank-badge.bronze {
+            background: #92400E;
+            color: #FFFFFF;
+        }
+        
+        .rank-badge.default {
+            background: var(--mid-gray);
+            border: 1px solid var(--border-gray);
+            color: var(--text-gray);
+        }
+        
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .player-avatar {
+            width: 36px;
+            height: 36px;
+            background: var(--mid-gray);
+            border: 1px solid var(--border-gray);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-green);
+        }
+        
+        .player-name {
+            font-family: 'Exo 2', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+        }
+        
+        .rating {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--neon-green);
+        }
+        
+        .trend {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .trend.up {
+            color: var(--neon-green);
+        }
+        
+        .trend.down {
+            color: #EF4444;
+        }
+        
+        .trend.neutral {
+            color: var(--text-gray);
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--dark-gray);
+            border-top: 1px solid var(--border-gray);
+            padding: 40px 0;
+            margin-top: 80px;
+        }
+        
+        .footer-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .footer-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            color: var(--text-gray);
+            text-transform: uppercase;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 0 5px rgba(34, 197, 94, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(34, 197, 94, 0.4), 0 0 40px rgba(250, 204, 21, 0.2);
+            }
+        }
+
+        @keyframes textGlow {
+            0%, 100% {
+                text-shadow: 0 0 10px rgba(34, 197, 94, 0.3), 0 0 20px rgba(34, 197, 94, 0.1);
+            }
+            50% {
+                text-shadow: 0 0 20px rgba(34, 197, 94, 0.6), 0 0 40px rgba(250, 204, 21, 0.3), 0 0 60px rgba(34, 197, 94, 0.2);
+            }
+        }
+
+        @keyframes glowPulse {
+            0%, 100% {
+                box-shadow: 0 0 5px rgba(250, 204, 21, 0.2);
+                border-color: var(--border-gray);
+            }
+            50% {
+                box-shadow: 0 0 15px rgba(250, 204, 21, 0.4);
+                border-color: var(--neon-yellow);
+            }
+        }
+
+        @keyframes btnGlow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(250, 204, 21, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(250, 204, 21, 0.6), 0 0 50px rgba(34, 197, 94, 0.3);
+            }
+        }
+
+        @keyframes fadeInBlur {
+            from {
+                opacity: 0;
+                filter: blur(10px);
+            }
+            to {
+                opacity: 1;
+                filter: blur(0);
+            }
+        }
+
+        @keyframes slideInFromBottom {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes iconBounce {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2) rotate(5deg);
+            }
+        }
+
+        @keyframes numberPulse {
+            0%, 100% {
+                transform: scale(1);
+                text-shadow: none;
+            }
+            50% {
+                transform: scale(1.05);
+                text-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+            }
+        }
+
+        @keyframes borderShine {
+            0% {
+                background-position: -200% center;
+            }
+            100% {
+                background-position: 200% center;
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Login Modal */
+        .login-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .login-modal.active {
+            display: flex;
+        }
+
+        .login-content {
+            background: var(--dark-gray);
+            border: 1px solid var(--border-gray);
+            border-top: 2px solid var(--neon-green);
+            padding: 48px;
+            max-width: 420px;
+            width: 90%;
+            position: relative;
+            animation: slideInUp 0.4s ease;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(34, 197, 94, 0.1);
+        }
+
+        .login-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 40px;
+            height: 40px;
+            background: transparent;
+            border: 1px solid var(--border-gray);
+            color: var(--text-gray);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .login-close:hover {
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .login-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--mid-gray);
+            border: 1px solid var(--border-gray);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            color: var(--neon-green);
+            animation: iconPulse 2s ease-in-out infinite;
+        }
+
+        .login-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            margin-bottom: 8px;
+        }
+
+        .login-subtitle {
+            font-size: 14px;
+            color: var(--text-gray);
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            color: var(--text-gray);
+            text-transform: uppercase;
+        }
+
+        .form-input {
+            background: var(--mid-gray);
+            border: 1px solid var(--border-gray);
+            padding: 14px 16px;
+            color: #FFFFFF;
+            font-family: 'Exo 2', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            border-color: var(--neon-green);
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.2);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-gray);
+        }
+
+        .form-error {
+            font-size: 12px;
+            color: #EF4444;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .form-error.visible {
+            opacity: 1;
+        }
+
+        .login-submit {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: var(--neon-green);
+            color: var(--pure-black);
+            border: none;
+            padding: 16px 32px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 8px;
+        }
+
+        .login-submit:hover {
+            background: var(--neon-yellow);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
+        }
+
+        .login-hint {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-gray);
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes iconPulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+            }
+        }
+
+        /* User logged in state */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            letter-spacing: 0.1em;
+            color: var(--neon-green);
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid var(--border-gray);
+            color: var(--text-gray);
+            padding: 8px 16px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-left: 8px;
+        }
+
+        .logout-btn:hover {
+            border-color: #EF4444;
+            color: #EF4444;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .hero-title {
+                font-size: 56px;
+            }
+            
+            .section-title {
+                font-size: 36px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero {
+                padding: 60px 0;
+            }
+            
+            .hero-title {
+                font-size: 40px;
+            }
+            
+            .hero-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 280px;
+                justify-content: center;
+            }
+            
+            .table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .ranking-table {
+                min-width: 800px;
+            }
+            
+            .ranking-table th,
+            .ranking-table td {
+                padding: 16px 12px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i data-lucide="trophy" style="width: 20px; height: 20px;"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>PSO BRASIL</h1>
+                    <div class="version">PRO SOCCER ONLINE</div>
+                </div>
+            </div>
+            
+            <div class="nav-links">
+                <a href="#rankings">Rankings</a>
+                <a href="#tournaments">Torneios</a>
+                <a href="#market">Mercado</a>
+                <a href="pages/imprensa.html">Imprensa</a>
+                <a href="pages/galeria.html">Galeria</a>
+                <a href="#" id="dashboard-link">Dashboard</a>
+                <button class="login-btn" id="login-btn">Entrar</button>
+            </div>
+        </nav>
+    </header>
+    
+    <main>
+        <section class="hero">
+            <div class="container">
+                <div class="hero-badge">
+                    LIGA BRASILEIRA DE FUTEBOL VIRTUAL
+                </div>
+                <h1 class="hero-title">
+                    PSO <span>BRASIL</span>
+                </h1>
+                <p class="hero-subtitle">
+                    A primeira liga profissional de Pro Soccer Online no Brasil. 
+                    Competição de alto nível, estatísticas em tempo real e cobertura completa de imprensa.
+                </p>
+                <div class="hero-actions">
+                    <a href="#rankings" class="btn btn-primary">
+                        <i data-lucide="play" style="width: 16px; height: 16px;"></i>
+                        Ver Rankings
+                    </a>
+                    <a href="#tournaments" class="btn btn-secondary">
+                        <i data-lucide="chevron-right" style="width: 16px; height: 16px;"></i>
+                        Torneios
+                    </a>
+                </div>
+            </div>
+        </section>
+        
+        <section class="stats-section">
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i data-lucide="users" style="width: 24px; height: 24px;"></i>
+                        </div>
+                        <div class="stat-value">2.847</div>
+                        <div class="stat-label">Jogadores</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i data-lucide="trophy" style="width: 24px; height: 24px;"></i>
+                        </div>
+                        <div class="stat-value">156</div>
+                        <div class="stat-label">Torneios</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i data-lucide="activity" style="width: 24px; height: 24px;"></i>
+                        </div>
+                        <div class="stat-value">12.453</div>
+                        <div class="stat-label">Partidas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i data-lucide="target" style="width: 24px; height: 24px;"></i>
+                        </div>
+                        <div class="stat-value">45.892</div>
+                        <div class="stat-label">Gols</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="rankings-section" id="rankings">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Ranking <span>Brasileiro</span></h2>
+                    <p class="section-subtitle">Os melhores jogadores do cenário competitivo brasileiro</p>
+                </div>
+                
+                <div class="table-container">
+                    <table class="ranking-table">
+                        <thead>
+                            <tr>
+                                <th>Posição</th>
+                                <th>Jogador</th>
+                                <th>Rating</th>
+                                <th>Partidas</th>
+                                <th>Win %</th>
+                                <th>Gols</th>
+                                <th>Assists</th>
+                                <th style="text-align: center;">Trend</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><div class="rank-badge gold">1</div></td>
+                                <td>
+                                    <div class="player-info">
+                                        <div class="player-avatar">
+                                            <i data-lucide="user" style="width: 16px; height: 16px;"></i>
+                                        </div>
+                                        <div class="player-name">BrasilKing</div>
+                                    </div>
+                                </td>
+                                <td><span class="rating">2847</span></td>
+                                <td>847</td>
+                                <td>73.2%</td>
+                                <td>423</td>
+                                <td>189</td>
+                                <td style="text-align: center;"><span class="trend up">↑ 12</span></td>
+                            </tr>
+                            <tr>
+                                <td><div class="rank-badge silver">2</div></td>
+                                <td>
+                                    <div class="player-info">
+                                        <div class="player-avatar">
+                                            <i data-lucide="user" style="width: 16px; height: 16px;"></i>
+                                        </div>
+                                        <div class="player-name">GingaMaster</div>
+                                    </div>
+                                </td>
+                                <td><span class="rating">2798</span></td>
+                                <td>923</td>
+                                <td>69.8%</td>
+                                <td>387</td>
+                                <td>234</td>
+                                <td style="text-align: center;"><span class="trend down">↓ 3</span></td>
+                            </tr>
+                            <tr>
+                                <td><div class="rank-badge bronze">3</div></td>
+                                <td>
+                                    <div class="player-info">
+                                        <div class="player-avatar">
+                                            <i data-lucide="user" style="width: 16px; height: 16px;"></i>
+                                        </div>
+                                        <div class="player-name">NeymarJr</div>
+                                    </div>
+                                </td>
+                                <td><span class="rating">2756</span></td>
+                                <td>756</td>
+                                <td>71.4%</td>
+                                <td>412</td>
+                                <td>167</td>
+                                <td style="text-align: center;"><span class="trend up">↑ 5</span></td>
+                            </tr>
+                            <tr>
+                                <td><div class="rank-badge default">4</div></td>
+                                <td>
+                                    <div class="player-info">
+                                        <div class="player-avatar">
+                                            <i data-lucide="user" style="width: 16px; height: 16px;"></i>
+                                        </div>
+                                        <div class="player-name">RonaldinhoBR</div>
+                                    </div>
+                                </td>
+                                <td><span class="rating">2698</span></td>
+                                <td>612</td>
+                                <td>68.9%</td>
+                                <td>298</td>
+                                <td>145</td>
+                                <td style="text-align: center;"><span class="trend neutral">=</span></td>
+                            </tr>
+                            <tr>
+                                <td><div class="rank-badge default">5</div></td>
+                                <td>
+                                    <div class="player-info">
+                                        <div class="player-avatar">
+                                            <i data-lucide="user" style="width: 16px; height: 16px;"></i>
+                                        </div>
+                                        <div class="player-name">PeleLegend</div>
+                                    </div>
+                                </td>
+                                <td><span class="rating">2643</span></td>
+                                <td>534</td>
+                                <td>67.2%</td>
+                                <td>276</td>
+                                <td>198</td>
+                                <td style="text-align: center;"><span class="trend up">↑ 8</span></td>
+                            </tr>
+                            <tr>
+                                <td><div class="rank-badge default">6</div></td>
+                                <td>
+                                    <div class="player-info">
+                                        <div class="player-avatar">
+                                            <i data-lucide="user" style="width: 16px; height: 16px;"></i>
+                                        </div>
+                                        <div class="player-name">ZicoDigital</div>
+                                    </div>
+                                </td>
+                                <td><span class="rating">2598</span></td>
+                                <td>487</td>
+                                <td>66.5%</td>
+                                <td>245</td>
+                                <td>156</td>
+                                <td style="text-align: center;"><span class="trend down">↓ 2</span></td>
+                            </tr>
+                            <tr>
+                                <td><div class="rank-badge default">7</div></td>
+                                <td>
+                                    <div class="player-info">
+                                        <div class="player-avatar">
+                                            <i data-lucide="user" style="width: 16px; height: 16px;"></i>
+                                        </div>
+                                        <div class="player-name">CafuGamer</div>
+                                    </div>
+                                </td>
+                                <td><span class="rating">2543</span></td>
+                                <td>423</td>
+                                <td>64.8%</td>
+                                <td>198</td>
+                                <td>234</td>
+                                <td style="text-align: center;"><span class="trend up">↑ 4</span></td>
+                            </tr>
+                            <tr>
+                                <td><div class="rank-badge default">8</div></td>
+                                <td>
+                                    <div class="player-info">
+                                        <div class="player-avatar">
+                                            <i data-lucide="user" style="width: 16px; height: 16px;"></i>
+                                        </div>
+                                        <div class="player-name">RomarioPro</div>
+                                    </div>
+                                </td>
+                                <td><span class="rating">2487</span></td>
+                                <td>389</td>
+                                <td>63.2%</td>
+                                <td>312</td>
+                                <td>89</td>
+                                <td style="text-align: center;"><span class="trend neutral">=</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i data-lucide="trophy" style="width: 20px; height: 20px; color: var(--neon-green);"></i>
+                    <span class="footer-text">PSO BRASIL 2024</span>
+                </div>
+                <div class="footer-text">
+                    LIGA BRASILEIRA DE PRO SOCCER ONLINE
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Login Modal -->
+    <div class="login-modal" id="loginModal">
+        <div class="login-content">
+            <button class="login-close" id="loginClose">
+                <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+            </button>
+            <div class="login-header">
+                <div class="login-icon">
+                    <i data-lucide="shield" style="width: 32px; height: 32px;"></i>
+                </div>
+                <h2 class="login-title">ACESSO RESTRITO</h2>
+                <p class="login-subtitle">Area administrativa do PSO Brasil</p>
+            </div>
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">Usuario</label>
+                    <input type="text" class="form-input" id="username" placeholder="admin" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Senha</label>
+                    <input type="password" class="form-input" id="password" placeholder="••••••" required>
+                </div>
+                <div class="form-error" id="loginError">Credenciais invalidas</div>
+                <button type="submit" class="login-submit">
+                    <i data-lucide="lock" style="width: 16px; height: 16px;"></i>
+                    Acessar Dashboard
+                </button>
+            </form>
+            <div class="login-hint">
+                <i data-lucide="info" style="width: 12px; height: 12px;"></i>
+                <span>Use: admin / admin123</span>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Admin credentials (in production, this should be server-side)
+        const ADMIN_USER = 'admin';
+        const ADMIN_PASS = 'admin123';
+
+        // Initialize Lucide icons
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+            
+            // Smooth scroll for navigation
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    if (this.getAttribute('href') !== '#') {
+                        e.preventDefault();
+                        const target = document.querySelector(this.getAttribute('href'));
+                        if (target) {
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    }
+                });
+            });
+
+            // Login Modal Logic
+            const loginModal = document.getElementById('loginModal');
+            const loginBtn = document.getElementById('login-btn');
+            const loginClose = document.getElementById('loginClose');
+            const loginForm = document.getElementById('loginForm');
+            const dashboardLink = document.getElementById('dashboard-link');
+            const loginError = document.getElementById('loginError');
+            const navLinks = document.querySelector('.nav-links');
+
+            // Check if user is already logged in
+            const isLoggedIn = localStorage.getItem('psoAdminLoggedIn') === 'true';
+            const loggedInUser = localStorage.getItem('psoAdminUser');
+
+            if (isLoggedIn && loggedInUser) {
+                updateNavForLoggedInUser(loggedInUser);
+            }
+
+            // Check for auth required parameter (redirected from dashboard)
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('auth') === 'required' && !isLoggedIn) {
+                // Clear the parameter and show login modal
+                window.history.replaceState({}, document.title, window.location.pathname);
+                setTimeout(() => {
+                    loginModal.classList.add('active');
+                    document.getElementById('username').focus();
+                }, 300);
+            }
+
+            // Open login modal
+            loginBtn.addEventListener('click', () => {
+                if (isLoggedIn) {
+                    // Logout
+                    localStorage.removeItem('psoAdminLoggedIn');
+                    localStorage.removeItem('psoAdminUser');
+                    window.location.reload();
+                } else {
+                    loginModal.classList.add('active');
+                    document.getElementById('username').focus();
+                }
+            });
+
+            // Dashboard link click - check auth
+            dashboardLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (isLoggedIn) {
+                    window.location.href = 'pages/dashboard.html';
+                } else {
+                    loginModal.classList.add('active');
+                    document.getElementById('username').focus();
+                }
+            });
+
+            // Close login modal
+            loginClose.addEventListener('click', () => {
+                loginModal.classList.remove('active');
+                loginError.classList.remove('visible');
+                loginForm.reset();
+            });
+
+            // Close on backdrop click
+            loginModal.addEventListener('click', (e) => {
+                if (e.target === loginModal) {
+                    loginModal.classList.remove('active');
+                    loginError.classList.remove('visible');
+                    loginForm.reset();
+                }
+            });
+
+            // Handle login form submission
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value;
+
+                if (username === ADMIN_USER && password === ADMIN_PASS) {
+                    // Login successful
+                    localStorage.setItem('psoAdminLoggedIn', 'true');
+                    localStorage.setItem('psoAdminUser', username);
+                    
+                    // Redirect to dashboard
+                    window.location.href = 'pages/dashboard.html';
+                } else {
+                    // Login failed
+                    loginError.classList.add('visible');
+                    document.getElementById('password').value = '';
+                    document.getElementById('password').focus();
+                }
+            });
+
+            // Update navigation for logged in user
+            function updateNavForLoggedInUser(username) {
+                loginBtn.textContent = 'Sair';
+                loginBtn.classList.add('logout-btn');
+            }
+
+            // Close modal on Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && loginModal.classList.contains('active')) {
+                    loginModal.classList.remove('active');
+                    loginError.classList.remove('visible');
+                    loginForm.reset();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
