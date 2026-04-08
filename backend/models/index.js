@@ -8,6 +8,7 @@ const DiscordEvent = require('./DiscordEvent');
 const Notification = require('./Notification');
 const NotificationPreference = require('./NotificationPreference');
 const NotificationTemplate = require('./NotificationTemplate');
+const Noticia = require('./Noticia');
 
 // Definir associações
 User.hasMany(TournamentParticipant, { foreignKey: 'userId', as: 'participants' });
@@ -53,5 +54,6 @@ module.exports = {
     DiscordEvent,
     Notification,
     NotificationPreference,
-    NotificationTemplate
+    NotificationTemplate,
+    Noticia
 };
