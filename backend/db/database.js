@@ -17,8 +17,31 @@ DATABASE_URL = DATABASE_URL.replace(/\?sslmode=[^&]+/, '').replace(/&sslmode=[^&
 
 console.log('📝 Usando DATABASE_URL das variáveis de ambiente');
 
-// For Square Cloud PostgreSQL with self-signed certificates
-// We need to disable certificate verification completely
+// SSL Certificate paths for Square Cloud PostgreSQL
+const certsDir = path.join(__dirname, '..', 'certs');
+let sslConfig = {};
+
+try {
+    const ca = fs.readFileSync(path.join(certsDir, 'ca-certificate.crt')).toString();
+    const cert = fs.readFileSync(path.join(certsDir, 'certificate.pem')).toString();
+    const key = fs.readFileSync(path.join(certsDir, 'private-key.key')).toString();
+    
+    sslConfig = {
+        require: true,
+        rejectUnauthorized: true,
+        ca,
+        cert,
+        key
+    };
+    console.log('✅ Certificados SSL carregados com sucesso');
+} catch (err) {
+    console.log('⚠️  Certificados não encontrados, usando SSL sem verificação');
+    sslConfig = {
+        require: true,
+        rejectUnauthorized: false
+    };
+}
+
 const sequelize = new Sequelize(DATABASE_URL, {
     dialect: 'postgres',
     protocol: 'postgres',
@@ -30,13 +53,7 @@ const sequelize = new Sequelize(DATABASE_URL, {
         idle: 10000
     },
     dialectOptions: {
-        ssl: {
-            require: true,
-            rejectUnauthorized: false,
-            ca: null,
-            key: null,
-            cert: null
-        }
+        ssl: sslConfig
     },
     define: {
         timestamps: true,
