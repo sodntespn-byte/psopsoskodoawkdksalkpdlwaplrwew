@@ -119,11 +119,11 @@
             </div>
             
             <div class="filters">
-                <button class="filter-btn active" data-filter="all">Todas</button>
-                <button class="filter-btn" data-filter="urgente">Urgente</button>
-                <button class="filter-btn" data-filter="analise">Analise</button>
-                <button class="filter-btn" data-filter="entrevista">Entrevista</button>
-                <button class="filter-btn" data-filter="transferencia">Transferencia</button>
+                <button class="filter-btn active" data-filter="all" onclick="filterNews('all')">Todas</button>
+                <button class="filter-btn" data-filter="urgente" onclick="filterNews('urgente')">Urgente</button>
+                <button class="filter-btn" data-filter="analise" onclick="filterNews('analise')">Analise</button>
+                <button class="filter-btn" data-filter="entrevista" onclick="filterNews('entrevista')">Entrevista</button>
+                <button class="filter-btn" data-filter="transferencia" onclick="filterNews('transferencia')">Transferencia</button>
             </div>
             
             <div class="news-grid" id="newsGrid">
@@ -274,13 +274,11 @@
             if (e.target === this) closeModal();
         });
         
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                renderNews(this.dataset.filter);
-            });
-        });
+        function filterNews(filter) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`.filter-btn[data-filter="${filter}"]`).classList.add('active');
+            renderNews(filter);
+        }
         
         document.addEventListener('DOMContentLoaded', function() {
             lucide.createIcons();

@@ -127,11 +127,11 @@
             </div>
             
             <div class="filters">
-                <button class="filter-btn active" data-filter="all">Todas</button>
-                <button class="filter-btn" data-filter="jogo">Acao de Jogo</button>
-                <button class="filter-btn" data-filter="celebracao">Celebracao</button>
-                <button class="filter-btn" data-filter="estadio">Estadio</button>
-                <button class="filter-btn" data-filter="retrato">Retrato</button>
+                <button class="filter-btn active" data-filter="all" onclick="filterGallery('all')">Todas</button>
+                <button class="filter-btn" data-filter="jogo" onclick="filterGallery('jogo')">Acao de Jogo</button>
+                <button class="filter-btn" data-filter="celebracao" onclick="filterGallery('celebracao')">Celebracao</button>
+                <button class="filter-btn" data-filter="estadio" onclick="filterGallery('estadio')">Estadio</button>
+                <button class="filter-btn" data-filter="retrato" onclick="filterGallery('retrato')">Retrato</button>
             </div>
             
             <div class="gallery-grid" id="galleryGrid">
@@ -271,13 +271,11 @@
             if (e.target === this) closeLightbox();
         });
         
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                renderGallery(this.dataset.filter);
-            });
-        });
+        function filterGallery(filter) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`.filter-btn[data-filter="${filter}"]`).classList.add('active');
+            renderGallery(filter);
+        }
         
         document.addEventListener('DOMContentLoaded', function() {
             lucide.createIcons();

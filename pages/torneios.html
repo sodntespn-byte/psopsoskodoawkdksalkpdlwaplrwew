@@ -131,10 +131,10 @@
             </div>
             
             <div class="filters">
-                <button class="filter-btn active" data-filter="all">Todos</button>
-                <button class="filter-btn" data-filter="upcoming">Proximos</button>
-                <button class="filter-btn" data-filter="ongoing">Em Andamento</button>
-                <button class="filter-btn" data-filter="finished">Concluidos</button>
+                <button class="filter-btn active" data-filter="all" onclick="filterTournaments('all')">Todos</button>
+                <button class="filter-btn" data-filter="upcoming" onclick="filterTournaments('upcoming')">Proximos</button>
+                <button class="filter-btn" data-filter="ongoing" onclick="filterTournaments('ongoing')">Em Andamento</button>
+                <button class="filter-btn" data-filter="finished" onclick="filterTournaments('finished')">Concluidos</button>
             </div>
             
             <div class="tournaments-grid" id="tournamentsGrid">
@@ -349,14 +349,11 @@
             }, 3000);
         }
         
-        // Filter buttons
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                renderTournaments(this.dataset.filter);
-            });
-        });
+        function filterTournaments(filter) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`.filter-btn[data-filter="${filter}"]`).classList.add('active');
+            renderTournaments(filter);
+        }
         
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
