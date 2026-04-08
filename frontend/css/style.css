@@ -1,0 +1,582 @@
+/* ==========================================
+   PSO BRASIL - Global Styles
+   ========================================== */
+
+/* CSS Variables */
+:root {
+    --neon-green: #22C55E;
+    --neon-yellow: #FACC15;
+    --pure-black: #000000;
+    --dark-gray: #121212;
+    --mid-gray: #171717;
+    --border-gray: #1f2937;
+    --text-gray: #9CA3AF;
+    --text-light: #E5E7EB;
+}
+
+/* Reset & Base */
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body { 
+    background: var(--pure-black); 
+    color: #FFFFFF; 
+    font-family: 'Inter', sans-serif; 
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Global Radial Gradient Background */
+body {
+    background: radial-gradient(ellipse 100% 80% at 50% 0%, #002200 0%, #001100 20%, #000000 60%);
+    background-attachment: fixed;
+}
+
+.container { 
+    max-width: 1400px; 
+    margin: 0 auto; 
+    padding: 0 24px; 
+}
+
+/* ==========================================
+   HEADER & NAVIGATION
+   ========================================== */
+header { 
+    background: var(--pure-black); 
+    border-bottom: 1px solid var(--border-gray); 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    right: 0; 
+    z-index: 100;
+    animation: slideDown 0.6s ease-out;
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(0); }
+}
+
+nav { 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    padding: 20px 0; 
+}
+
+.logo { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    animation: fadeInLeft 0.6s ease-out 0.2s both;
+}
+
+.logo-icon { 
+    width: 40px; 
+    height: 40px; 
+    background: var(--dark-gray); 
+    border: 1px solid var(--border-gray); 
+    border-top: 2px solid var(--neon-green); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    overflow: hidden;
+    padding: 0;
+    transition: all 0.3s;
+}
+
+.logo-icon:hover {
+    border-color: var(--neon-green);
+    box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+}
+
+.logo-icon img { 
+    width: 38px; 
+    height: 38px; 
+    object-fit: contain; 
+}
+
+.logo-text h1 { 
+    font-family: 'Rajdhani', sans-serif; 
+    font-size: 26px; 
+    font-weight: 700; 
+    letter-spacing: 0.1em; 
+    text-transform: uppercase;
+    animation: textGlow 4s ease-in-out infinite;
+}
+
+.logo-text .version { 
+    font-family: 'Inter', sans-serif; 
+    font-size: 10px; 
+    letter-spacing: 0.15em; 
+    color: var(--text-gray); 
+    text-transform: uppercase; 
+}
+
+.nav-links { 
+    display: flex; 
+    gap: 32px; 
+    align-items: center;
+    animation: fadeInRight 0.6s ease-out 0.3s both;
+}
+
+.nav-links a { 
+    font-family: 'Inter', sans-serif; 
+    font-size: 12px; 
+    font-weight: 500; 
+    letter-spacing: 0.05em; 
+    color: var(--text-gray); 
+    text-decoration: none; 
+    text-transform: uppercase; 
+    transition: all 0.3s;
+    position: relative;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--neon-green);
+    transition: width 0.3s;
+}
+
+.nav-links a:hover { 
+    color: var(--neon-green);
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+.nav-links a.active { 
+    color: var(--neon-green);
+}
+
+.nav-links a.active::after {
+    width: 100%;
+}
+
+/* Login Button */
+.login-btn {
+    background: transparent;
+    border: 1px solid var(--neon-green);
+    color: var(--neon-green);
+    padding: 10px 20px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--neon-green);
+    transition: left 0.3s;
+    z-index: -1;
+}
+
+.login-btn:hover::before {
+    left: 0;
+}
+
+.login-btn:hover {
+    color: var(--pure-black);
+}
+
+.logout-btn {
+    background: transparent;
+    border: 1px solid #EF4444;
+    color: #EF4444;
+    padding: 8px 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.logout-btn:hover {
+    background: #EF4444;
+    color: #FFFFFF;
+}
+
+/* ==========================================
+   MAIN CONTENT & PAGE STRUCTURE
+   ========================================== */
+main { 
+    padding-top: 100px; 
+    padding-bottom: 60px;
+    animation: fadeIn 0.8s ease-out;
+}
+
+.page-header { 
+    padding: 60px 0 40px; 
+    text-align: center;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.page-badge { 
+    display: inline-block; 
+    padding: 6px 12px; 
+    background: var(--dark-gray); 
+    border: 1px solid var(--border-gray); 
+    border-bottom: 2px solid var(--neon-green); 
+    font-family: 'Inter', sans-serif; 
+    font-size: 11px; 
+    font-weight: 500; 
+    letter-spacing: 0.15em; 
+    color: var(--text-gray); 
+    text-transform: uppercase; 
+    margin-bottom: 16px;
+    animation: fadeInUp 0.6s ease-out, glowPulse 3s ease-in-out infinite;
+}
+
+.page-title { 
+    font-family: 'Rajdhani', sans-serif; 
+    font-size: 48px; 
+    font-weight: 700; 
+    letter-spacing: 0.05em; 
+    text-transform: uppercase;
+    animation: fadeInUp 0.6s ease-out 0.1s both, textGlow 4s ease-in-out infinite;
+}
+
+.page-title span { 
+    color: var(--neon-green); 
+}
+
+.page-subtitle { 
+    font-size: 16px; 
+    color: var(--text-gray); 
+    margin-top: 16px;
+    animation: fadeInUp 0.6s ease-out 0.2s both;
+}
+
+/* ==========================================
+   BRAZILIAN FLAG DIVIDER (Reusable Component)
+   ========================================== */
+.brazil-flag-container {
+    display: flex;
+    justify-content: center;
+    margin: 60px 0 40px;
+    position: relative;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.brazil-flag {
+    width: 120px;
+    height: 80px;
+    position: relative;
+    filter: drop-shadow(0 0 8px var(--neon-green)) drop-shadow(0 0 20px rgba(34, 197, 94, 0.4));
+    animation: flagWave 3s ease-in-out infinite;
+    transform-origin: left center;
+}
+
+.brazil-flag svg {
+    width: 100%;
+    height: 100%;
+}
+
+@keyframes flagWave {
+    0%, 100% { transform: skewY(0deg) scaleX(1); }
+    25% { transform: skewY(1deg) scaleX(0.98); }
+    50% { transform: skewY(0deg) scaleX(1); }
+    75% { transform: skewY(-1deg) scaleX(0.98); }
+}
+
+.brazil-flag::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.05) 25%,
+        transparent 50%,
+        rgba(0, 0, 0, 0.05) 75%,
+        transparent 100%
+    );
+    animation: clothWave 2s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes clothWave {
+    0%, 100% { transform: translateX(-100%); }
+    50% { transform: translateX(100%); }
+}
+
+/* ==========================================
+   COMMON COMPONENTS
+   ========================================== */
+
+/* Filters */
+.filters { 
+    display: flex; 
+    gap: 16px; 
+    margin-bottom: 40px; 
+    flex-wrap: wrap; 
+    justify-content: center;
+    animation: fadeInUp 0.6s ease-out 0.2s both;
+}
+
+.filter-btn { 
+    padding: 10px 20px; 
+    background: transparent; 
+    border: 1px solid var(--border-gray); 
+    color: var(--text-gray); 
+    font-family: 'Inter', sans-serif; 
+    font-size: 12px; 
+    font-weight: 500; 
+    letter-spacing: 0.1em; 
+    text-transform: uppercase; 
+    cursor: pointer; 
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.filter-btn:hover, 
+.filter-btn.active { 
+    border-color: var(--neon-green); 
+    color: var(--neon-green);
+    box-shadow: 0 0 15px rgba(34, 197, 94, 0.2);
+}
+
+/* Buttons */
+.btn { 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    padding: 16px 32px; 
+    font-family: 'Inter', sans-serif; 
+    font-size: 13px; 
+    font-weight: 600; 
+    letter-spacing: 0.1em; 
+    text-transform: uppercase; 
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer; 
+    border: none;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary { 
+    background: var(--neon-green); 
+    color: var(--pure-black);
+}
+
+.btn-primary:hover {
+    background: var(--neon-yellow);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
+}
+
+.btn-secondary {
+    background: transparent;
+    border: 1px solid var(--neon-green);
+    color: var(--neon-green);
+}
+
+.btn-secondary:hover {
+    background: var(--neon-green);
+    color: var(--pure-black);
+}
+
+/* Cards */
+.card {
+    background: var(--dark-gray);
+    border: 1px solid var(--border-gray);
+    overflow: hidden;
+    transition: all 0.3s;
+    animation: fadeInUp 0.5s ease-out both;
+}
+
+.card:hover {
+    border-color: var(--neon-green);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(34, 197, 94, 0.1);
+}
+
+/* Grid Layouts */
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+
+/* ==========================================
+   ANIMATIONS (Global Keyframes)
+   ========================================== */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes textGlow {
+    0%, 100% { text-shadow: 0 0 10px rgba(34, 197, 94, 0.5), 0 0 20px rgba(34, 197, 94, 0.3); }
+    50% { text-shadow: 0 0 20px rgba(34, 197, 94, 0.8), 0 0 30px rgba(34, 197, 94, 0.5); }
+}
+
+@keyframes glowPulse {
+    0%, 100% { box-shadow: 0 0 5px rgba(34, 197, 94, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.6), 0 0 30px rgba(34, 197, 94, 0.3); }
+}
+
+@keyframes iconPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+@keyframes slideInFromBottom {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Animation Delays */
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.5s; }
+
+/* ==========================================
+   RESPONSIVE DESIGN
+   ========================================== */
+@media (max-width: 1024px) {
+    .page-title {
+        font-size: 40px;
+    }
+    
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    
+    .brazil-flag {
+        width: 100px;
+        height: 67px;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        gap: 20px;
+    }
+    
+    .nav-links a {
+        font-size: 11px;
+    }
+    
+    .page-title {
+        font-size: 32px;
+    }
+    
+    .grid-3,
+    .grid-4 { grid-template-columns: 1fr; }
+    
+    .brazil-flag {
+        width: 80px;
+        height: 54px;
+    }
+    
+    .brazil-flag-container {
+        margin: 40px 0 30px;
+    }
+    
+    .filters {
+        gap: 8px;
+    }
+    
+    .filter-btn {
+        padding: 8px 16px;
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 16px;
+    }
+    
+    .logo-text h1 {
+        font-size: 20px;
+    }
+    
+    .page-title {
+        font-size: 28px;
+    }
+    
+    .nav-links {
+        gap: 12px;
+    }
+    
+    .nav-links a {
+        font-size: 10px;
+        letter-spacing: 0.02em;
+    }
+}
