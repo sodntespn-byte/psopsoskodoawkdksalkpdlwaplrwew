@@ -1,17 +1,38 @@
 const { Sequelize } = require('sequelize');
+const fs = require('fs');
+const path = require('path');
 require('dotenv').config();
 
-// Configuração do banco de dados PostgreSQL
-const sequelize = new Sequelize(
-  process.env.DATABASE_URL || 
-  `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
-  {
+// Square Cloud PostgreSQL Configuration - Hardcoded to bypass .env issues
+const DATABASE_URL = 'postgresql://squarecloud:VDE1xJURx06DvYZtikq04Amr@square-cloud-db-ecd0071f6934489597ad31c462ce83f0.squareweb.app:7196';
+console.log('📝 Usando DATABASE_URL configurada manualmente');
+
+// SSL Certificate paths
+const certsDir = path.join(__dirname, '..', 'certs');
+let sslConfig = false;
+
+try {
+    sslConfig = {
+        require: true,
+        rejectUnauthorized: false,
+        ca: fs.readFileSync(path.join(certsDir, 'ca-certificate.crt')).toString(),
+        cert: fs.readFileSync(path.join(certsDir, 'certificate.pem')).toString(),
+        key: fs.readFileSync(path.join(certsDir, 'private-key.key')).toString()
+    };
+    console.log('✅ Certificados SSL carregados com sucesso');
+} catch (err) {
+    console.warn('⚠️  Certificados SSL não encontrados, usando conexão sem SSL:', err.message);
+}
+
+// Parse database URL manually to ensure correct dialect
+const dbUrl = new URL(DATABASE_URL);
+const sequelize = new Sequelize({
     dialect: 'postgres',
-    host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 5432,
-    database: process.env.DB_NAME || 'pro_soccer_online',
-    username: process.env.DB_USER || 'postgres',
-    password: process.env.DB_PASSWORD || '',
+    host: dbUrl.hostname,
+    port: parseInt(dbUrl.port) || 7196,
+    database: dbUrl.pathname.replace('/', ''),
+    username: dbUrl.username,
+    password: dbUrl.password,
     logging: process.env.NODE_ENV === 'development' ? console.log : false,
     pool: {
         max: 20,
@@ -20,13 +41,8 @@ const sequelize = new Sequelize(
         idle: 10000
     },
     dialectOptions: {
-        ssl: process.env.NODE_ENV === 'production' ? {
-            require: true,
-            rejectUnauthorized: false,
-            cert: process.env.SSL_CERT_PATH,
-            key: process.env.SSL_KEY_PATH,
-            ca: process.env.SSL_CA_PATH
-        } : false
+        ssl: sslConfig,
+        connectTimeout: 60000
     },
     define: {
         timestamps: true,
@@ -40,13 +56,24 @@ const sequelize = new Sequelize(
 // Testar conexão
 async function testConnection() {
     try {
+        console.log('🔌 Tentando conectar ao PostgreSQL...');
+        console.log(`📍 URL: ${DATABASE_URL.replace(/:[^:@]+@/, ':***@')}`);
+        
         await sequelize.authenticate();
-        console.log('Conexão com PostgreSQL estabelecida com sucesso!');
-        console.log(`Banco de dados: ${process.env.DB_NAME}`);
-        console.log(`Host: ${process.env.DB_HOST}:${process.env.DB_PORT}`);
+        
+        console.log('✅ Conexão com PostgreSQL estabelecida com sucesso!');
+        console.log(`📊 Banco de dados conectado via Square Cloud`);
+        
+        // Test query to verify connection
+        const [results] = await sequelize.query('SELECT NOW() as current_time, version() as version');
+        console.log(`🕐 Server Time: ${results[0].current_time}`);
+        console.log(`🐘 PostgreSQL Version: ${results[0].version}`);
+        
+        return true;
     } catch (error) {
-        console.error('Erro ao conectar com PostgreSQL:', error);
-        process.exit(1);
+        console.error('❌ Erro ao conectar com PostgreSQL:', error.message);
+        console.error('Detalhes:', error);
+        return false;
     }
 }
 
