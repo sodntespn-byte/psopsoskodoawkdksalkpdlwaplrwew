@@ -3,19 +3,10 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 
-// Get DATABASE_URL from environment variable (configured in Square Cloud dashboard)
-let DATABASE_URL = process.env.DATABASE_URL;
+// DATABASE_URL configurada diretamente para Square Cloud
+const DATABASE_URL = 'postgresql://squarecloud:t6eNrMqqk2z5Nx4pklIRA07T@square-cloud-db-ecd0071f6934489597ad31c462ce83f0.squareweb.app:7196/squarecloud';
 
-if (!DATABASE_URL) {
-    console.error('❌ DATABASE_URL não configurada! Configure no painel da Square Cloud.');
-    console.error('   Vá em: Dashboard → Seu App → Variables → Adicionar DATABASE_URL');
-    process.exit(1);
-}
-
-// Remove sslmode from URL if present to avoid conflicts with dialectOptions
-DATABASE_URL = DATABASE_URL.replace(/\?sslmode=[^&]+/, '').replace(/&sslmode=[^&]+/, '');
-
-console.log('📝 Usando DATABASE_URL das variáveis de ambiente');
+console.log('📝 Usando DATABASE_URL configurada no código');
 
 // SSL Certificate paths for Square Cloud PostgreSQL
 const certsDir = path.join(__dirname, '..', 'certs');
