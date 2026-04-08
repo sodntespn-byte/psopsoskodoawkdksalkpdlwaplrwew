@@ -9,19 +9,26 @@ console.log('📝 Usando DATABASE_URL configurada manualmente');
 
 // SSL Certificate paths
 const certsDir = path.join(__dirname, '..', 'certs');
-let sslConfig = false;
+let sslConfig = {
+    require: true,
+    rejectUnauthorized: false  // Always allow SSL without strict cert validation for Square Cloud
+};
 
 try {
+    const ca = fs.readFileSync(path.join(certsDir, 'ca-certificate.crt')).toString();
+    const cert = fs.readFileSync(path.join(certsDir, 'certificate.pem')).toString();
+    const key = fs.readFileSync(path.join(certsDir, 'private-key.key')).toString();
+    
     sslConfig = {
         require: true,
-        rejectUnauthorized: false,
-        ca: fs.readFileSync(path.join(certsDir, 'ca-certificate.crt')).toString(),
-        cert: fs.readFileSync(path.join(certsDir, 'certificate.pem')).toString(),
-        key: fs.readFileSync(path.join(certsDir, 'private-key.key')).toString()
+        rejectUnauthorized: true,
+        ca,
+        cert,
+        key
     };
     console.log('✅ Certificados SSL carregados com sucesso');
 } catch (err) {
-    console.warn('⚠️  Certificados SSL não encontrados, usando conexão sem SSL:', err.message);
+    console.log('ℹ️  Usando SSL sem certificados personalizados (modo Square Cloud)');
 }
 
 // Parse database URL manually to ensure correct dialect
