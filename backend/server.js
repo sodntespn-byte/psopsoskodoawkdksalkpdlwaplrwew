@@ -74,6 +74,7 @@ const authRoutes = require('./routes/auth');
 const registerRoutes = require('./routes/register');
 const configRoutes = require('./routes/config');
 const lobbyRoutes = require('./routes/lobby');
+const matchesRoutes = require('./routes/matches');
 const passport = require('./middleware/passport');
 const session = require('express-session');
 
@@ -221,6 +222,9 @@ app.use('/api/config', configRoutes);
 
 // Usar rotas do lobby
 app.use('/api/lobby', lobbyRoutes);
+
+// Usar rotas de partidas/calendário
+app.use('/api/matches', matchesRoutes);
 
 // Usar rotas de perfil
 const perfilRoutes = require('./routes/perfil');
