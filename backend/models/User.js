@@ -149,6 +149,48 @@ const User = sequelize.define('User', {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
         allowNull: false
+    },
+    // Profile customization fields
+    bio: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+        defaultValue: null
+    },
+    profile_color: {
+        type: DataTypes.STRING(20),
+        allowNull: true,
+        defaultValue: '#22C55E' // Default neon green
+    },
+    border_style: {
+        type: DataTypes.STRING(50),
+        allowNull: true,
+        defaultValue: 'default' // default, gold, vip, legendary
+    },
+    title: {
+        type: DataTypes.STRING(100),
+        allowNull: true,
+        defaultValue: null
+    },
+    preferred_position: {
+        type: DataTypes.STRING(50),
+        allowNull: true,
+        defaultValue: null
+    },
+    // Player statistics
+    stats_gols: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+        allowNull: false
+    },
+    stats_assistencias: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+        allowNull: false
+    },
+    stats_jogos: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+        allowNull: false
     }
 }, {
     tableName: 'users',

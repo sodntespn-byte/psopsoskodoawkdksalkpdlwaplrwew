@@ -222,6 +222,10 @@ app.use('/api/config', configRoutes);
 // Usar rotas do lobby
 app.use('/api/lobby', lobbyRoutes);
 
+// Usar rotas de perfil
+const perfilRoutes = require('./routes/perfil');
+app.use('/api/perfil', perfilRoutes);
+
 // Servir arquivos estáticos do frontend com segurança
 const frontendPath = path.join(__dirname, '..', 'frontend');
 

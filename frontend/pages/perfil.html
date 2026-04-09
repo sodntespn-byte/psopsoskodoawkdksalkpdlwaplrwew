@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil do Jogador - PSO Brasil</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    
+    <style>
+        :root {
+            --profile-color: #22C55E;
+            --profile-border: default;
+        }
+        
+        /* Profile Page Styles */
+        .profile-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 120px 20px 60px;
+        }
+        
+        .profile-card {
+            background: linear-gradient(135deg, #0a2a0a 0%, #051405 100%);
+            border: 1px solid var(--profile-color);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Border Styles */
+        .profile-card.border-default {
+            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.2);
+        }
+        
+        .profile-card.border-gold {
+            border: 2px solid #FFD700;
+            box-shadow: 0 4px 30px rgba(255, 215, 0, 0.4);
+        }
+        
+        .profile-card.border-vip {
+            border: 2px solid #0099FF;
+            box-shadow: 0 4px 30px rgba(0, 153, 255, 0.4);
+        }
+        
+        .profile-card.border-legendary {
+            border: 2px solid #A855F7;
+            box-shadow: 0 4px 40px rgba(168, 85, 247, 0.5);
+            animation: legendaryGlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes legendaryGlow {
+            0%, 100% { box-shadow: 0 4px 40px rgba(168, 85, 247, 0.5); }
+            50% { box-shadow: 0 4px 60px rgba(168, 85, 247, 0.8); }
+        }
+        
+        .profile-header {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, transparent 100%);
+            padding: 40px;
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            border-bottom: 1px solid rgba(34, 197, 94, 0.2);
+        }
+        
+        .profile-avatar {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid var(--profile-color);
+            flex-shrink: 0;
+        }
+        
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .profile-avatar::after {
+            content: '';
+            position: absolute;
+            inset: -5px;
+            border-radius: 50%;
+            border: 2px solid var(--profile-color);
+            opacity: 0.5;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+        
+        .profile-info {
+            flex: 1;
+        }
+        
+        .profile-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--profile-color);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: 8px;
+        }
+        
+        .profile-username {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 42px;
+            font-weight: 700;
+            color: #FFFFFF;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+        }
+        
+        .profile-bio {
+            font-size: 14px;
+            color: var(--text-gray);
+            line-height: 1.6;
+            max-width: 500px;
+        }
+        
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            padding: 30px 40px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        .stat-box {
+            text-align: center;
+            padding: 20px;
+            background: rgba(34, 197, 94, 0.05);
+            border: 1px solid rgba(34, 197, 94, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .stat-box:hover {
+            border-color: var(--profile-color);
+            background: rgba(34, 197, 94, 0.1);
+        }
+        
+        .stat-value {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--profile-color);
+            line-height: 1;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-top: 8px;
+        }
+        
+        .profile-details {
+            padding: 30px 40px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+        }
+        
+        .detail-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(34, 197, 94, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--profile-color);
+        }
+        
+        .detail-content {
+            flex: 1;
+        }
+        
+        .detail-label {
+            font-size: 11px;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 4px;
+        }
+        
+        .detail-value {
+            font-size: 14px;
+            color: #FFFFFF;
+            font-weight: 500;
+        }
+        
+        .profile-actions {
+            padding: 20px 40px 40px;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        
+        .btn-profile {
+            padding: 12px 24px;
+            background: transparent;
+            border: 1px solid var(--profile-color);
+            color: var(--profile-color);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-profile:hover {
+            background: var(--profile-color);
+            color: var(--pure-black);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: var(--text-gray);
+        }
+        
+        .error {
+            text-align: center;
+            padding: 60px;
+            color: #FF4444;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+                padding: 30px 20px;
+            }
+            
+            .profile-username {
+                font-size: 28px;
+            }
+            
+            .profile-stats {
+                grid-template-columns: repeat(2, 1fr);
+                padding: 20px;
+            }
+            
+            .profile-details {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+            
+            .profile-actions {
+                flex-direction: column;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="header-container"></div>
+    
+    <main class="profile-container">
+        <div id="profileContent">
+            <div class="loading">
+                <i data-lucide="loader-2" style="width: 48px; height: 48px; animation: spin 1s linear infinite;"></i>
+                <p style="margin-top: 20px;">Carregando perfil...</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/global.js"></script>
+    <script>
+        // Get player ID from URL
+        const pathParts = window.location.pathname.split('/');
+        const playerId = pathParts[pathParts.length - 1] || pathParts[pathParts.length - 2];
+        
+        async function loadProfile() {
+            try {
+                const response = await fetch(`/api/perfil/${playerId}`);
+                const data = await response.json();
+                
+                if (!data.success) {
+                    document.getElementById('profileContent').innerHTML = `
+                        <div class="error">
+                            <i data-lucide="user-x" style="width: 48px; height: 48px;"></i>
+                            <p style="margin-top: 20px;">Jogador não encontrado</p>
+                        </div>
+                    `;
+                    lucide.createIcons();
+                    return;
+                }
+                
+                const profile = data.perfil;
+                
+                // Set CSS variables for dynamic styling
+                document.documentElement.style.setProperty('--profile-color', profile.profile_color || '#22C55E');
+                
+                // Build profile HTML
+                const profileHTML = `
+                    <div class="profile-card border-${profile.border_style || 'default'}">
+                        <div class="profile-header">
+                            <div class="profile-avatar">
+                                <img src="${profile.avatar_url || 'https://cdn.discordapp.com/embed/avatars/0.png'}" alt="${profile.username}">
+                            </div>
+                            <div class="profile-info">
+                                <div class="profile-title">${profile.title || 'JOGADOR PSO'}</div>
+                                <h1 class="profile-username">${profile.username}</h1>
+                                <p class="profile-bio">${profile.bio || 'Sem descrição disponível.'}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-stats">
+                            <div class="stat-box">
+                                <div class="stat-value">${profile.estatisticas.gols}</div>
+                                <div class="stat-label">Gols</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-value">${profile.estatisticas.assistencias}</div>
+                                <div class="stat-label">Assistências</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-value">${profile.estatisticas.jogos}</div>
+                                <div class="stat-label">Jogos</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-value">${profile.titulos}</div>
+                                <div class="stat-label">Títulos</div>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-details">
+                            <div class="detail-item">
+                                <div class="detail-icon">
+                                    <i data-lucide="target" style="width: 20px; height: 20px;"></i>
+                                </div>
+                                <div class="detail-content">
+                                    <div class="detail-label">Posição Preferida</div>
+                                    <div class="detail-value">${profile.preferred_position || 'N/A'}</div>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-icon">
+                                    <i data-lucide="trophy" style="width: 20px; height: 20px;"></i>
+                                </div>
+                                <div class="detail-content">
+                                    <div class="detail-label">Rank</div>
+                                    <div class="detail-value">${profile.rank || 'Unranked'}</div>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-icon">
+                                    <i data-lucide="calendar" style="width: 20px; height: 20px;"></i>
+                                </div>
+                                <div class="detail-content">
+                                    <div class="detail-label">Membro desde</div>
+                                    <div class="detail-value">${new Date(profile.membro_desde).toLocaleDateString('pt-BR')}</div>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-icon">
+                                    <i data-lucide="discord" style="width: 20px; height: 20px;"></i>
+                                </div>
+                                <div class="detail-content">
+                                    <div class="detail-label">Discord ID</div>
+                                    <div class="detail-value">${profile.discord_id || 'N/A'}</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-actions">
+                            <a href="/" class="btn-profile">
+                                <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+                                Voltar ao Início
+                            </a>
+                            <button class="btn-profile" onclick="shareProfile('${profile.username}')">
+                                <i data-lucide="share-2" style="width: 16px; height: 16px;"></i>
+                                Compartilhar
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('profileContent').innerHTML = profileHTML;
+                lucide.createIcons();
+                
+            } catch (error) {
+                console.error('Erro ao carregar perfil:', error);
+                document.getElementById('profileContent').innerHTML = `
+                    <div class="error">
+                        <i data-lucide="alert-triangle" style="width: 48px; height: 48px;"></i>
+                        <p style="margin-top: 20px;">Erro ao carregar perfil</p>
+                    </div>
+                `;
+                lucide.createIcons();
+            }
+        }
+        
+        function shareProfile(username) {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                alert('Link do perfil copiado!');
+            });
+        }
+        
+        // Load profile on page load
+        document.addEventListener('DOMContentLoaded', loadProfile);
+    </script>
+</body>
+</html>
