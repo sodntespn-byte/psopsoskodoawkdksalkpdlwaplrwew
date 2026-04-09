@@ -226,7 +226,8 @@ const sensitiveFilesProtection = (req, res, next) => {
         /config\.js$/i,
         /database\.js$/i,
         /\.sql$/i,
-        /\.log$/i
+        /\.log$/i,
+        /\.html$/i
     ];
     
     const isSensitive = sensitivePatterns.some(pattern => pattern.test(req.path));
@@ -238,22 +239,33 @@ const sensitiveFilesProtection = (req, res, next) => {
     next();
 };
 
+// Middleware para redirecionar .html para URLs limpas
+const cleanUrlMiddleware = (req, res, next) => {
+    if (req.path.endsWith('.html')) {
+        const cleanPath = req.path.replace('.html', '');
+        return res.redirect(301, cleanPath);
+    }
+    next();
+};
+
+app.use(cleanUrlMiddleware);
+
 // Servir arquivos estáticos com proteção
 app.use('/assets', sensitiveFilesProtection, express.static(path.join(frontendPath, 'assets')));
 app.use('/images', sensitiveFilesProtection, express.static(path.join(frontendPath, 'images')));
 app.use('/css', sensitiveFilesProtection, express.static(path.join(frontendPath, 'css')));
 app.use('/js', sensitiveFilesProtection, express.static(path.join(frontendPath, 'js')));
 
-// Servir páginas específicas
-app.use('/pages', sensitiveFilesProtection, express.static(path.join(frontendPath, 'pages')));
+// Não servir pasta pages diretamente - usar rotas limpas
+// app.use('/pages', sensitiveFilesProtection, express.static(path.join(frontendPath, 'pages')));
 
 // Rota principal - serve o index.html
 app.get('/', (req, res) => {
     res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
-// Rota para páginas
-app.get('/dashboard', (req, res) => {
+// Rota para páginas - sem extensão .html
+app.get('/dashboard', requireAuth, (req, res) => {
     res.sendFile(path.join(frontendPath, 'pages', 'dashboard.html'));
 });
 
@@ -261,23 +273,29 @@ app.get('/imprensa', (req, res) => {
     res.sendFile(path.join(frontendPath, 'pages', 'imprensa.html'));
 });
 
+// Galeria agora é parte de Imprensa - redirecionar
 app.get('/galeria', (req, res) => {
-    res.sendFile(path.join(frontendPath, 'pages', 'galeria.html'));
+    res.redirect('/imprensa#galeria');
 });
 
 app.get('/torneios', (req, res) => {
     res.sendFile(path.join(frontendPath, 'pages', 'torneios.html'));
 });
 
+// MVP agora é parte de Torneios - redirecionar
+app.get('/mvp', (req, res) => {
+    res.redirect('/torneios#mvp');
+});
+
 app.get('/mercado', (req, res) => {
     res.sendFile(path.join(frontendPath, 'pages', 'mercado.html'));
 });
 
-app.get('/mvp', (req, res) => {
-    res.sendFile(path.join(frontendPath, 'pages', 'mvp.html'));
+app.get('/registrar', (req, res) => {
+    res.sendFile(path.join(frontendPath, 'pages', 'registrar.html'));
 });
 
-app.get('/registrar', (req, res) => {
+app.get('/login', (req, res) => {
     res.sendFile(path.join(frontendPath, 'pages', 'registrar.html'));
 });
 

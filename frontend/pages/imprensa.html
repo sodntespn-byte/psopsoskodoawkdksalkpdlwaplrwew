@@ -66,31 +66,75 @@
         }
         
         @media (max-width: 1024px) { .news-grid { grid-template-columns: repeat(2, 1fr); } }
+        /* Admin Navigation */
+        .nav-admin { display: flex; gap: 8px; align-items: center; margin-left: 16px; padding-left: 16px; border-left: 1px solid var(--border-gray); }
+        .nav-admin.hidden { display: none; }
+        .admin-icon { width: 36px; height: 36px; background: transparent; border: 1px solid var(--border-gray); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--text-gray); cursor: pointer; transition: all 0.3s; position: relative; text-decoration: none; }
+        .admin-icon:hover { border-color: var(--neon-green); color: var(--neon-green); box-shadow: 0 0 15px rgba(34, 197, 94, 0.3); }
+        .admin-icon::after { content: attr(data-tooltip); position: absolute; bottom: -35px; left: 50%; transform: translateX(-50%); background: var(--dark-gray); border: 1px solid var(--border-gray); padding: 4px 10px; font-size: 11px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 100; border-radius: 4px; }
+        .admin-icon:hover::after { opacity: 1; }
+        
+        /* Mobile Menu */
+        .mobile-menu-btn { display: none; width: 40px; height: 40px; background: transparent; border: 1px solid var(--border-gray); color: var(--text-gray); cursor: pointer; transition: all 0.3s; align-items: center; justify-content: center; }
+        .mobile-menu-btn:hover { border-color: var(--neon-green); color: var(--neon-green); }
+        .nav-auth { display: flex; gap: 12px; align-items: center; }
+        
+        /* Gallery Section */
+        .gallery-section { margin-top: 80px; padding-top: 60px; border-top: 1px solid var(--border-gray); }
+        .gallery-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        .gallery-item { aspect-ratio: 16/9; background: var(--dark-gray); border: 1px solid var(--border-gray); overflow: hidden; cursor: pointer; transition: all 0.3s; }
+        .gallery-item:hover { border-color: var(--neon-green); transform: scale(1.02); box-shadow: 0 10px 30px rgba(34, 197, 94, 0.2); }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+        .gallery-item:hover img { transform: scale(1.1); }
+        
+        @media (max-width: 1024px) { 
+            .gallery-grid { grid-template-columns: repeat(3, 1fr); }
+        }
         @media (max-width: 768px) { 
             .news-grid { grid-template-columns: 1fr; } 
-            .nav-links { display: none; }
+            .nav-links { display: none; position: absolute; top: 80px; left: 0; right: 0; background: var(--dark-gray); flex-direction: column; padding: 20px; gap: 16px; border-bottom: 1px solid var(--border-gray); }
+            .nav-links.active { display: flex; }
+            .mobile-menu-btn { display: flex; }
             .page-title { font-size: 32px; }
+            .nav-admin { margin-left: 0; padding-left: 0; border-left: none; border-top: 1px solid var(--border-gray); padding-top: 16px; margin-top: 16px; }
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
 <body>
     <header>
         <nav class="container">
-            <div class="logo">
+            <a href="/" class="logo">
                 <div class="logo-icon" style="padding: 0; overflow: hidden;"><img src="../images/logo.png" alt="PSO Brasil Logo" style="width: 38px; height: 38px; object-fit: contain;"></div>
                 <div class="logo-text">
-                    <h1>IMPRENSA</h1>
-                    <div class="version">NOTICIAS PSO BRASIL</div>
+                    <h1>PSO BRASIL</h1>
+                    <div class="version">IMPRENSA</div>
+                </div>
+            </a>
+            <div class="nav-links">
+                <a href="/">Início</a>
+                <a href="/#rankings">Rankings</a>
+                <a href="/torneios">Torneios</a>
+                <a href="/mercado">Mercado</a>
+                <a href="/imprensa" class="active">Imprensa</a>
+                <a href="/registrar">Registrar</a>
+                
+                <!-- Admin Icons - Hidden by default -->
+                <div class="nav-admin hidden" id="nav-admin">
+                    <a href="/admin" class="admin-icon" data-tooltip="Painel Admin">
+                        <i data-lucide="settings" style="width: 18px; height: 18px;"></i>
+                    </a>
+                    <button class="admin-icon" data-tooltip="Notificações" onclick="showNotificationPanel()">
+                        <i data-lucide="bell" style="width: 18px; height: 18px;"></i>
+                    </button>
                 </div>
             </div>
-            <div class="nav-links">
-                <a href="../index.html">Inicio</a>
-                <a href="../index.html#rankings">Rankings</a>
-                <a href="mvp.html">Votar MVP</a>
-                <a href="galeria.html">Galeria</a>
-                <a href="registrar.html">Registrar</a>
-                <a href="dashboard.html">Dashboard</a>
+            <div class="nav-auth">
+                <button class="login-btn" id="login-btn" onclick="showLoginModal()">Entrar</button>
             </div>
+            <button class="mobile-menu-btn" aria-label="Menu" onclick="toggleMobileMenu()">
+                <i data-lucide="menu" style="width: 20px; height: 20px;"></i>
+            </button>
         </nav>
     </header>
     
@@ -112,6 +156,39 @@
             <div class="news-grid" id="newsGrid">
                 <!-- News cards will be inserted here -->
             </div>
+            
+            <!-- Galeria Section - Integrated into Imprensa -->
+            <section class="gallery-section" id="galeria">
+                <h2 class="section-title" style="font-family: 'Rajdhani', sans-serif; font-size: 32px; margin-bottom: 32px;">
+                    GALERIA <span style="color: var(--neon-green);">PSO</span>
+                </h2>
+                <div class="gallery-grid" id="galleryGrid">
+                    <div class="gallery-item" onclick="openGalleryModal('https://images.unsplash.com/photo-1574629810380-605e02525e32?w=1200')">
+                        <img src="https://images.unsplash.com/photo-1574629810380-605e02525e32?w=400" alt="Partida PSO">
+                    </div>
+                    <div class="gallery-item" onclick="openGalleryModal('https://images.unsplash.com/photo-1560272564-c83b66b6ad52?w=1200')">
+                        <img src="https://images.unsplash.com/photo-1560272564-c83b66b6ad52?w=400" alt="Estádio">
+                    </div>
+                    <div class="gallery-item" onclick="openGalleryModal('https://images.unsplash.com/photo-1517466483083-6711d0d23fd3?w=1200')">
+                        <img src="https://images.unsplash.com/photo-1517466483083-6711d0d23fd3?w=400" alt="Jogador">
+                    </div>
+                    <div class="gallery-item" onclick="openGalleryModal('https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=1200')">
+                        <img src="https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=400" alt="Bola">
+                    </div>
+                    <div class="gallery-item" onclick="openGalleryModal('https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=1200')">
+                        <img src="https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=400" alt="Torcida">
+                    </div>
+                    <div class="gallery-item" onclick="openGalleryModal('https://images.unsplash.com/photo-1522778119026-d647f0565c6a?w=1200')">
+                        <img src="https://images.unsplash.com/photo-1522778119026-d647f0565c6a?w=400" alt="Chuteira">
+                    </div>
+                    <div class="gallery-item" onclick="openGalleryModal('https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=1200')">
+                        <img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=400" alt="Gol">
+                    </div>
+                    <div class="gallery-item" onclick="openGalleryModal('https://images.unsplash.com/photo-1551958219-acbc608c6377?w=1200')">
+                        <img src="https://images.unsplash.com/photo-1551958219-acbc608c6377?w=400" alt="Comemoração">
+                    </div>
+                </div>
+            </section>
         </div>
     </main>
     
@@ -270,6 +347,62 @@
         
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') closeModal();
+        });
+        
+        // Admin check
+        function checkAdminStatus() {
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const navAdmin = document.getElementById('nav-admin');
+            if (token && user && (user.role === 'admin' || user.username === 'admin')) {
+                navAdmin.classList.remove('hidden');
+            } else {
+                navAdmin.classList.add('hidden');
+            }
+        }
+        
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            const mobileBtn = document.querySelector('.mobile-menu-btn');
+            navLinks.classList.toggle('active');
+            const icon = mobileBtn.querySelector('i');
+            if (icon) {
+                const isOpen = navLinks.classList.contains('active');
+                icon.setAttribute('data-lucide', isOpen ? 'x' : 'menu');
+                lucide.createIcons();
+            }
+        }
+        
+        // Gallery modal
+        function openGalleryModal(imageUrl) {
+            const modal = document.getElementById('modal');
+            document.getElementById('modalImage').src = imageUrl;
+            document.getElementById('modalImage').style.display = 'block';
+            document.getElementById('modalCategory').textContent = 'GALERIA';
+            document.getElementById('modalDate').textContent = new Date().toLocaleDateString('pt-BR');
+            document.getElementById('modalReadTime').textContent = 'IMAGEM';
+            document.getElementById('modalTitle').textContent = 'Galeria PSO Brasil';
+            document.getElementById('modalContent').textContent = 'Clique fora da imagem para fechar.';
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Show login modal placeholder
+        function showLoginModal() {
+            alert('Sistema de login - Redirecionando para página de registro');
+            window.location.href = '/registrar';
+        }
+        
+        // Show notification panel
+        function showNotificationPanel() {
+            alert('Sistema de notificações - Conecte o webhook do Discord nas configurações');
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAdminStatus();
+            lucide.createIcons();
         });
     </script>
 </body>
