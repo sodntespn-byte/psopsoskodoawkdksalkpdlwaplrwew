@@ -462,12 +462,12 @@ const authenticateToken = (req, res, next) => {
     }
 };
 
-// Middleware de verificação de usuário
+// Middleware de verificação de usuário - DEFINIDO ANTES DAS ROTAS
 const requireAuth = (req, res, next) => {
     authenticateToken(req, res, next);
 };
 
-// Middleware de verificação de administrador
+// Middleware de verificação de administrador - DEFINIDO ANTES DAS ROTAS
 const requireAdmin = (req, res, next) => {
     authenticateToken(req, res, () => {
         if (!req.userDetails || !req.userDetails.isAdmin) {
