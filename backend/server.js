@@ -62,14 +62,14 @@ const sequelize = new Sequelize(DATABASE_URL, {
 });
 
 console.log('📝 Usando DATABASE_URL configurada no server.js');
-const { User, Tournament, Match, TournamentParticipant, DiscordEvent, Notification, NotificationPreference, NotificationTemplate } = require('./models');
+const { User, Tournament, Match, TournamentParticipant, DiscordEvent, Notification, NotificationPreference, NotificationTemplate, SiteSetting } = require('./models');
 const DiscordWebhookHandler = require('./webhook/discordWebhook');
 const SecurityConfig = require('./middleware/security');
 const AttackProtection = require('./middleware/attackProtection');
 const SecurityAuditor = require('./middleware/auditor');
 const NotificationService = require('./services/notificationService');
 const notificationRoutes = require('./routes/notifications');
-const adminRoutes = require('./routes/admin');
+const adminRoutes = require('./routes/admin-new');
 const authRoutes = require('./routes/auth');
 const registerRoutes = require('./routes/register');
 const passport = require('./middleware/passport');
@@ -172,8 +172,41 @@ const registerLimiter = rateLimit({
 // Usar rotas de notificações
 app.use('/notifications', notificationRoutes);
 
-// Usar rotas administrativas
-app.use('/admin', adminRoutes);
+// Middleware de proteção para rotas admin
+const adminProtection = (req, res, next) => {
+    // Se for API route, continua normalmente
+    if (req.path.startsWith('/api/')) {
+        return next();
+    }
+    
+    // Para páginas admin, verificar autenticação via cookie/token
+    const token = req.cookies?.adminToken || req.header('Authorization')?.replace('Bearer ', '');
+    
+    if (!token) {
+        return res.redirect('/login?error=403');
+    }
+    
+    try {
+        const jwt = require('jsonwebtoken');
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        
+        // Verificar se usuário é admin
+        const { User } = require('./models');
+        User.findByPk(decoded.userId).then(user => {
+            if (!user || (user.role !== 'admin' && user.username !== 'admin')) {
+                return res.redirect('/login?error=403');
+            }
+            next();
+        }).catch(() => {
+            res.redirect('/login?error=403');
+        });
+    } catch (error) {
+        res.redirect('/login?error=403');
+    }
+};
+
+// Usar rotas administrativas com proteção
+app.use('/admin', adminProtection, adminRoutes);
 
 // Usar rotas de autenticação
 app.use('/auth', authRoutes);
@@ -181,10 +214,38 @@ app.use('/auth', authRoutes);
 // Usar rotas de registro
 app.use('/api', registerRoutes);
 
-// Servir arquivos estáticos do frontend
+// Servir arquivos estáticos do frontend com segurança
 const frontendPath = path.join(__dirname, '..', 'frontend');
-app.use(express.static(frontendPath));
-app.use('/pages', express.static(path.join(frontendPath, 'pages')));
+
+// Middleware para bloquear acesso a arquivos sensíveis
+const sensitiveFilesProtection = (req, res, next) => {
+    const sensitivePatterns = [
+        /rocket\.js$/i,
+        /admin\.js$/i,
+        /\.env$/i,
+        /config\.js$/i,
+        /database\.js$/i,
+        /\.sql$/i,
+        /\.log$/i
+    ];
+    
+    const isSensitive = sensitivePatterns.some(pattern => pattern.test(req.path));
+    
+    if (isSensitive) {
+        return res.status(403).json({ error: 'Acesso negado' });
+    }
+    
+    next();
+};
+
+// Servir arquivos estáticos com proteção
+app.use('/assets', sensitiveFilesProtection, express.static(path.join(frontendPath, 'assets')));
+app.use('/images', sensitiveFilesProtection, express.static(path.join(frontendPath, 'images')));
+app.use('/css', sensitiveFilesProtection, express.static(path.join(frontendPath, 'css')));
+app.use('/js', sensitiveFilesProtection, express.static(path.join(frontendPath, 'js')));
+
+// Servir páginas específicas
+app.use('/pages', sensitiveFilesProtection, express.static(path.join(frontendPath, 'pages')));
 
 // Rota principal - serve o index.html
 app.get('/', (req, res) => {
@@ -229,6 +290,34 @@ app.get('/api/health', (req, res) => {
         environment: process.env.NODE_ENV || 'development',
         version: '1.0.0'
     });
+});
+
+// API endpoint para buscar perfil do jogador
+app.get('/api/player/:username', async (req, res) => {
+    try {
+        const { username } = req.params;
+        
+        const user = await User.findOne({
+            where: { username },
+            attributes: ['username', 'discord_id', 'avatar_url', 'created_at', 'country', 'titles']
+        });
+        
+        if (!user) {
+            return res.status(404).json({ error: 'Jogador não encontrado' });
+        }
+        
+        res.json({
+            username: user.username,
+            discord_id: user.discord_id,
+            avatar_url: user.avatar_url,
+            data_de_registro: user.created_at,
+            pais: user.country || 'BR',
+            quantidade_de_titulos: user.titles || 0
+        });
+    } catch (error) {
+        console.error('Erro ao buscar jogador:', error);
+        res.status(500).json({ error: 'Erro interno do servidor' });
+    }
 });
 
 // Fallback para SPA - serve index.html para rotas não encontradas (exceto API)
@@ -1086,12 +1175,16 @@ async function startServer() {
     try {
         await initializeDatabase();
         
+        // Inicializar configurações padrão do site
+        await SiteSetting.initializeDefaults();
+        
         app.listen(PORT, () => {
             console.log(`Servidor rodando na porta ${PORT}`);
             console.log('Ambiente: ' + (process.env.NODE_ENV || 'development'));
             console.log('API disponível em: http://localhost:${PORT}/api');
             console.log('Webhook Discord: ' + (discordWebhook ? 'ativo' : 'inativo'));
             console.log('Banco de Dados: PostgreSQL - Square Cloud');
+            console.log('Painel Admin: http://localhost:${PORT}/admin');
         });
     } catch (error) {
         console.error('Erro ao iniciar servidor:', error);

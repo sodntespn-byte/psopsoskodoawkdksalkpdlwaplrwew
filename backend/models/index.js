@@ -9,6 +9,7 @@ const Notification = require('./Notification');
 const NotificationPreference = require('./NotificationPreference');
 const NotificationTemplate = require('./NotificationTemplate');
 const Noticia = require('./Noticia');
+const SiteSetting = require('./SiteSetting');
 
 // Definir associações
 User.hasMany(TournamentParticipant, { foreignKey: 'userId', as: 'participants' });
@@ -55,5 +56,6 @@ module.exports = {
     Notification,
     NotificationPreference,
     NotificationTemplate,
-    Noticia
+    Noticia,
+    SiteSetting
 };

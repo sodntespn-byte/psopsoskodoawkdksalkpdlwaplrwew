@@ -144,6 +144,11 @@ const User = sequelize.define('User', {
     avatarUrl: {
         type: DataTypes.STRING(500),
         allowNull: true
+    },
+    is_admin: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        allowNull: false
     }
 }, {
     tableName: 'users',
