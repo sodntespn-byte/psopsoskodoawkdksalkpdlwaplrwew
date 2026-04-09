@@ -462,16 +462,16 @@ const authenticateToken = (req, res, next) => {
     }
 };
 
-// Middleware de verificação de usuário - DEFINIDO ANTES DAS ROTAS
+// Middleware de verificação de usuário
 const requireAuth = (req, res, next) => {
     authenticateToken(req, res, next);
 };
 
-// Middleware de verificação de administrador - DEFINIDO ANTES DAS ROTAS
+// Middleware de verificação de administrador
 const requireAdmin = (req, res, next) => {
     authenticateToken(req, res, () => {
         if (!req.userDetails || !req.userDetails.isAdmin) {
-            return res.status(403).json({ 
+            return res.status(403).json({
                 error: 'Acesso negado. Permissão de administrador necessária.',
                 code: 'ADMIN_REQUIRED'
             });
