@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('../server');
+const { sequelize } = require('../db/database');
 const jornalWebhookService = require('../services/jornalWebhookService');
 
 const Noticia = sequelize.define('Noticia', {

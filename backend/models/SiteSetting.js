@@ -1,4 +1,5 @@
 const { DataTypes } = require('sequelize');
+const { sequelize } = require('../db/database');
 
 module.exports = (sequelize) => {
     const SiteSetting = sequelize.define('SiteSetting', {
