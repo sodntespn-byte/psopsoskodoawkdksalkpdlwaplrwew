@@ -1,8 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../db/database');
 
-module.exports = (sequelize) => {
-    const SiteSetting = sequelize.define('SiteSetting', {
+const SiteSetting = sequelize.define('SiteSetting', {
         key: {
             type: DataTypes.STRING(100),
             primaryKey: true,
@@ -216,5 +215,4 @@ module.exports = (sequelize) => {
         }
     };
 
-    return SiteSetting;
-};
+    module.exports = SiteSetting;
