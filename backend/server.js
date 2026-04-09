@@ -72,6 +72,7 @@ const notificationRoutes = require('./routes/notifications');
 const adminRoutes = require('./routes/admin-new');
 const authRoutes = require('./routes/auth');
 const registerRoutes = require('./routes/register');
+const configRoutes = require('./routes/config');
 const passport = require('./middleware/passport');
 const session = require('express-session');
 
@@ -213,6 +214,9 @@ app.use('/auth', authRoutes);
 
 // Usar rotas de registro
 app.use('/api', registerRoutes);
+
+// Usar rotas de configurações dinâmicas
+app.use('/api/config', configRoutes);
 
 // Servir arquivos estáticos do frontend com segurança
 const frontendPath = path.join(__dirname, '..', 'frontend');
