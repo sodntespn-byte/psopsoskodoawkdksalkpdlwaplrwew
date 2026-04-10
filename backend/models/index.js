@@ -15,10 +15,8 @@ const SiteSetting = require('./SiteSetting');
 let SiteAnalytics;
 if (sequelize) {
     SiteAnalytics = require('./SiteAnalytics')(sequelize);
-    
-    // Definir associações
-    User.hasMany(SiteAnalytics, { foreignKey: 'user_id', as: 'analytics' });
-    SiteAnalytics.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+    // Nota: Sem foreign key constraint para evitar conflito de tipos
+    // O user_id em SiteAnalytics é UUID mas sem constraint stricta
 } else {
     console.warn('[MODELS] Sequelize not available, skipping SiteAnalytics initialization');
 }
