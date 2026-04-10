@@ -81,6 +81,11 @@ class NotificationService {
             };
 
         } catch (error) {
+            // Silenciar erro se a tabela não existir
+            if (error.message && error.message.includes('relation "notifications" does not exist')) {
+                console.log('[NotificationService] Tabela notifications não existe - notificação não salva');
+                return { success: false, error: 'notifications_table_not_found' };
+            }
             console.error('Erro ao enviar notificação:', error);
             return { success: false, error: error.message };
         }
@@ -559,6 +564,11 @@ class NotificationService {
             console.log(`Limpeza de notificações expiradas: ${expired} removidas`);
             return { success: true, deleted: expired };
         } catch (error) {
+            // Silenciar erro se a tabela não existir
+            if (error.message && error.message.includes('relation "notifications" does not exist')) {
+                console.log('[NotificationService] Tabela notifications não existe - pulando limpeza');
+                return { success: false, error: 'notifications_table_not_found' };
+            }
             console.error('Erro na limpeza de notificações expiradas:', error);
             return { success: false, error: error.message };
         }
@@ -597,7 +607,12 @@ class NotificationService {
                 }
             }
         } catch (error) {
-            console.error('Erro ao processar fila de notificações:', error);
+            // Silenciar erro se a tabela não existir (notificações desativadas)
+            if (error.message && error.message.includes('relation "notifications" does not exist')) {
+                console.log('[NotificationService] Tabela notifications não existe - pulando processamento');
+            } else {
+                console.error('Erro ao processar fila de notificações:', error);
+            }
         } finally {
             this.processingQueue = false;
         }
