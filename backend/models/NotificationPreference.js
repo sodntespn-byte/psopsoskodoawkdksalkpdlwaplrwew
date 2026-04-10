@@ -127,14 +127,8 @@ const NotificationPreference = sequelize.define('NotificationPreference', {
         }
     }, {
         tableName: 'notification_preferences',
-        timestamps: true,
-        indexes: [
-            { fields: ['userId'] },
-            { fields: ['type'] },
-            { fields: ['enabled'] },
-            { fields: ['userId', 'type'] },
-            { fields: ['userId', 'enabled'] }
-        ]
+        timestamps: true
+        // Indexes removidos - tabela já existe
     });
 
     // Métodos de instância

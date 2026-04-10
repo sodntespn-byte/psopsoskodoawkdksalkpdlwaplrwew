@@ -62,14 +62,8 @@ const DiscordEvent = sequelize.define('DiscordEvent', {
         beforeSave: (event) => {
             event.updatedAt = new Date();
         }
-    },
-    indexes: [
-        { fields: ['eventType'] },
-        { fields: ['userId'] },
-        { fields: ['tournamentId'] },
-        { fields: ['matchId'] },
-        { fields: ['createdAt'] }
-    ]
+    }
+    // Indexes removidos - tabela já existe
 });
 
 module.exports = DiscordEvent;

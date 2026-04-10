@@ -144,15 +144,8 @@ const Tournament = sequelize.define('Tournament', {
         beforeSave: (tournament) => {
             tournament.updatedAt = new Date();
         }
-    },
-    indexes: [
-        { fields: ['name'] },
-        { fields: ['type'] },
-        { fields: ['status'] },
-        { fields: ['startDate'] },
-        { fields: ['region'] },
-        { fields: ['createdAt'] }
-    ]
+    }
+    // Indexes removidos - tabela já existe
 });
 
 module.exports = Tournament;

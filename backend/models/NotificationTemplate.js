@@ -140,14 +140,8 @@ const NotificationTemplate = sequelize.define('NotificationTemplate', {
     }, {
         tableName: 'notification_templates',
         timestamps: true,
-        paranoid: true,
-        indexes: [
-            { fields: ['type'] },
-            { fields: ['channel'] },
-            { fields: ['isActive'] },
-            { fields: ['type', 'channel'] },
-            { fields: ['name'] }
-        ]
+        paranoid: true
+        // Indexes removidos - tabela já existe
     });
 
     // Métodos de instância

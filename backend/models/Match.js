@@ -111,14 +111,8 @@ const Match = sequelize.define('Match', {
         beforeSave: (match) => {
             match.updatedAt = new Date();
         }
-    },
-    indexes: [
-        { fields: ['tournamentId'] },
-        { fields: ['date'] },
-        { fields: ['status'] },
-        { fields: ['winner'] },
-        { fields: ['createdAt'] }
-    ]
+    }
+    // Indexes removidos - tabela já existe
 });
 
 module.exports = Match;

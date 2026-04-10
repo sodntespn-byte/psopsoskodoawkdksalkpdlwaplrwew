@@ -56,12 +56,8 @@ const MatchTeam = sequelize.define('MatchTeam', {
         beforeSave: (team) => {
             team.updatedAt = new Date();
         }
-    },
-    indexes: [
-        { fields: ['matchId'] },
-        { fields: ['userId'] },
-        { fields: ['teamName'] }
-    ]
+    }
+    // Indexes removidos - tabela já existe
 });
 
 module.exports = MatchTeam;

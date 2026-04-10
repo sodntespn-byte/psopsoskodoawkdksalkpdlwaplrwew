@@ -82,21 +82,8 @@ module.exports = (sequelize) => {
         tableName: 'site_analytics',
         timestamps: true,
         createdAt: 'created_at',
-        updatedAt: false,
-        indexes: [
-            {
-                fields: ['session_id']
-            },
-            {
-                fields: ['page_visited']
-            },
-            {
-                fields: ['entry_time']
-            },
-            {
-                fields: ['user_id']
-            }
-        ]
+        updatedAt: false
+        // Indexes removidos - tabela já existe
     });
 
     return SiteAnalytics;
