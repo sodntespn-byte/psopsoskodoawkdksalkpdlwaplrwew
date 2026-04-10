@@ -275,6 +275,23 @@ app.use('/js', sensitiveFilesProtection, express.static(path.join(frontendPath, 
 // Não servir pasta pages diretamente - usar rotas limpas
 // app.use('/pages', sensitiveFilesProtection, express.static(path.join(frontendPath, 'pages')));
 
+// MIDDLEWARE DE AUTENTICAÇÃO - definidos antes das rotas que os usam
+const requireAuth = (req, res, next) => {
+    authenticateToken(req, res, next);
+};
+
+const requireAdmin = (req, res, next) => {
+    authenticateToken(req, res, () => {
+        if (!req.userDetails || !req.userDetails.isAdmin) {
+            return res.status(403).json({
+                error: 'Acesso negado. Permissão de administrador necessária.',
+                code: 'ADMIN_REQUIRED'
+            });
+        }
+        next();
+    });
+};
+
 // Rota principal - serve o index.html
 app.get('/', (req, res) => {
     res.sendFile(path.join(frontendPath, 'index.html'));
@@ -470,23 +487,7 @@ const authenticateToken = (req, res, next) => {
     }
 };
 
-// Middleware de verificação de usuário
-const requireAuth = (req, res, next) => {
-    authenticateToken(req, res, next);
-};
-
-// Middleware de verificação de administrador
-const requireAdmin = (req, res, next) => {
-    authenticateToken(req, res, () => {
-        if (!req.userDetails || !req.userDetails.isAdmin) {
-            return res.status(403).json({
-                error: 'Acesso negado. Permissão de administrador necessária.',
-                code: 'ADMIN_REQUIRED'
-            });
-        }
-        next();
-    });
-};
+// (requireAuth e requireAdmin já definidos no início do arquivo - linhas 279-293)
 
 // Rotas de Autenticação com segurança avançada
 app.post('/api/register', registerLimiter, registerValidation, async (req, res) => {
