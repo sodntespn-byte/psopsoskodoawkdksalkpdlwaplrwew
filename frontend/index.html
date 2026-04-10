@@ -37,11 +37,11 @@
             }
             
             // Buscar do backend
-            fetch('/api/settings')
+            fetch('/api/config')
                 .then(r => r.json())
                 .then(data => {
-                    if (data.success && data.config) {
-                        const config = data.config;
+                    if (data.success && data.configs) {
+                        const config = data.configs;
                         if (config.neon_color) {
                             document.documentElement.style.setProperty('--neon-color', config.neon_color);
                             document.documentElement.style.setProperty('--main-color', config.neon_color);
