@@ -8,6 +8,7 @@
     "dev": "nodemon backend/server.js",
     "bot": "node bot/discordBot.js",
     "start:all": "node backend/server.js & node bot/discordBot.js",
+    "db:sync": "node backend/scripts/sync-database.js",
     "test": "jest",
     "install-all": "npm install && cd backend && npm install"
   },
