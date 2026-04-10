@@ -4,11 +4,12 @@
   "description": "PSO Brasil - Liga de Pro Soccer Online com backend Node.js e frontend HTML",
   "main": "backend/server.js",
   "scripts": {
-    "start": "cd backend && node server.js",
-    "dev": "cd backend && nodemon server.js",
+    "start": "node backend/server.js",
+    "dev": "nodemon backend/server.js",
+    "bot": "node bot/discordBot.js",
+    "start:all": "node backend/server.js & node bot/discordBot.js",
     "test": "jest",
-    "bot": "cd backend && node bot/index.js",
-    "install-backend": "cd backend && npm install"
+    "install-all": "npm install && cd backend && npm install"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -35,6 +36,7 @@
     "passport-google-oauth20": "^2.0.0",
     "pg": "^8.11.3",
     "prisma": "^4.16.2",
+    "puppeteer": "^21.0.0",
     "sequelize": "^6.32.1",
     "socket.io": "^4.8.3",
     "validator": "^13.11.0"

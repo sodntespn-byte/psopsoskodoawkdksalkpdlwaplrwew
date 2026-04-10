@@ -340,6 +340,11 @@ app.get('/torneios', (req, res) => {
     res.sendFile(path.join(frontendPath, 'pages', 'torneios.html'));
 });
 
+// Rota para preview do bot CMS
+app.get('/botpreviaver', (req, res) => {
+    res.sendFile(path.join(frontendPath, 'pages', 'botpreviaver.html'));
+});
+
 // MVP agora é parte de Torneios - redirecionar
 app.get('/mvp', (req, res) => {
     res.redirect('/torneios#mvp');

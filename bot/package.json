@@ -1,12 +1,11 @@
 {
-  "name": "pso-brasil-discord-bot",
+  "name": "pso-brasil-bot",
   "version": "1.0.0",
   "description": "Bot de Controle Visual para o site PSO Brasil",
   "main": "discordBot.js",
   "scripts": {
     "start": "node discordBot.js",
-    "dev": "nodemon discordBot.js",
-    "deploy": "echo 'Deploy to Square Cloud'"
+    "dev": "nodemon discordBot.js"
   },
   "dependencies": {
     "discord.js": "^14.14.1",
@@ -14,11 +13,7 @@
     "pg": "^8.11.3",
     "pg-hstore": "^2.3.4",
     "puppeteer": "^21.6.1",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.2"
+    "dotenv": "^16.3.1"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -26,9 +21,7 @@
   "keywords": [
     "discord-bot",
     "pso-brasil",
-    "pro-soccer-online",
-    "gaming",
-    "esports"
+    "gaming"
   ],
   "author": "PSO Brasil Team",
   "license": "MIT"

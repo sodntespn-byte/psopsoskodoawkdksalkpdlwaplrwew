@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Preview - PSO Brasil CMS</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-bottom: 3px solid var(--neon-color, #22C55E);
+            padding: 30px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, var(--neon-color, #22C55E), #3B82F6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #9CA3AF;
+            font-size: 1.1rem;
+        }
+
+        .preview-section {
+            margin: 40px 0;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: var(--neon-color, #22C55E);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bot-preview-container {
+            background: #121212;
+            border: 2px solid var(--neon-color, #22C55E);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(34, 197, 94, 0.2);
+        }
+
+        .bot-header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f23 100%);
+            padding: 20px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .bot-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--neon-color, #22C55E), #3B82F6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .bot-info h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .bot-info p {
+            color: #9CA3AF;
+            font-size: 0.9rem;
+        }
+
+        .bot-commands {
+            padding: 30px;
+        }
+
+        .command-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .bot-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bot-btn.primary {
+            background: var(--neon-color, #22C55E);
+            color: #000;
+        }
+
+        .bot-btn.secondary {
+            background: #3B82F6;
+            color: #fff;
+        }
+
+        .bot-btn.success {
+            background: #10B981;
+            color: #fff;
+        }
+
+        .bot-btn.danger {
+            background: #EF4444;
+            color: #fff;
+        }
+
+        .bot-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .config-panel {
+            background: #1a1a2e;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+        .config-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .config-item:last-child {
+            border-bottom: none;
+        }
+
+        .config-label {
+            color: #9CA3AF;
+            font-size: 0.95rem;
+        }
+
+        .config-value {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .color-preview {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            border: 2px solid #fff;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-badge.online {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22C55E;
+        }
+
+        .status-badge.offline {
+            background: rgba(239, 68, 68, 0.2);
+            color: #EF4444;
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+
+        .action-btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .action-btn.preview {
+            background: linear-gradient(135deg, #3B82F6, #1d4ed8);
+            color: #fff;
+        }
+
+        .action-btn.publish {
+            background: linear-gradient(135deg, var(--neon-color, #22C55E), #16a34a);
+            color: #000;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3B82F6;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+
+        .info-box h4 {
+            color: #3B82F6;
+            margin-bottom: 10px;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .info-box p {
+            color: #9CA3AF;
+            line-height: 1.6;
+        }
+
+        .sync-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(34, 197, 94, 0.1);
+            border-radius: 8px;
+        }
+
+        .sync-dot {
+            width: 12px;
+            height: 12px;
+            background: #22C55E;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .last-sync {
+            color: #9CA3AF;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            border-top: 1px solid #333;
+            margin-top: 40px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .command-row {
+                flex-direction: column;
+            }
+
+            .bot-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .preview-actions {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🤖 BOT PREVIEW - PSO BRASIL</h1>
+        <p>Pré-visualização das configurações do Bot Discord CMS</p>
+    </header>
+
+    <div class="container">
+        <div class="info-box">
+            <h4>ℹ️ Sobre esta página</h4>
+            <p>Esta é uma pré-visualização de como o bot do Discord controla o site. Todas as alterações feitas pelo bot são refletidas aqui em tempo real. Use o botão "Visualizar" para ver mudanças de rascunho, e "Publicar" para aplicar no site oficial.</p>
+        </div>
+
+        <div class="preview-section">
+            <h2 class="section-title">🎨 Painel de Controle do Bot</h2>
+            
+            <div class="bot-preview-container">
+                <div class="bot-header">
+                    <div class="bot-avatar">🤖</div>
+                    <div class="bot-info">
+                        <h3>PSO Brasil Bot</h3>
+                        <p>Bot de Gerenciamento CMS</p>
+                    </div>
+                </div>
+
+                <div class="bot-commands">
+                    <div class="command-row">
+                        <button class="bot-btn primary">🎨 Aparência</button>
+                        <button class="bot-btn secondary">📝 Conteúdo</button>
+                        <button class="bot-btn success">🛒 Mercado</button>
+                    </div>
+                    
+                    <div class="command-row">
+                        <button class="bot-btn primary">👁️ Visualizar (Staging)</button>
+                        <button class="bot-btn danger">🚀 Publicar</button>
+                        <button class="bot-btn secondary">🔄 Sync</button>
+                    </div>
+
+                    <div class="config-panel">
+                        <h3 style="font-family: 'Orbitron', sans-serif; margin-bottom: 20px; color: var(--neon-color, #22C55E);">Configurações Atuais</h3>
+                        
+                        <div class="config-item">
+                            <span class="config-label">🎨 Cor Neon</span>
+                            <div class="config-value">
+                                <div class="color-preview" id="neonColorPreview" style="background: #22C55E;"></div>
+                                <span id="neonColorValue">#22C55E</span>
+                            </div>
+                        </div>
+
+                        <div class="config-item">
+                            <span class="config-label">🎨 Cor Secundária</span>
+                            <div class="config-value">
+                                <div class="color-preview" id="secondaryColorPreview" style="background: #3B82F6;"></div>
+                                <span id="secondaryColorValue">#3B82F6</span>
+                            </div>
+                        </div>
+
+                        <div class="config-item">
+                            <span class="config-label">📢 Anúncio Atual</span>
+                            <div class="config-value">
+                                <span id="announcementText">Nenhum anúncio ativo</span>
+                            </div>
+                        </div>
+
+                        <div class="config-item">
+                            <span class="config-label">📊 Status do Site</span>
+                            <div class="config-value">
+                                <span class="status-badge online" id="siteStatus">Online</span>
+                            </div>
+                        </div>
+
+                        <div class="config-item">
+                            <span class="config-label">🛒 Mercado</span>
+                            <div class="config-value">
+                                <span class="status-badge online" id="marketStatus">Ativo</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sync-indicator">
+                        <div class="sync-dot"></div>
+                        <span class="last-sync">Última sincronização: <span id="lastSync">Agora</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="preview-actions">
+            <button class="action-btn preview" onclick="previewStaging()">
+                👁️ Visualizar Staging
+            </button>
+            <button class="action-btn publish" onclick="publishChanges()">
+                🚀 Publicar Oficial
+            </button>
+        </div>
+    </div>
+
+    <footer>
+        <p>PSO Brasil Bot Preview &copy; 2024 - Integrado com Discord Bot CMS</p>
+    </footer>
+
+    <script>
+        // Carregar configurações do CMS
+        async function loadConfig() {
+            try {
+                const response = await fetch('/api/config');
+                const data = await response.json();
+                
+                if (data.success && data.configs) {
+                    const config = data.configs;
+                    
+                    // Atualizar cores
+                    if (config.neon_color) {
+                        document.getElementById('neonColorPreview').style.background = config.neon_color;
+                        document.getElementById('neonColorValue').textContent = config.neon_color;
+                        document.documentElement.style.setProperty('--neon-color', config.neon_color);
+                    }
+                    
+                    if (config.secondary_color) {
+                        document.getElementById('secondaryColorPreview').style.background = config.secondary_color;
+                        document.getElementById('secondaryColorValue').textContent = config.secondary_color;
+                    }
+                    
+                    // Atualizar anúncio
+                    if (config.announcement_text) {
+                        document.getElementById('announcementText').textContent = config.announcement_text;
+                    }
+                    
+                    // Atualizar status
+                    const statusBadge = document.getElementById('siteStatus');
+                    if (config.site_status === 'online') {
+                        statusBadge.textContent = 'Online';
+                        statusBadge.className = 'status-badge online';
+                    } else {
+                        statusBadge.textContent = 'Manutenção';
+                        statusBadge.className = 'status-badge offline';
+                    }
+                    
+                    // Atualizar mercado
+                    const marketBadge = document.getElementById('marketStatus');
+                    if (config.market_enabled === 'true' || config.market_enabled === true) {
+                        marketBadge.textContent = 'Ativo';
+                        marketBadge.className = 'status-badge online';
+                    } else {
+                        marketBadge.textContent = 'Inativo';
+                        marketBadge.className = 'status-badge offline';
+                    }
+                    
+                    // Atualizar timestamp
+                    const now = new Date();
+                    document.getElementById('lastSync').textContent = now.toLocaleTimeString('pt-BR');
+                    
+                    console.log('[Bot Preview] Configurações carregadas:', config);
+                }
+            } catch (error) {
+                console.error('[Bot Preview] Erro ao carregar config:', error);
+            }
+        }
+
+        // Visualizar staging
+        function previewStaging() {
+            alert('🔗 Redirecionando para o site de Staging...\n\nNota: Em produção, isso abriria o site com as alterações de rascunho.');
+            window.open('/?preview=1', '_blank');
+        }
+
+        // Publicar alterações
+        function publishChanges() {
+            alert('🚀 Publicando alterações...\n\nNota: Em produção, isso sincronizaria as alterações do bot para o site oficial.');
+        }
+
+        // Carregar configurações ao iniciar
+        loadConfig();
+        
+        // Atualizar a cada 30 segundos
+        setInterval(loadConfig, 30000);
+    </script>
+</body>
+</html>
