@@ -12,6 +12,53 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/responsive.css">
     
+    <!-- CMS Dynamic Colors - Carregado imediatamente -->
+    <style id="cms-dynamic-colors">
+        :root {
+            --neon-color: #22C55E;
+            --secondary-color: #3B82F6;
+            --main-color: #22C55E;
+        }
+    </style>
+    
+    <script>
+        // Carregar cores do CMS imediatamente antes do render
+        (function() {
+            const cachedNeon = localStorage.getItem('cms_neon_color');
+            const cachedSecondary = localStorage.getItem('cms_secondary_color');
+            
+            if (cachedNeon) {
+                document.documentElement.style.setProperty('--neon-color', cachedNeon);
+                document.documentElement.style.setProperty('--main-color', cachedNeon);
+                document.documentElement.style.setProperty('--neon-green', cachedNeon);
+            }
+            if (cachedSecondary) {
+                document.documentElement.style.setProperty('--secondary-color', cachedSecondary);
+            }
+            
+            // Buscar do backend
+            fetch('/api/settings')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success && data.config) {
+                        const config = data.config;
+                        if (config.neon_color) {
+                            document.documentElement.style.setProperty('--neon-color', config.neon_color);
+                            document.documentElement.style.setProperty('--main-color', config.neon_color);
+                            document.documentElement.style.setProperty('--neon-green', config.neon_color);
+                            localStorage.setItem('cms_neon_color', config.neon_color);
+                        }
+                        if (config.secondary_color) {
+                            document.documentElement.style.setProperty('--secondary-color', config.secondary_color);
+                            localStorage.setItem('cms_secondary_color', config.secondary_color);
+                        }
+                        console.log('[CMS] Cores aplicadas:', config.neon_color, config.secondary_color);
+                    }
+                })
+                .catch(err => console.error('[CMS] Erro ao carregar cores:', err));
+        })();
+    </script>
+    
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     

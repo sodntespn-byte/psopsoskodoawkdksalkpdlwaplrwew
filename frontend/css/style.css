@@ -8,6 +8,12 @@
 
 /* CSS Variables */
 :root {
+    /* CMS Dynamic Colors - Atualizadas pelo bot */
+    --neon-color: #22C55E;
+    --main-color: #22C55E;
+    --secondary-color: #3B82F6;
+    
+    /* Legacy variables for compatibility */
     --neon-green: #22C55E;
     --neon-yellow: #FACC15;
     --pure-black: #000000;
