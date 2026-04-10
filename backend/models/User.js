@@ -198,17 +198,8 @@ const User = sequelize.define('User', {
         beforeSave: (user) => {
             user.updatedAt = new Date();
         }
-    },
-    indexes: [
-        { fields: ['username'] },
-        { fields: ['email'] },
-        { fields: ['rank'] },
-        { fields: ['region'] },
-        { fields: ['isOnline'] },
-        { fields: ['discordId'] },
-        { fields: ['googleId'] },
-        { fields: ['createdAt'] }
-    ]
+    }
+    // Indexes removidos temporariamente - tabela já existe no banco
 });
 
 module.exports = User;
