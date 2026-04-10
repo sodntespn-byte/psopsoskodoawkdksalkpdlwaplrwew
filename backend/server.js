@@ -1238,10 +1238,19 @@ app.use((err, req, res, next) => {
 // Inicializar servidor e banco de dados
 async function startServer() {
     try {
+        // Sincronizar tabelas do banco automaticamente
+        console.log('🔄 Sincronizando tabelas do banco de dados...');
+        await sequelize.sync({ alter: true });
+        console.log('✅ Tabelas sincronizadas com sucesso!');
+        
         await initializeDatabase();
         
-        // Inicializar configurações padrão do site
-        await SiteSetting.initializeDefaults();
+        // Inicializar configurações padrão do site (com tratamento de erro)
+        try {
+            await SiteSetting.initializeDefaults();
+        } catch (err) {
+            console.log('⚠️  Erro ao inicializar defaults (tabelas podem não existir ainda):', err.message);
+        }
         
         app.listen(PORT, () => {
             console.log(`Servidor rodando na porta ${PORT}`);
