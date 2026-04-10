@@ -10,6 +10,7 @@ const NotificationPreference = require('./NotificationPreference');
 const NotificationTemplate = require('./NotificationTemplate');
 const Noticia = require('./Noticia');
 const SiteSetting = require('./SiteSetting');
+const SiteConfig = require('./SiteConfig')(sequelize);
 
 // Lazy load SiteAnalytics para evitar dependência circular
 let SiteAnalytics;
@@ -66,5 +67,6 @@ module.exports = {
     NotificationTemplate,
     Noticia,
     SiteSetting,
+    SiteConfig,
     SiteAnalytics
 };

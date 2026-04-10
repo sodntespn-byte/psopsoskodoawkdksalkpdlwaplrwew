@@ -162,7 +162,12 @@ class SecurityConfig {
                 return next();
             }
 
-            const token = req.headers['x-csrf-token'] || req.body._csrf;
+            // Skip CSRF for API endpoints that don't require session
+            if (req.path.startsWith('/api/config') || req.path.startsWith('/api/health')) {
+                return next();
+            }
+
+            const token = req.headers['x-csrf-token'] || req.body?._csrf;
             const sessionToken = req.session?.csrfToken;
 
             if (!token || !sessionToken || token !== sessionToken) {
