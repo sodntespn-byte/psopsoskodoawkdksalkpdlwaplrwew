@@ -17,7 +17,7 @@ module.exports = (sequelize) => {
             autoIncrement: true
         },
         user_id: {
-            type: DataTypes.STRING(100),
+            type: DataTypes.UUID,
             allowNull: true,
             comment: 'ID do usuário se logado, null se visitante'
         },
