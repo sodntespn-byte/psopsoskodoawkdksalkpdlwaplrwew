@@ -1238,10 +1238,10 @@ app.use((err, req, res, next) => {
 // Inicializar servidor e banco de dados
 async function startServer() {
     try {
-        // Sincronizar tabelas do banco automaticamente
-        console.log('🔄 Sincronizando tabelas do banco de dados...');
-        await sequelize.sync({ alter: true });
-        console.log('✅ Tabelas sincronizadas com sucesso!');
+        // Sincronizar tabelas do banco (apenas cria novas, não altera existentes)
+        console.log('🔄 Verificando tabelas do banco...');
+        await sequelize.sync({ force: false, alter: false });
+        console.log('✅ Tabelas verificadas!');
         
         await initializeDatabase();
         
