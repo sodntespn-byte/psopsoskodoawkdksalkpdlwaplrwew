@@ -272,62 +272,6 @@ app.use('/images', sensitiveFilesProtection, express.static(path.join(frontendPa
 app.use('/css', sensitiveFilesProtection, express.static(path.join(frontendPath, 'css')));
 app.use('/js', sensitiveFilesProtection, express.static(path.join(frontendPath, 'js')));
 
-// Middleware de autenticação - DEFINIDOS ANTES DAS ROTAS
-const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers.authorization;
-    
-    if (!authHeader) {
-        return res.status(401).json({ 
-            error: 'Token não fornecido',
-            code: 'TOKEN_MISSING'
-        });
-    }
-    
-    const token = authHeader.split(' ')[1];
-    
-    if (!token) {
-        return res.status(401).json({ 
-            error: 'Formato de token inválido',
-            code: 'TOKEN_FORMAT_INVALID'
-        });
-    }
-    
-    try {
-        const decoded = security.verifyJWTToken(token);
-        
-        if (!decoded) {
-            return res.status(403).json({ 
-                error: 'Token inválido ou expirado',
-                code: 'TOKEN_INVALID'
-            });
-        }
-        
-        req.user = decoded;
-        next();
-    } catch (error) {
-        return res.status(403).json({ 
-            error: 'Token inválido',
-            code: 'TOKEN_VERIFICATION_ERROR'
-        });
-    }
-};
-
-const requireAuth = (req, res, next) => {
-    authenticateToken(req, res, next);
-};
-
-const requireAdmin = (req, res, next) => {
-    authenticateToken(req, res, () => {
-        if (!req.userDetails || !req.userDetails.isAdmin) {
-            return res.status(403).json({
-                error: 'Acesso negado. Permissão de administrador necessária.',
-                code: 'ADMIN_REQUIRED'
-            });
-        }
-        next();
-    });
-};
-
 // Não servir pasta pages diretamente - usar rotas limpas
 // app.use('/pages', sensitiveFilesProtection, express.static(path.join(frontendPath, 'pages')));
 
