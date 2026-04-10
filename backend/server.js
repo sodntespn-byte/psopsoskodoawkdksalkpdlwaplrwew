@@ -1238,6 +1238,10 @@ app.use((err, req, res, next) => {
 // Inicializar servidor e banco de dados
 async function startServer() {
     try {
+        // Importar todos os modelos para garantir que serão sincronizados
+        const models = require('./models');
+        console.log('📊 Modelos carregados:', Object.keys(models).filter(k => k !== 'sequelize').join(', '));
+        
         // Sincronizar tabelas do banco (apenas cria novas, não altera existentes)
         console.log('🔄 Verificando tabelas do banco...');
         await sequelize.sync({ force: false, alter: false });
