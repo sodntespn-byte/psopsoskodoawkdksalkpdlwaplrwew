@@ -75,6 +75,7 @@ const registerRoutes = require('./routes/register');
 const configRoutes = require('./routes/config');
 const lobbyRoutes = require('./routes/lobby');
 const matchesRoutes = require('./routes/matches');
+const analyticsRoutes = require('./routes/analytics');
 const passport = require('./middleware/passport');
 const session = require('express-session');
 
@@ -107,7 +108,14 @@ async function initializeDatabase() {
 // Configurar CORS para permitir requisições do frontend - Square Cloud compatible
 const allowedOrigins = process.env.ALLOWED_ORIGINS 
     ? process.env.ALLOWED_ORIGINS.split(',')
-    : ['http://localhost:3000', 'http://localhost:5001', 'https://pro-soccer-online.squareweb.app', 'https://psobrasil.squareweb.app'];
+    : [
+        'http://localhost:3000', 
+        'http://localhost:5001', 
+        'https://pro-soccer-online.squareweb.app', 
+        'https://psobrasil.squareweb.app',
+        'https://psobr.squareweb.app',
+        'https://psobradminanalisesbot.squareweb.app'
+    ];
 
 app.use(cors({
     origin: function(origin, callback) {
@@ -225,6 +233,9 @@ app.use('/api/lobby', lobbyRoutes);
 
 // Usar rotas de partidas/calendário
 app.use('/api/matches', matchesRoutes);
+
+// Usar rotas de analytics
+app.use('/api/analytics', analyticsRoutes);
 
 // Usar rotas de perfil
 const perfilRoutes = require('./routes/perfil');

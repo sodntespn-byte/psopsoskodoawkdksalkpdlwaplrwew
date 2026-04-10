@@ -10,8 +10,11 @@ const NotificationPreference = require('./NotificationPreference');
 const NotificationTemplate = require('./NotificationTemplate');
 const Noticia = require('./Noticia');
 const SiteSetting = require('./SiteSetting');
+const SiteAnalytics = require('./SiteAnalytics')(sequelize);
 
 // Definir associações
+User.hasMany(SiteAnalytics, { foreignKey: 'user_id', as: 'analytics' });
+SiteAnalytics.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 User.hasMany(TournamentParticipant, { foreignKey: 'userId', as: 'participants' });
 TournamentParticipant.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
@@ -57,5 +60,6 @@ module.exports = {
     NotificationPreference,
     NotificationTemplate,
     Noticia,
-    SiteSetting
+    SiteSetting,
+    SiteAnalytics
 };
