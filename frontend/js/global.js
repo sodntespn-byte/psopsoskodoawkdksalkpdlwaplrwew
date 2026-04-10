@@ -4,6 +4,28 @@
  */
 
 // ==========================================
+// MOBILE MENU TOGGLE
+// ==========================================
+function toggleMobileMenu() {
+    const mobileNav = document.getElementById('mobileNav');
+    if (mobileNav) {
+        mobileNav.classList.toggle('active');
+        document.body.style.overflow = mobileNav.classList.contains('active') ? 'hidden' : '';
+    }
+}
+
+// Close mobile menu on resize to desktop
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) {
+        const mobileNav = document.getElementById('mobileNav');
+        if (mobileNav && mobileNav.classList.contains('active')) {
+            mobileNav.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    }
+});
+
+// ==========================================
 // CONFIGURAÇÃO GLOBAL
 // ==========================================
 const CONFIG = {

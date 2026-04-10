@@ -10,9 +10,13 @@
     
     <!-- Global Styles -->
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
     
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    
+    <!-- Anti-Debugger Protection -->
+    <script src="js/anti-debug.js"></script>
     
     <style>
         /* Page-specific styles only */
@@ -1245,9 +1249,41 @@
                 <button class="login-btn" id="login-btn">Entrar</button>
             </div>
             
-            <button class="mobile-menu-btn" aria-label="Menu">
-                <i data-lucide="menu" style="width: 20px; height: 20px;"></i>
+            <button class="mobile-menu-btn" aria-label="Menu" onclick="toggleMobileMenu()">
+                <i data-lucide="menu" style="width: 24px; height: 24px;"></i>
             </button>
+        </nav>
+    </header>
+    
+    <!-- Mobile Navigation Overlay -->
+    <div class="mobile-nav" id="mobileNav">
+        <button class="mobile-nav-close" onclick="toggleMobileMenu()">
+            <i data-lucide="x" style="width: 24px; height: 24px;"></i>
+        </button>
+        <a href="/" onclick="toggleMobileMenu()">
+            <i data-lucide="home"></i> Início
+        </a>
+        <a href="#rankings" onclick="toggleMobileMenu()">
+            <i data-lucide="trophy"></i> Rankings
+        </a>
+        <a href="/torneios" onclick="toggleMobileMenu()">
+            <i data-lucide="swords"></i> Torneios
+        </a>
+        <a href="/mercado" onclick="toggleMobileMenu()">
+            <i data-lucide="shopping-cart"></i> Mercado
+        </a>
+        <a href="/imprensa" onclick="toggleMobileMenu()">
+            <i data-lucide="newspaper"></i> Imprensa
+        </a>
+        <a href="/registrar" onclick="toggleMobileMenu()">
+            <i data-lucide="user-plus"></i> Registrar
+        </a>
+        <div style="margin-top: auto; padding: 20px; border-top: 1px solid var(--border-gray);">
+            <button class="login-btn" style="width: 100%;" onclick="showLoginModal(); toggleMobileMenu();">
+                <i data-lucide="log-in"></i> Entrar
+            </button>
+        </div>
+    </div>
         </nav>
     </header>
     

@@ -1,0 +1,595 @@
+/**
+ * PSO BRASIL - Responsive Styles
+ * Mobile-First Responsive Design
+ */
+
+/* ============================================
+   MOBILE FIRST - Base Styles (320px+)
+   ============================================ */
+
+/* Container adjustments */
+.container {
+    max-width: 100%;
+    padding: 0 16px;
+}
+
+/* ============================================
+   MOBILE NAVIGATION (Hamburger Menu)
+   ============================================ */
+.mobile-menu-btn {
+    display: none;
+    background: transparent;
+    border: 1px solid var(--neon-green);
+    color: var(--neon-green);
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.mobile-menu-btn:hover {
+    background: var(--neon-green);
+    color: var(--pure-black);
+}
+
+.mobile-menu-btn i {
+    width: 24px;
+    height: 24px;
+}
+
+/* Mobile Navigation Overlay */
+.mobile-nav {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 999;
+    padding: 80px 24px 24px;
+    flex-direction: column;
+    gap: 8px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.mobile-nav.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.mobile-nav a {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    color: #FFFFFF;
+    text-decoration: none;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.mobile-nav a:hover {
+    border-color: var(--neon-green);
+    background: rgba(34, 197, 94, 0.1);
+}
+
+.mobile-nav a i {
+    width: 20px;
+    height: 20px;
+    color: var(--neon-green);
+}
+
+.mobile-nav-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: transparent;
+    border: 1px solid var(--border-gray);
+    color: var(--text-gray);
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ============================================
+   HERO SECTION - Mobile
+   ============================================ */
+.hero {
+    padding: 100px 0 60px;
+    min-height: auto;
+}
+
+.hero-content {
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: 32px;
+    line-height: 1.2;
+}
+
+.hero h2 {
+    font-size: 18px;
+}
+
+.hero-stats {
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 32px;
+}
+
+/* ============================================
+   BUTTONS - Touch Friendly (min 44x44px)
+   ============================================ */
+.btn {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 12px 24px;
+    font-size: 14px;
+}
+
+.btn-sm {
+    min-height: 36px;
+    padding: 8px 16px;
+    font-size: 12px;
+}
+
+.btn-icon {
+    width: 44px;
+    height: 44px;
+}
+
+/* ============================================
+   TOURNAMENT CARDS - Mobile
+   ============================================ */
+.tournaments-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+.tournament-card {
+    padding: 20px;
+}
+
+.tournament-card h3 {
+    font-size: 20px;
+}
+
+/* ============================================
+   RANKING - Mobile Cards
+   ============================================ */
+.ranking-table {
+    display: none;
+}
+
+.ranking-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ranking-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-gray);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.ranking-card .position {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--neon-green);
+    min-width: 40px;
+    text-align: center;
+}
+
+.ranking-card .position.top-3 {
+    color: #FFD700;
+}
+
+.ranking-card .avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid var(--neon-green);
+    object-fit: cover;
+}
+
+.ranking-card .info {
+    flex: 1;
+}
+
+.ranking-card .username {
+    font-weight: 600;
+    color: #FFFFFF;
+    margin-bottom: 4px;
+}
+
+.ranking-card .stats {
+    font-size: 12px;
+    color: var(--text-gray);
+}
+
+.ranking-card .points {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--neon-green);
+}
+
+/* ============================================
+   CALENDAR/MATCHES - Mobile Cards
+   ============================================ */
+.matches-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+.match-card {
+    padding: 20px;
+}
+
+.match-teams {
+    flex-direction: column;
+    gap: 12px;
+}
+
+.match-vs {
+    transform: rotate(90deg);
+}
+
+/* ============================================
+   PROFILE PAGE - Mobile
+   ============================================ */
+.profile-header {
+    flex-direction: column;
+    text-align: center;
+    padding: 24px;
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+}
+
+.profile-username {
+    font-size: 28px;
+}
+
+.profile-stats {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 20px;
+    gap: 12px;
+}
+
+.profile-details {
+    grid-template-columns: 1fr;
+    padding: 20px;
+}
+
+/* ============================================
+   TABLES - Mobile Scroll
+   ============================================ */
+.table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -16px;
+    padding: 0 16px;
+}
+
+.table-container table {
+    min-width: 600px;
+}
+
+/* ============================================
+   NEWS/IMPRENSA - Mobile
+   ============================================ */
+.news-grid {
+    grid-template-columns: 1fr;
+}
+
+.news-card {
+    margin-bottom: 16px;
+}
+
+/* ============================================
+   TYPOGRAPHY - Mobile Adjustments
+   ============================================ */
+h1 {
+    font-size: 28px;
+}
+
+h2 {
+    font-size: 22px;
+}
+
+h3 {
+    font-size: 18px;
+}
+
+p {
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.section-title {
+    font-size: 24px;
+}
+
+/* ============================================
+   SPACING - Mobile
+   ============================================ */
+section {
+    padding: 40px 0;
+}
+
+.mb-mobile {
+    margin-bottom: 16px;
+}
+
+/* ============================================
+   TABLET (768px+)
+   ============================================ */
+@media (min-width: 768px) {
+    .container {
+        padding: 0 24px;
+    }
+    
+    /* Show desktop nav, hide mobile */
+    .nav-links {
+        display: flex;
+    }
+    
+    .mobile-menu-btn {
+        display: none;
+    }
+    
+    .mobile-nav {
+        display: none !important;
+    }
+    
+    /* Hero */
+    .hero {
+        padding: 140px 0 100px;
+        min-height: 100vh;
+    }
+    
+    .hero h1 {
+        font-size: 48px;
+    }
+    
+    .hero h2 {
+        font-size: 24px;
+    }
+    
+    .hero-stats {
+        flex-direction: row;
+        gap: 48px;
+        margin-top: 48px;
+    }
+    
+    /* Tournament Cards - 2 columns */
+    .tournaments-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+    }
+    
+    /* Ranking - Show table */
+    .ranking-table {
+        display: table;
+    }
+    
+    .ranking-cards {
+        display: none;
+    }
+    
+    /* Matches - 2 columns */
+    .matches-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    
+    .match-teams {
+        flex-direction: row;
+    }
+    
+    .match-vs {
+        transform: none;
+    }
+    
+    /* Profile */
+    .profile-header {
+        flex-direction: row;
+        text-align: left;
+        padding: 40px;
+    }
+    
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .profile-username {
+        font-size: 42px;
+    }
+    
+    .profile-stats {
+        grid-template-columns: repeat(4, 1fr);
+        padding: 30px 40px;
+        gap: 20px;
+    }
+    
+    .profile-details {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 30px 40px;
+    }
+    
+    /* News - 2 columns */
+    .news-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+    }
+    
+    /* Typography */
+    h1 {
+        font-size: 36px;
+    }
+    
+    h2 {
+        font-size: 28px;
+    }
+    
+    h3 {
+        font-size: 22px;
+    }
+    
+    section {
+        padding: 60px 0;
+    }
+}
+
+/* ============================================
+   DESKTOP (1024px+)
+   ============================================ */
+@media (min-width: 1024px) {
+    .container {
+        max-width: 1200px;
+        padding: 0 32px;
+    }
+    
+    /* Tournament Cards - 3 columns */
+    .tournaments-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    /* Matches - 3 columns */
+    .matches-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    /* News - 3 columns */
+    .news-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    /* Typography */
+    .hero h1 {
+        font-size: 56px;
+    }
+    
+    h1 {
+        font-size: 42px;
+    }
+}
+
+/* ============================================
+   LARGE DESKTOP (1400px+)
+   ============================================ */
+@media (min-width: 1400px) {
+    .container {
+        max-width: 1400px;
+    }
+    
+    .hero h1 {
+        font-size: 64px;
+    }
+}
+
+/* ============================================
+   MOBILE MENU BREAKPOINT (< 768px)
+   ============================================ */
+@media (max-width: 767px) {
+    .nav-links {
+        display: none;
+    }
+    
+    .mobile-menu-btn {
+        display: flex;
+    }
+    
+    .mobile-nav {
+        display: flex;
+    }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+.hide-mobile {
+    display: none;
+}
+
+.hide-desktop {
+    display: block;
+}
+
+@media (min-width: 768px) {
+    .hide-mobile {
+        display: block;
+    }
+    
+    .hide-desktop {
+        display: none;
+    }
+}
+
+/* Touch-friendly tap targets */
+@media (pointer: coarse) {
+    a, button, .clickable {
+        min-height: 44px;
+        min-width: 44px;
+    }
+}
+
+/* Prevent horizontal scroll */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Focus styles for accessibility */
+a:focus, button:focus {
+    outline: 2px solid var(--neon-green);
+    outline-offset: 2px;
+}
+
+/* Reduce motion preference */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    html {
+        scroll-behavior: auto;
+    }
+}
