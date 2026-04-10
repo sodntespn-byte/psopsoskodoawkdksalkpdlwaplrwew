@@ -40,28 +40,9 @@ try {
     };
 }
 
-// Create Sequelize instance directly in server.js
-const sequelize = new Sequelize(DATABASE_URL, {
-    dialect: 'postgres',
-    protocol: 'postgres',
-    logging: process.env.NODE_ENV === 'development' ? console.log : false,
-    pool: {
-        max: 20,
-        min: 5,
-        acquire: 30000,
-        idle: 10000
-    },
-    dialectOptions: {
-        ssl: sslConfig
-    },
-    define: {
-        timestamps: true,
-        underscored: true,
-        freezeTableName: true
-    }
-});
-
-console.log('📝 Usando DATABASE_URL configurada no server.js');
+// Usar instância compartilhada do database.js
+const { sequelize } = require('./db/database');
+console.log('📝 Usando Sequelize compartilhado do database.js');
 
 // Export sequelize antes de importar modelos para evitar dependência circular
 module.exports = { sequelize };
