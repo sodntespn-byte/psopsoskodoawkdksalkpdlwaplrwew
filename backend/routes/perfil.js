@@ -12,12 +12,23 @@ router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
         
+        console.log('[PERFIL] Buscando perfil do ID:', id);
+        
+        if (!id || id === 'undefined' || id === 'null') {
+            console.error('[PERFIL] ID inválido recebido:', id);
+            return res.status(400).json({
+                success: false,
+                error: 'ID inválido'
+            });
+        }
+        
         // Buscar por username ou discord_id
         const user = await User.findOne({
             where: {
                 [require('sequelize').Op.or]: [
                     { username: id },
-                    { discord_id: id }
+                    { discord_id: id },
+                    { id: id } // Também buscar por ID numérico
                 ]
             },
             attributes: [
@@ -29,11 +40,14 @@ router.get('/:id', async (req, res) => {
         });
         
         if (!user) {
+            console.error('[PERFIL] Jogador não encontrado para ID:', id);
             return res.status(404).json({
                 success: false,
                 error: 'Jogador não encontrado'
             });
         }
+        
+        console.log('[PERFIL] Jogador encontrado:', user.username);
         
         res.json({
             success: true,
@@ -43,27 +57,28 @@ router.get('/:id', async (req, res) => {
                 discord_id: user.discord_id,
                 avatar_url: user.avatar_url,
                 email: user.email,
-                bio: user.bio,
-                profile_color: user.profile_color,
-                border_style: user.border_style,
-                title: user.title,
-                preferred_position: user.preferred_position,
+                bio: user.bio || '',
+                profile_color: user.profile_color || '#22C55E',
+                border_style: user.border_style || 'solid',
+                title: user.title || '',
+                preferred_position: user.preferred_position || '',
                 estatisticas: {
-                    gols: user.stats_gols,
-                    assistencias: user.stats_assistencias,
-                    jogos: user.stats_jogos
+                    gols: user.stats_gols || 0,
+                    assistencias: user.stats_assistencias || 0,
+                    jogos: user.stats_jogos || 0
                 },
-                rank: user.rank,
-                titulos: user.titles,
+                rank: user.rank || 'Iniciante',
+                titulos: user.titles || 0,
                 membro_desde: user.createdAt,
-                is_admin: user.is_admin
+                is_admin: user.is_admin || false
             }
         });
     } catch (error) {
-        console.error('Erro ao obter perfil:', error);
+        console.error('[PERFIL] Erro ao obter perfil:', error);
         res.status(500).json({
             success: false,
-            error: 'Erro ao obter perfil do jogador'
+            error: 'Erro ao obter perfil do jogador',
+            details: error.message
         });
     }
 });

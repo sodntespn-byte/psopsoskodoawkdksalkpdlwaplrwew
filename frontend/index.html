@@ -2395,34 +2395,67 @@
         function openPlayerProfile(username) {
             const modal = document.getElementById('playerProfileModal');
             
-            // Fetch player data
-            fetch(`/api/player/${encodeURIComponent(username)}`)
+            console.log('[FRONTEND] Abrindo perfil para:', username);
+            
+            if (!username || username === 'undefined' || username === 'null') {
+                console.error('[FRONTEND] Username inválido:', username);
+                alert('Erro: Username inválido');
+                return;
+            }
+            
+            // Fetch player data - URL corrigida de /api/player/ para /api/perfil/
+            fetch(`/api/perfil/${encodeURIComponent(username)}`)
                 .then(response => {
+                    console.log('[FRONTEND] Resposta da API:', response.status, response.statusText);
+                    
                     if (!response.ok) {
-                        throw new Error('Jogador não encontrado');
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                     }
                     return response.json();
                 })
                 .then(data => {
-                    // Fill profile data
-                    document.getElementById('profileUsername').textContent = data.username;
-                    document.getElementById('profileAvatar').src = data.avatar_url || '/images/default-avatar.png';
-                    document.getElementById('profileCountry').textContent = data.pais;
-                    document.getElementById('profileFlag').src = `https://flagcdn.com/w40/${data.pais.toLowerCase()}.png`;
-                    document.getElementById('profileJoinDate').textContent = new Date(data.data_de_registro).toLocaleDateString('pt-BR');
-                    document.getElementById('profileDiscordId').textContent = data.discord_id;
+                    console.log('[FRONTEND] Dados recebidos:', data);
                     
-                    // Show Cria badge for Brazil
-                    const criaBadge = document.getElementById('profileCriaBadge');
-                    if (data.pais === 'BR') {
-                        criaBadge.style.display = 'inline-flex';
-                    } else {
-                        criaBadge.style.display = 'none';
+                    if (!data.success) {
+                        throw new Error(data.error || 'Erro desconhecido');
                     }
                     
-                    // Fill titles
+                    const perfil = data.perfil;
+                    
+                    if (!perfil) {
+                        throw new Error('Perfil não encontrado na resposta');
+                    }
+                    
+                    // Fill profile data com fallbacks para valores nulos
+                    document.getElementById('profileUsername').textContent = perfil.username || 'N/A';
+                    document.getElementById('profileAvatar').src = perfil.avatar_url || '/images/default-avatar.png';
+                    
+                    // Usar dados disponíveis da API
+                    const discordId = perfil.discord_id || 'N/A';
+                    document.getElementById('profileDiscordId').textContent = discordId;
+                    
+                    // Data de registro
+                    const joinDate = perfil.membro_desde ? new Date(perfil.membro_desde).toLocaleDateString('pt-BR') : 'N/A';
+                    document.getElementById('profileJoinDate').textContent = joinDate;
+                    
+                    // Estatísticas com fallbacks
+                    const stats = perfil.estatisticas || {};
+                    const gols = stats.gols || 0;
+                    const assistencias = stats.assistencias || 0;
+                    const jogos = stats.jogos || 0;
+                    
+                    // Preencher campos de estatísticas se existirem
+                    const profileGols = document.getElementById('profileGols');
+                    const profileAssists = document.getElementById('profileAssists');
+                    const profileGames = document.getElementById('profileGames');
+                    
+                    if (profileGols) profileGols.textContent = gols;
+                    if (profileAssists) profileAssists.textContent = assistencias;
+                    if (profileGames) profileGames.textContent = jogos;
+                    
+                    // Títulos com fallback
+                    const titlesCount = perfil.titulos || 0;
                     const titlesContainer = document.getElementById('profileTitles');
-                    const titlesCount = data.quantidade_de_titulos || 0;
                     titlesContainer.innerHTML = '';
                     
                     if (titlesCount > 0) {
@@ -2432,22 +2465,29 @@
                             trophy.textContent = '🏆';
                             titlesContainer.appendChild(trophy);
                         }
-                        document.getElementById('profileTitlesCount').textContent = `${titlesCount} Título${titlesCount > 1 ? 's' : ''} Conquistado${titlesCount > 1 ? 's' : ''}`;
+                        const titlesCountEl = document.getElementById('profileTitlesCount');
+                        if (titlesCountEl) titlesCountEl.textContent = `${titlesCount} Título${titlesCount > 1 ? 's' : ''} Conquistado${titlesCount > 1 ? 's' : ''}`;
                     } else {
                         titlesContainer.innerHTML = '<span style="color: rgba(255,255,255,0.5);">Nenhum título ainda</span>';
-                        document.getElementById('profileTitlesCount').textContent = '';
+                        const titlesCountEl = document.getElementById('profileTitlesCount');
+                        if (titlesCountEl) titlesCountEl.textContent = '';
                     }
                     
                     // Add special effect for 5+ titles
                     const card = document.querySelector('.player-profile-card');
-                    if (titlesCount >= 5) {
-                        card.classList.add('profile-super-champion');
-                    } else {
-                        card.classList.remove('profile-super-champion');
+                    if (card) {
+                        if (titlesCount >= 5) {
+                            card.classList.add('profile-super-champion');
+                        } else {
+                            card.classList.remove('profile-super-champion');
+                        }
                     }
                     
                     // Set Discord link
-                    document.getElementById('profileDiscordLink').href = `https://discord.com/users/${data.discord_id}`;
+                    const discordLink = document.getElementById('profileDiscordLink');
+                    if (discordLink && discordId !== 'N/A') {
+                        discordLink.href = `https://discord.com/users/${discordId}`;
+                    }
                     
                     // Show modal
                     modal.classList.add('active');
@@ -2457,8 +2497,8 @@
                     document.addEventListener('mousemove', handleTilt);
                 })
                 .catch(error => {
-                    console.error('Erro ao carregar perfil:', error);
-                    alert('Erro ao carregar perfil do jogador');
+                    console.error('[FRONTEND] Erro ao carregar perfil:', error);
+                    alert(`Erro ao carregar perfil do jogador: ${error.message}`);
                 });
         }
 
