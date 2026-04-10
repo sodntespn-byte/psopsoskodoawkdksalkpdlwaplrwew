@@ -101,8 +101,18 @@ async function initializeDatabase() {
     try {
         await sequelize.authenticate();
         console.log('Conectado ao PostgreSQL com sucesso!');
-        await sequelize.sync({ force: false, alter: true });
-        console.log('Banco de dados sincronizado com sucesso!');
+        
+        // Migração: Dropar tabela site_analytics se existir (para corrigir tipo de user_id)
+        try {
+            await sequelize.query('DROP TABLE IF EXISTS "site_analytics" CASCADE;');
+            console.log('✅ Tabela site_analytics removida para recriação com tipo correto');
+        } catch (dropError) {
+            console.log('⚠️  Tabela site_analytics não existia ou erro ao dropar:', dropError.message);
+        }
+        
+        // Sincronizar modelos com o banco de dados
+        await sequelize.sync({ alter: true });
+        console.log('Modelos sincronizados com o banco de dados');
     } catch (error) {
         console.error('Erro de conexão com PostgreSQL:', error);
         process.exit(1);
