@@ -6,6 +6,10 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
+    if (!sequelize) {
+        throw new Error('Sequelize instance is required');
+    }
+    
     const SiteAnalytics = sequelize.define('SiteAnalytics', {
         id: {
             type: DataTypes.INTEGER,

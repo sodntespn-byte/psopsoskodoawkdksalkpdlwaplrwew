@@ -62,6 +62,10 @@ const sequelize = new Sequelize(DATABASE_URL, {
 });
 
 console.log('📝 Usando DATABASE_URL configurada no server.js');
+
+// Export sequelize antes de importar modelos para evitar dependência circular
+module.exports = { sequelize };
+
 const { User, Tournament, Match, TournamentParticipant, DiscordEvent, Notification, NotificationPreference, NotificationTemplate, SiteSetting } = require('./models');
 const DiscordWebhookHandler = require('./webhook/discordWebhook');
 const SecurityConfig = require('./middleware/security');
