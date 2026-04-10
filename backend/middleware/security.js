@@ -89,6 +89,8 @@ class SecurityConfig {
             origin: function (origin, callback) {
                 const allowedOrigins = [
                     'https://pro-soccer-online.squareweb.app',
+                    'https://psobr.squareweb.app',
+                    'https://psobradminanalisesbot.squareweb.app',
                     'http://localhost:3000',
                     'http://127.0.0.1:8000'
                 ];
