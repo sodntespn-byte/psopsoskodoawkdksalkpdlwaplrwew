@@ -13,27 +13,15 @@ const DiscordEvent = sequelize.define('DiscordEvent', {
     },
     userId: {
         type: DataTypes.UUID,
-        allowNull: true,
-        references: {
-            model: 'Users',
-            key: 'id'
-        }
+        allowNull: true
     },
     tournamentId: {
         type: DataTypes.UUID,
-        allowNull: true,
-        references: {
-            model: 'Tournaments',
-            key: 'id'
-        }
+        allowNull: true
     },
     matchId: {
         type: DataTypes.UUID,
-        allowNull: true,
-        references: {
-            model: 'Matches',
-            key: 'id'
-        }
+        allowNull: true
     },
     discordMessageId: {
         type: DataTypes.STRING(50),

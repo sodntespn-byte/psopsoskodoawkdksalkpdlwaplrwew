@@ -9,19 +9,11 @@ const MatchTeam = sequelize.define('MatchTeam', {
     },
     matchId: {
         type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: 'Matches',
-            key: 'id'
-        }
+        allowNull: false
     },
     userId: {
         type: DataTypes.UUID,
-        allowNull: true,
-        references: {
-            model: 'Users',
-            key: 'id'
-        }
+        allowNull: true
     },
     teamName: {
         type: DataTypes.STRING(50),

@@ -9,19 +9,11 @@ const TournamentParticipant = sequelize.define('TournamentParticipant', {
     },
     tournamentId: {
         type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: 'Tournaments',
-            key: 'id'
-        }
+        allowNull: false
     },
     userId: {
         type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: 'Users',
-            key: 'id'
-        }
+        allowNull: false
     },
     teamName: {
         type: DataTypes.STRING(50),

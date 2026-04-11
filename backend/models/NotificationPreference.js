@@ -9,11 +9,7 @@ const NotificationPreference = sequelize.define('NotificationPreference', {
         },
         userId: {
             type: DataTypes.UUID,
-            allowNull: false,
-            references: {
-                model: 'users',
-                key: 'id'
-            }
+            allowNull: false
         },
         type: {
             type: DataTypes.ENUM(

@@ -9,11 +9,7 @@ const Match = sequelize.define('Match', {
     },
     tournamentId: {
         type: DataTypes.UUID,
-        allowNull: false,
-        references: {
-            model: 'Tournaments',
-            key: 'id'
-        }
+        allowNull: false
     },
     round: {
         type: DataTypes.INTEGER,
@@ -36,11 +32,7 @@ const Match = sequelize.define('Match', {
     },
     winner: {
         type: DataTypes.UUID,
-        allowNull: true,
-        references: {
-            model: 'Users',
-            key: 'id'
-        }
+        allowNull: true
     },
     winnerTeamName: {
         type: DataTypes.STRING(50),
